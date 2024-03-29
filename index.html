@@ -1,0 +1,14 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="/css/style.css">
+        <!-- NEED THIS for Safari Mac to render work -->
+        <script type="text/javascript">
+            // Specify the main script used to create a new PDF.JS web worker.  
+            // In production, change this to point to the combined `pdf.js` file.  
+            PDFJS.workerSrc = 'pdf.worker.js';  
+        </script>
+    </head>
+    <body>
+            <iframe id="pdf-js-viewer" src="/web/viewer.html?file=/assets/pdf/menu.pdf" title="webviewer" frameborder="0" width="100%" height="100%"></iframe>
+    </body>
+</html> 
