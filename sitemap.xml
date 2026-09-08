@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+ <url>
+  <loc>https://ramenokaeri.com/</loc>
+  <xhtml:link rel="alternate" hreflang="es" href="https://ramenokaeri.com/"/>
+  <xhtml:link rel="alternate" hreflang="en" href="https://ramenokaeri.com/en/"/>
+  <xhtml:link rel="alternate" hreflang="gl" href="https://ramenokaeri.com/gl/"/>
+  <changefreq>monthly</changefreq>
+  <priority>1.0</priority>
+ </url>
+ <url>
+  <loc>https://ramenokaeri.com/menu/</loc>
+  <xhtml:link rel="alternate" hreflang="es" href="https://ramenokaeri.com/menu/"/>
+  <xhtml:link rel="alternate" hreflang="en" href="https://ramenokaeri.com/en/menu/"/>
+  <xhtml:link rel="alternate" hreflang="gl" href="https://ramenokaeri.com/gl/menu/"/>
+  <changefreq>monthly</changefreq>
+  <priority>0.8</priority>
+ </url>
+ <url>
+  <loc>https://ramenokaeri.com/en/</loc>
+  <xhtml:link rel="alternate" hreflang="es" href="https://ramenokaeri.com/"/>
+  <xhtml:link rel="alternate" hreflang="en" href="https://ramenokaeri.com/en/"/>
+  <xhtml:link rel="alternate" hreflang="gl" href="https://ramenokaeri.com/gl/"/>
+  <changefreq>monthly</changefreq>
+  <priority>1.0</priority>
+ </url>
+ <url>
+  <loc>https://ramenokaeri.com/en/menu/</loc>
+  <xhtml:link rel="alternate" hreflang="es" href="https://ramenokaeri.com/menu/"/>
+  <xhtml:link rel="alternate" hreflang="en" href="https://ramenokaeri.com/en/menu/"/>
+  <xhtml:link rel="alternate" hreflang="gl" href="https://ramenokaeri.com/gl/menu/"/>
+  <changefreq>monthly</changefreq>
+  <priority>0.8</priority>
+ </url>
+ <url>
+  <loc>https://ramenokaeri.com/gl/</loc>
+  <xhtml:link rel="alternate" hreflang="es" href="https://ramenokaeri.com/"/>
+  <xhtml:link rel="alternate" hreflang="en" href="https://ramenokaeri.com/en/"/>
+  <xhtml:link rel="alternate" hreflang="gl" href="https://ramenokaeri.com/gl/"/>
+  <changefreq>monthly</changefreq>
+  <priority>1.0</priority>
+ </url>
+ <url>
+  <loc>https://ramenokaeri.com/gl/menu/</loc>
+  <xhtml:link rel="alternate" hreflang="es" href="https://ramenokaeri.com/menu/"/>
+  <xhtml:link rel="alternate" hreflang="en" href="https://ramenokaeri.com/en/menu/"/>
+  <xhtml:link rel="alternate" hreflang="gl" href="https://ramenokaeri.com/gl/menu/"/>
+  <changefreq>monthly</changefreq>
+  <priority>0.8</priority>
+ </url>
+</urlset>

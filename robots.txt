@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /web/
+Disallow: /build/
+
+Sitemap: https://ramenokaeri.com/sitemap.xml

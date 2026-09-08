@@ -1,0 +1,158 @@
+{
+  "lang": "en",
+  "nombre_idioma": "English",
+  "meta": {
+    "titulo": "Ramen Okaeri · Ramen and Japanese small plates in Santiago de Compostela",
+    "descripcion": "Ten-hour broth ramen, gyoza, bao and cocktails on Rúa das Orfas 27, in the old town of Santiago de Compostela. Menu, opening hours and phone.",
+    "titulo_carta": "Menu · Ramen Okaeri",
+    "descripcion_carta": "Full Ramen Okaeri menu: ramen, curry rice, small plates, desserts, drinks and the allergen table.",
+    "titulo_legal": "Legal notice · Ramen Okaeri"
+  },
+  "nav": {
+    "carta": "Menu",
+    "sitio": "The place",
+    "donde": "Find us",
+    "menu_abrir": "Open menu",
+    "menu_cerrar": "Close menu",
+    "saltar": "Skip to content",
+    "idioma": "Language"
+  },
+  "hero": {
+    "kicker": "おかえり",
+    "titulo": "Welcome home",
+    "entradilla": "Slow-cooked ramen and Japanese small plates, in the old town of Santiago.",
+    "cta_carta": "See the menu",
+    "cta_llamar": "Call us",
+    "resenas": "{nota} out of 5 on Google, from over a thousand reviews",
+    "bajar": "Scroll down"
+  },
+  "nombre": {
+    "antetitulo": "The name",
+    "titulo": "Okaeri is what you say to someone coming home",
+    "cuerpo": [
+      "In Japan, おかえり is what you say when you hear the front door go. It isn't quite a hello; it's closer to I'm glad you're back.",
+      "We took the name because that is what we wanted people to feel walking in, the first time as much as the tenth."
+    ]
+  },
+  "cocina": {
+    "antetitulo": "The kitchen",
+    "titulo": "The broth takes ten hours",
+    "cuerpo": [
+      "It goes on low in the morning and nobody touches it until it's ready. That's the base for the nine ramen on the menu, and for each one you pick how strong you want the broth, mild, medium or strong, and whether you want it spicy.",
+      "Around that there are gyoza, bao, tempura, karaage and takoyaki to pick at, curry rice bowls and Japanese desserts."
+    ],
+    "platos": {
+      "tonkotsu": {
+        "nombre": "Tonkotsu Ramen",
+        "desc": "Noodles, pork chashu, marinated egg, nori and vegetables."
+      },
+      "tonyu": {
+        "nombre": "Tonyu Vegan Ramen",
+        "desc": "Noodles, fried tofu, nori and vegetables. The vegan bowl on the menu."
+      },
+      "gyozas": {
+        "nombre": "Gyoza",
+        "desc": "Chicken, pork, prawn or vegetable."
+      },
+      "tempura": {
+        "nombre": "Prawn tempura",
+        "desc": "To pick at while the ramen comes."
+      }
+    },
+    "alergenos": "The allergen table is on the last page of the menu.",
+    "cta": "See the full menu"
+  },
+  "sitio": {
+    "antetitulo": "The place",
+    "titulo": "Inside there are lanterns, neon and a lot of manga on the walls",
+    "cuerpo": [
+      "The restaurant sits in a stone building in the old town and inside it looks nothing like it. Red lanterns hanging from the ceiling, an OKAERI neon at the back, corrugated metal, and walls covered in manga. There's a cabinet full of figures that everyone stops to look at.",
+      "The bar does cocktails, bubble tea and Japanese and Korean drinks."
+    ],
+    "galeria_titulo": "Inside the restaurant",
+    "anterior": "Previous",
+    "siguiente": "Next"
+  },
+  "donde": {
+    "antetitulo": "Find us",
+    "titulo": "Rúa das Orfas, 27",
+    "sub": "Old town of Santiago de Compostela, a five-minute walk from the Cathedral and four from Praza de Galicia.",
+    "horarios_titulo": "Opening hours",
+    "contacto_titulo": "Contact",
+    "hoy": "Today",
+    "abierto": "Open now",
+    "cerrado": "Closed now",
+    "abre": "opens at {hora}",
+    "cierra": "closes at {hora}",
+    "cta_llegar": "Get directions",
+    "cta_llamar": "Call us",
+    "cta_glovo": "Order on Glovo",
+    "reservas": "Bookings are taken over the phone."
+  },
+  "dias": {
+    "lunes": "Monday",
+    "martes": "Tuesday",
+    "miercoles": "Wednesday",
+    "jueves": "Thursday",
+    "viernes": "Friday",
+    "sabado": "Saturday",
+    "domingo": "Sunday"
+  },
+  "pie": {
+    "sigue": "Follow us",
+    "legal": "Legal notice",
+    "carta": "Menu",
+    "derechos": "Ramen Okaeri · Rúa das Orfas 27, Santiago de Compostela"
+  },
+  "barra": {
+    "carta": "Menu",
+    "llamar": "Call",
+    "llegar": "Directions"
+  },
+  "carta": {
+    "titulo": "The menu",
+    "sub": "Ramen, curry rice, small plates, desserts, drinks and allergens.",
+    "volver": "Back to the home page",
+    "descargar": "Download the PDF",
+    "aviso": "If the viewer doesn't load, download the menu as a PDF."
+  },
+  "legal": {
+    "titulo": "Legal notice",
+    "volver": "Back to the home page",
+    "bloques": [
+      {
+        "h": "Who runs this site",
+        "p": "This website belongs to {razon_social}, tax number {nif}, registered at {domicilio}. Phone: {telefono}."
+      },
+      {
+        "h": "Cookies and personal data",
+        "p": "This site sets no cookies, uses no analytics and loads nothing from other servers. Browsing it collects no personal data."
+      },
+      {
+        "h": "Links to other sites",
+        "p": "The Google Maps, Apple Maps, Glovo, Instagram, TikTok and Facebook buttons take you off this site. What happens from there is covered by each of their own terms."
+      },
+      {
+        "h": "Menu, prices and allergens",
+        "p": "Menu prices may change. Allergen information is on the last page of the menu, and you can also ask about it before ordering."
+      },
+      {
+        "h": "Intellectual property",
+        "p": "The photographs and the logo belong to Ramen Okaeri. The characters and artwork in the decoration belong to their authors and appear only as part of photographs of the restaurant."
+      }
+    ]
+  },
+  "alt": {
+    "logo": "Ramen Okaeri",
+    "fachada": "The front of Ramen Okaeri at night, its lit circular sign on the stone wall of Rúa das Orfas",
+    "ramen": "A bowl of ramen with chashu, marinated egg, bamboo and spinach on the wooden counter",
+    "neon-okaeri": "A neon sign reading OKAERI, with Japanese lanterns hanging from the ceiling",
+    "barra": "A bartender shaking a cocktail behind the bar, with the RAMEN neon behind him",
+    "vitrina": "A lit cabinet holding anime figures across several shelves",
+    "mesa": "Three people eating and laughing at a table, with a manga mural behind them",
+    "banderines": "Anime banners hanging from the ceiling of the restaurant",
+    "sala-noche": "A table set with wooden spoons and, further back, diners eating",
+    "neon-flechas": "Blue neon arrows in front of the OKAERI sign and the red Tokyo characters",
+    "sala": "A corner of the dining room with lanterns, light boxes and stone walls"
+  }
+}

@@ -1,0 +1,158 @@
+{
+  "lang": "es",
+  "nombre_idioma": "Español",
+  "meta": {
+    "titulo": "Ramen Okaeri · Ramen y tapas japonesas en Santiago de Compostela",
+    "descripcion": "Ramen de caldo cocido a fuego lento diez horas, gyozas, baos y cócteles, en la Rúa das Orfas 27 de Santiago. Carta, horarios y teléfono.",
+    "titulo_carta": "La carta · Ramen Okaeri",
+    "descripcion_carta": "Carta completa de Ramen Okaeri: ramen, arroces, tapas, postres, bebidas y tabla de alérgenos.",
+    "titulo_legal": "Aviso legal · Ramen Okaeri"
+  },
+  "nav": {
+    "carta": "La carta",
+    "sitio": "El sitio",
+    "donde": "Dónde estamos",
+    "menu_abrir": "Abrir el menú",
+    "menu_cerrar": "Cerrar el menú",
+    "saltar": "Saltar al contenido",
+    "idioma": "Idioma"
+  },
+  "hero": {
+    "kicker": "おかえり",
+    "titulo": "Bienvenido a casa",
+    "entradilla": "Ramen de caldo largo y tapas japonesas, en el casco viejo de Santiago.",
+    "cta_carta": "Ver la carta",
+    "cta_llamar": "Llamar",
+    "resenas": "{nota} sobre 5 en Google, con más de mil reseñas",
+    "bajar": "Bajar"
+  },
+  "nombre": {
+    "antetitulo": "El nombre",
+    "titulo": "Okaeri es lo que se le dice al que vuelve",
+    "cuerpo": [
+      "En Japón, おかえり es lo que dice el que está en casa cuando oye la puerta. No es un hola exactamente; se parece más a un me alegro de que hayas vuelto.",
+      "Nos quedamos con esa palabra porque era lo que queríamos que se notara al entrar, también la primera vez que vienes."
+    ]
+  },
+  "cocina": {
+    "antetitulo": "La cocina",
+    "titulo": "El caldo tarda diez horas",
+    "cuerpo": [
+      "Se pone a fuego lento por la mañana y no se toca hasta que está. De ahí salen los nueve ramen de la carta, y de cada uno eliges la intensidad del caldo, suave, media o fuerte, y si lo quieres picante.",
+      "Alrededor hay gyozas, baos, tempura, karaage y takoyaki para ir picando, arroces al curry y postres japoneses."
+    ],
+    "platos": {
+      "tonkotsu": {
+        "nombre": "Tonkotsu Ramen",
+        "desc": "Fideos, chashu de cerdo, huevo marinado, nori y verduras."
+      },
+      "tonyu": {
+        "nombre": "Tonyu Vegan Ramen",
+        "desc": "Fideos, tofu frito, nori y verduras. La opción vegana de la carta."
+      },
+      "gyozas": {
+        "nombre": "Gyozas",
+        "desc": "De pollo, de cerdo, de langostino o de verduras."
+      },
+      "tempura": {
+        "nombre": "Tempura de langostino",
+        "desc": "Para ir picando mientras llega el ramen."
+      }
+    },
+    "alergenos": "La carta lleva la tabla de alérgenos en la última página.",
+    "cta": "Ver la carta entera"
+  },
+  "sitio": {
+    "antetitulo": "El sitio",
+    "titulo": "Dentro hay farolillos, neón y bastante manga en las paredes",
+    "cuerpo": [
+      "El local está en un edificio de piedra del casco viejo y por dentro no se parece en nada. Farolillos rojos colgando, un OKAERI de neón al fondo, chapa ondulada y las paredes cubiertas de manga. Hay una vitrina llena de figuras que se para a mirar todo el mundo.",
+      "En la barra se preparan cócteles, bubble tea y bebidas japonesas y coreanas."
+    ],
+    "galeria_titulo": "El local",
+    "anterior": "Anterior",
+    "siguiente": "Siguiente"
+  },
+  "donde": {
+    "antetitulo": "Dónde estamos",
+    "titulo": "Rúa das Orfas, 27",
+    "sub": "Casco viejo de Santiago de Compostela, a cinco minutos andando de la Catedral y a cuatro de la Praza de Galicia.",
+    "horarios_titulo": "Horarios",
+    "contacto_titulo": "Contacto",
+    "hoy": "Hoy",
+    "abierto": "Abierto ahora",
+    "cerrado": "Cerrado ahora",
+    "abre": "Abre a las {hora}",
+    "cierra": "Cierra a las {hora}",
+    "cta_llegar": "Cómo llegar",
+    "cta_llamar": "Llamar",
+    "cta_glovo": "Pedir por Glovo",
+    "reservas": "Las reservas se hacen por teléfono."
+  },
+  "dias": {
+    "lunes": "Lunes",
+    "martes": "Martes",
+    "miercoles": "Miércoles",
+    "jueves": "Jueves",
+    "viernes": "Viernes",
+    "sabado": "Sábado",
+    "domingo": "Domingo"
+  },
+  "pie": {
+    "sigue": "Síguenos",
+    "legal": "Aviso legal",
+    "carta": "La carta",
+    "derechos": "Ramen Okaeri · Rúa das Orfas 27, Santiago de Compostela"
+  },
+  "barra": {
+    "carta": "Carta",
+    "llamar": "Llamar",
+    "llegar": "Llegar"
+  },
+  "carta": {
+    "titulo": "La carta",
+    "sub": "Ramen, arroces, tapas, postres, bebidas y alérgenos.",
+    "volver": "Volver al inicio",
+    "descargar": "Descargar en PDF",
+    "aviso": "Si el visor no carga, descarga la carta en PDF."
+  },
+  "legal": {
+    "titulo": "Aviso legal",
+    "volver": "Volver al inicio",
+    "bloques": [
+      {
+        "h": "Titular del sitio",
+        "p": "Este sitio web pertenece a {razon_social}, con NIF {nif} y domicilio en {domicilio}. Teléfono de contacto: {telefono}."
+      },
+      {
+        "h": "Cookies y datos personales",
+        "p": "Este sitio no instala cookies, no usa herramientas de analítica y no carga recursos de otros servidores. No se recoge ningún dato personal al navegar por él."
+      },
+      {
+        "h": "Enlaces a otros sitios",
+        "p": "Al pulsar los botones de Google Maps, Apple Maps, Glovo, Instagram, TikTok o Facebook sales de este sitio. Lo que pase a partir de ahí se rige por las condiciones de cada uno."
+      },
+      {
+        "h": "Carta, precios y alérgenos",
+        "p": "Los precios de la carta pueden cambiar. La información de alérgenos está en la última página de la carta y también se pregunta en el local antes de pedir."
+      },
+      {
+        "h": "Propiedad intelectual",
+        "p": "Las fotografías y el logotipo son de Ramen Okaeri. Los personajes y las obras que aparecen en la decoración del local pertenecen a sus autores y aparecen únicamente como parte de las fotografías del establecimiento."
+      }
+    ]
+  },
+  "alt": {
+    "logo": "Ramen Okaeri",
+    "fachada": "Fachada de Ramen Okaeri de noche, con el rótulo circular iluminado sobre el muro de piedra de la Rúa das Orfas",
+    "ramen": "Bol de ramen con chashu, huevo marinado, bambú y espinacas sobre la barra de madera",
+    "neon-okaeri": "Rótulo de neón con la palabra OKAERI y farolillos japoneses colgando del techo",
+    "barra": "Un camarero agita una coctelera detrás de la barra, con el neón de RAMEN al fondo",
+    "vitrina": "Vitrina iluminada con figuras de anime en varias baldas",
+    "mesa": "Tres personas comiendo y riéndose en una mesa, con un mural de manga detrás",
+    "banderines": "Banderines con ilustraciones de anime colgados del techo del local",
+    "sala-noche": "Mesa preparada con cucharas de madera y, al fondo, clientes cenando",
+    "neon-flechas": "Flechas de neón azul delante del rótulo OKAERI y los caracteres de Tokio en rojo",
+    "sala": "Rincón del comedor con farolillos, carteles luminosos y paredes de piedra"
+  }
+}
