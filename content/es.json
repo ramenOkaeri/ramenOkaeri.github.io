@@ -11,7 +11,9 @@
   "nav": {
     "carta": "La carta",
     "sitio": "El sitio",
+    "redes": "Redes sociales",
     "donde": "Dónde estamos",
+    "domicilio": "Pedir a domicilio",
     "menu_abrir": "Abrir el menú",
     "menu_cerrar": "Cerrar el menú",
     "saltar": "Saltar al contenido",
@@ -23,6 +25,7 @@
     "entradilla": "Ramen de caldo largo y tapas japonesas, en el casco viejo de Santiago.",
     "cta_carta": "Ver la carta",
     "cta_llamar": "Llamar",
+    "cta_domicilio": "Pedir a domicilio",
     "resenas": "{nota} sobre 5 en Google, con más de mil reseñas",
     "bajar": "Bajar"
   },
@@ -64,14 +67,28 @@
   },
   "sitio": {
     "antetitulo": "El sitio",
-    "titulo": "Dentro hay farolillos, neón y bastante manga en las paredes",
+    "titulo": "Montamos el sitio al que nos apetecía venir a cenar",
     "cuerpo": [
-      "El local está en un edificio de piedra del casco viejo y por dentro no se parece en nada. Farolillos rojos colgando, un OKAERI de neón al fondo, chapa ondulada y las paredes cubiertas de manga. Hay una vitrina llena de figuras que se para a mirar todo el mundo.",
-      "En la barra se preparan cócteles, bubble tea y bebidas japonesas y coreanas."
+      "Por fuera es un edificio de piedra como los de al lado. Por dentro nos apetecía otra cosa, y la montamos: farolillos, neón, banderines y las paredes llenas de manga. Casi todo el que entra levanta la cabeza antes de sentarse.",
+      "En la barra hacemos cócteles, bubble tea y bebidas japonesas y coreanas, así que también se puede venir solo a tomar algo. Y la vitrina de figuras se mira entera, sin prisa."
     ],
     "galeria_titulo": "El local",
     "anterior": "Anterior",
     "siguiente": "Siguiente"
+  },
+  "redes": {
+    "titulo": "Lo que pasa aquí dentro no cabe en una web",
+    "texto": "El vapor de la cocina, los platos según salen y el jaleo de un viernes por la noche. Nos vemos por ahí."
+  },
+  "resenas": {
+    "antetitulo": "Lo que dice la gente",
+    "titulo": "Más de mil reseñas en Google, y casi todas dicen lo mismo",
+    "cta": "Leer las reseñas en Google",
+    "de": "sobre 5",
+    "cuenta": "{total} reseñas",
+    "anterior": "Anterior",
+    "siguiente": "Siguiente",
+    "titulo_lista": "Reseñas de clientes"
   },
   "donde": {
     "antetitulo": "Dónde estamos",
@@ -88,6 +105,13 @@
     "cta_llamar": "Llamar",
     "cta_glovo": "Pedir por Glovo",
     "reservas": "Las reservas se hacen por teléfono."
+  },
+  "domicilio": {
+    "antetitulo": "A domicilio",
+    "titulo": "Si llueve, vamos nosotros",
+    "texto": "Lo llevamos a casa por Glovo y por Just Eat. El caldo tarda lo mismo en hacerse.",
+    "cta_glovo": "Pedir por Glovo",
+    "cta_justeat": "Pedir por Just Eat"
   },
   "dias": {
     "lunes": "Lunes",
@@ -107,14 +131,17 @@
   "barra": {
     "carta": "Carta",
     "llamar": "Llamar",
-    "llegar": "Llegar"
+    "llegar": "Llegar",
+    "llevar": "Llevar"
   },
   "carta": {
     "titulo": "La carta",
     "sub": "Ramen, arroces, tapas, postres, bebidas y alérgenos.",
     "volver": "Volver al inicio",
     "descargar": "Descargar en PDF",
-    "aviso": "Si el visor no carga, descarga la carta en PDF."
+    "aviso": "Si el visor no carga, descarga la carta en PDF.",
+    "pleno": "Ver a pantalla completa",
+    "salir_pleno": "Salir de pantalla completa"
   },
   "legal": {
     "titulo": "Aviso legal",

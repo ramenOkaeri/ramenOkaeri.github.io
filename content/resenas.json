@@ -1,0 +1,143 @@
+{
+  "_nota": "GENERADO por tools/resenas.py. No se edita a mano: se vuelve a ejecutar. Los textos son literales de Google y NO se traducen ni se acortan: cada idioma trae su propio juego de resenas, escritas en ese idioma, porque la API devuelve un conjunto distinto por languageCode.",
+  "_licencia": "Resenas de Google. Se muestran con el nombre y la foto de quien las escribio y con enlace a la ficha, que es lo que pide Google. Los avatares se alojan en assets/img/resenas/ para no pedirle nada a ningun tercero desde el navegador del visitante; Google permite cachear su contenido hasta 30 dias, asi que hay que relanzar esto al menos una vez al mes.",
+  "fuente": "Google",
+  "enlace": "https://maps.google.com/?cid=18320615065955389420",
+  "nota": 4.8,
+  "total": 1063,
+  "actualizado": "2026-09-08",
+  "idiomas": {
+    "es": [
+      {
+        "autor": "Jairo-kun Otero",
+        "estrellas": 5,
+        "fecha": "julio de 2026",
+        "texto": "Fuimos 3 personas y probamo el ramen y el curry. El servicio fue muy atento y rápido así como agradable y eficiente. Nos encantó a todos y lo recomendaremos a partir de ahora. El mejor restaurante de ramen de Santiago.",
+        "lang": "es",
+        "publicada": "2026-07-06",
+        "avatar": "jairo-kun-otero-9bde8c"
+      },
+      {
+        "autor": "MÓNICA MORENO VILA",
+        "estrellas": 5,
+        "fecha": "mayo de 2026",
+        "texto": "Hay muchas cosas que me llevo de Santiago y una de ellas es la experiencia que me ha aportado el ramen picante de tofu que me hizo sonreír y e intentar grabar lo que estaba pasando y era estar comiendo algo mágico.\n\nMágico, divino, exquisito como pocas cosas he probado.",
+        "lang": "es",
+        "publicada": "2026-05-09",
+        "avatar": "monica-moreno-vila-ffeaae"
+      },
+      {
+        "autor": "Victoria Huesca Briceño",
+        "estrellas": 5,
+        "fecha": "abril de 2026",
+        "texto": "Me encantó, superó mis expectativas.\nMe dejé guiar por una reseña que decía que el ramen de miso era espectacular y tenía toda la razón, además fue el mismo que me recomendó el camarero, el cual era súper agradable y atento.\nOs lo recomiendo 100%",
+        "lang": "es",
+        "publicada": "2026-04-30",
+        "avatar": "victoria-huesca-bricen-5d7d89"
+      },
+      {
+        "autor": "Angibell Silva",
+        "estrellas": 5,
+        "fecha": "mayo de 2026",
+        "texto": "Todo muy bien! La comida deliciosa, la atención una maravilla de todos. Nos quedamos con el nombre de Yesica, es muy amable y atenta, aunque no nos sepamos los demás nombres, todos nos atendieron muy bien. Muy recomendado! Muy buen precio y calidad. La comida estaba muy rica, olvidamos hacerle fotos 🤭🤭😂",
+        "lang": "es",
+        "publicada": "2026-05-16",
+        "avatar": "angibell-silva-05faa0"
+      },
+      {
+        "autor": "Xiang Jung Ye Pan",
+        "estrellas": 5,
+        "fecha": "junio de 2026",
+        "texto": "Muy buen ramen y muy buen precio. De los entrantes el pollo karage estaba riquísimo. Los dueños y el personal majísimo. Y nos dieron regalitos!!!",
+        "lang": "es",
+        "publicada": "2026-06-23",
+        "avatar": "xiang-jung-ye-pan-60995a"
+      }
+    ],
+    "en": [
+      {
+        "autor": "Sudip Ray",
+        "estrellas": 5,
+        "fecha": "March 2026",
+        "texto": "We had a very good experience of having lunch in this amazing place. Very colourful decorative interior and cozy ambience welcome us first and then those tasty foods truly made our day. Love everything about the place actually.\nServices were excellent, specially it was really commendable for only two guys to manage full house costomers during pick Semana Santa Sunday. Even they made extra effort to get some currys when asked.\nNothing much to add about the taste of those delicious foods. Really really loved it.\nLoved the little gesture of giving some nice anime stickers and toffee to take away home with the bill.\nHighly recommended and would love to come here again.",
+        "lang": "en",
+        "publicada": "2026-03-29",
+        "avatar": "sudip-ray-9dbe94"
+      },
+      {
+        "autor": "sebastian chen",
+        "estrellas": 5,
+        "fecha": "May 2026",
+        "texto": "Im pretty picky with my ramen and this was honestly very good. The tonkotsu broth is made correctly and not too heavy, chashu is cooked crispy and properly also generously sized, ingredients are kikurage mushrooms green onions and bamboo and an egg. The bowl isnt overcrowded like some places because this place's broth and noodles are good enough without needing to hide behind too many toppings.\n\nEgg was cooked perfectly as well\n\nService was impeccable and the server was super nice and recomended me a drink and was very kind about my poor spanish.\n\nI also had the teriyaki chicken skewers which were also great. 5/5 would recommend!!",
+        "lang": "en",
+        "publicada": "2026-05-31",
+        "avatar": "sebastian-chen-6752a2"
+      },
+      {
+        "autor": "Andrea Schwartz",
+        "estrellas": 5,
+        "fecha": "March 2026",
+        "texto": "Came here after a long day walking around, and we were so happy with everything! Had the tan tan spicy noodles, truly wonderful. Lovely presentation too. Service was excellent, and the decor is entertaining and on point. Enthusiastic endorsement from us!",
+        "lang": "en",
+        "publicada": "2026-03-28",
+        "avatar": "andrea-schwartz-ff08d0"
+      },
+      {
+        "autor": "Murat K",
+        "estrellas": 5,
+        "fecha": "May 2026",
+        "texto": "Very nice staff, the food was very good as well and as a little extra you get to choose a Little Sticker of an Anime Charakter after you are done eating. All in all a nice experience. Didn’t take a picture of the actual food because it looked to good to leave it standing.",
+        "lang": "en",
+        "publicada": "2026-05-29",
+        "avatar": "murat-k-889e66"
+      },
+      {
+        "autor": "Iceglossip",
+        "estrellas": 5,
+        "fecha": "July 2026",
+        "texto": "It‘s so delicious! I ordered the Tan Tan Man Ramen and it was so delicious but it’s not so spicy. The broth is very good and strong.",
+        "lang": "en",
+        "publicada": "2026-07-11",
+        "avatar": "iceglossip-f863b0"
+      }
+    ],
+    "gl": [
+      {
+        "autor": "Lucia Carballido Alfaya",
+        "estrellas": 5,
+        "fecha": "maio de 2025",
+        "texto": "Non todos os días se atopa un sitio onde cada cullerada sabe a viaxe. En Ramen Okaeri, en Santiago de Compostela, tiven a sorte de probar o seu ramen de porco… e foi unha auténtica marabilla.\n\nO local ten un aire moderno pero acolledor, ideal tanto para ir só coma para compartir cunha amiga ou amigo que tamén aprecie a boa comida. O trato foi excelente, explicáronme as opcións sen présas e con moita amabilidade.\n\nUn sitio ao que, sen dúbida, volverei cando me apeteza un prato quente, completo e con personalidade. Moi recomendable!",
+        "lang": "gl",
+        "publicada": "2025-05-24",
+        "avatar": "lucia-carballido-alfay-903936"
+      },
+      {
+        "autor": "Bolichi",
+        "estrellas": 5,
+        "fecha": "xaneiro de 2026",
+        "texto": "Bo sitio para tomar ramén. Moi atentos e rápidos no servizo, e con detalles cos clientes: ofrecen unha tarxeta de selos e stickers de anime.",
+        "lang": "gl",
+        "publicada": "2026-01-21",
+        "avatar": "bolichi-545cfe"
+      },
+      {
+        "autor": "Clara Veiga",
+        "estrellas": 5,
+        "fecha": "setembro de 2024",
+        "texto": "A comida está moi rica. Eu tomei o ramen de gambas e a miña amiga o de tonkatsu, ambos estaban moi bos. De postre tomamos mochis, e o de sésamo e o de te verde encantáronnos. Poñen moita cantidade, son moi majos e o local é moi chulo. Nós quedamos moi contentas.",
+        "lang": "gl",
+        "publicada": "2024-09-11",
+        "avatar": "clara-veiga-6ccbf8"
+      },
+      {
+        "autor": "Lefvaid arts",
+        "estrellas": 5,
+        "fecha": "maio de 2025",
+        "texto": "Fumos 7, atendéronnos coma na casa, comimos de luxo e a fartar, e invitáronnos a chupito. O ramen está que cura problemas que non sabías que tiñas. Recomendable especialmente se chove.",
+        "lang": "gl",
+        "publicada": "2025-05-09",
+        "avatar": "lefvaid-arts-6eb4d0"
+      }
+    ]
+  }
+}
