@@ -273,15 +273,15 @@ h3{font-size:clamp(1.1rem,3.6vw,1.35rem);line-height:1.3;letter-spacing:-.01em}
 /* ---------- galería ---------- */
 .galeria{margin-top:44px;position:relative}
 .tira{
-  display:flex;gap:14px;overflow-x:auto;overscroll-behavior-x:contain;
-  scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;
+  display:flex;gap:14px;overflow-x:auto;overflow-y:hidden;overscroll-behavior:contain;
+  scroll-snap-type:x mandatory;
   padding-inline:var(--seg-l) var(--seg-r);
   scrollbar-width:none;
 }
 .tira::-webkit-scrollbar{display:none}
 .tira figure{flex:0 0 auto;width:min(76vw,320px);scroll-snap-align:center;margin:0}
-.tira img{width:100%;border-radius:var(--radio);background:var(--sumi-sup)}
-.tira figcaption{margin-top:10px;font-size:.8rem;color:var(--washi-ten);line-height:1.4}
+.galeria .tira img{width:100%;border-radius:var(--radio);background:var(--sumi-sup)}
+.galeria .tira figcaption{margin-top:10px;font-size:.8rem;color:var(--washi-ten);line-height:1.4}
 .tira-ctrl{display:none;gap:10px;margin-top:24px;justify-content:flex-end}
 .tira-ctrl button{width:46px;height:46px;border-radius:50%;border:1px solid var(--sumi-borde);
   display:grid;place-items:center;transition:border-color .2s var(--sal),transform .12s var(--sal)}
@@ -314,7 +314,9 @@ h3{font-size:clamp(1.1rem,3.6vw,1.35rem);line-height:1.3;letter-spacing:-.01em}
 .citas{margin-top:34px;position:relative}
  /* alto natural en cada tarjeta: el texto de una resena es literal y no se
    puede recortar, asi que estirarlas todas a la mas larga deja huecos enormes */
-.tira.tira-citas{align-items:flex-start;padding-block:2px}
+/* proximity y no mandatory: las tarjetas no miden lo mismo, y Safari
+   con snap obligatorio sobre elementos desiguales pelea con el scroll */
+.tira.tira-citas{align-items:flex-start;padding-block:2px;scroll-snap-type:x proximity}
 .tira.tira-citas figure{
   width:min(82vw,400px);display:flex;flex-direction:column;gap:15px;
   padding:26px 24px;border:1px solid var(--sumi-borde);border-radius:var(--radio);
@@ -323,9 +325,9 @@ h3{font-size:clamp(1.1rem,3.6vw,1.35rem);line-height:1.3;letter-spacing:-.01em}
 .tira-citas blockquote p{color:var(--washi);font-size:.97rem;line-height:1.62}
 .tira-citas figcaption{margin-top:auto;padding-top:6px;font-size:.84rem;color:var(--washi-ten);
   display:flex;gap:11px;align-items:center}
-.tira-citas figcaption picture{flex:0 0 auto;display:block}
-.cita-av{width:40px;height:40px;min-width:40px;border-radius:50%;object-fit:cover;
-  background:var(--sumi-borde)}
+.tira-citas figcaption picture{flex:0 0 40px;display:block;width:40px;height:40px}
+.tira-citas .cita-av{width:40px;height:40px;min-width:40px;max-width:40px;flex:0 0 40px;
+  border-radius:50%;object-fit:cover;background:var(--sumi-borde)}
 /* si alguien no tiene foto, su inicial en el mismo hueco */
 .cita-av-vacio{display:grid;place-items:center;font-family:var(--serif);font-weight:700;
   font-size:1.05rem;color:var(--washi-ten);text-transform:uppercase}
