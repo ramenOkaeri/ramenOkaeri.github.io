@@ -1,0 +1,64 @@
+{
+  "_nota": "Fuente unica de los datos del negocio. Todo lo marcado POR CONFIRMAR sale de fuentes publicas y hay que verificarlo con el restaurante.",
+
+  "marca": "Ramen Okaeri",
+  "dominio": "https://ramenokaeri.com",
+
+  "direccion": {
+    "calle": "Rúa das Orfas, 27",
+    "cp": "15703",
+    "ciudad": "Santiago de Compostela",
+    "provincia": "A Coruña",
+    "pais": "ES",
+    "lat": 42.8771694,
+    "lon": -8.5441098,
+    "_fuente_coordenadas": "OpenStreetMap, nodo Okaeri Ramen",
+    "_cp_por_confirmar": "OSM dice 15701; el negocio publica 15703 en su Instagram"
+  },
+
+  "telefono": "+34981684680",
+  "telefono_visible": "981 684 680",
+
+  "horarios": {
+    "_POR_CONFIRMAR": "Las fuentes publicas se contradicen entre si. Estos son los de Paxinas Galegas.",
+    "lunes":     [["13:00","16:00"],["19:30","23:30"]],
+    "martes":    [["13:00","16:00"],["19:30","23:30"]],
+    "miercoles": [["13:00","16:00"],["19:30","23:30"]],
+    "jueves":    [["13:00","16:00"],["19:30","23:30"]],
+    "viernes":   [["13:00","16:30"],["19:30","23:30"]],
+    "sabado":    [["13:00","16:30"],["19:30","23:30"]],
+    "domingo":   [["13:00","16:30"],["19:30","23:30"]]
+  },
+
+  "resenas": { "nota": 4.8, "total": 1020, "_fuente": "Google, via Wanderlog. Actualizar antes de publicar." },
+
+  "precios": { "rango": "€€", "desde": 10.5, "hasta": 14.95, "moneda": "EUR" },
+
+  "redes": {
+    "instagram": "https://www.instagram.com/ramenokaeri/",
+    "tiktok": "https://www.tiktok.com/@ramen.okaeri",
+    "facebook": "https://www.facebook.com/61561088498256/",
+    "glovo": "https://glovoapp.com/es/es/santiago-de-compostela/stores/ramen-okaeri-santiago-de-compostela"
+  },
+
+  "mapas": {
+    "google": "https://www.google.com/maps/search/?api=1&query=Ramen+Okaeri+R%C3%BAa+das+Orfas+27+Santiago+de+Compostela",
+    "apple": "https://maps.apple.com/?q=Ramen%20Okaeri&address=R%C3%BAa%20das%20Orfas%2027,%2015703%20Santiago%20de%20Compostela",
+    "comollegar": "https://www.google.com/maps/dir/?api=1&destination=42.8771694,-8.5441098"
+  },
+
+  "legal": {
+    "razon_social": "POR CONFIRMAR",
+    "nif": "POR CONFIRMAR",
+    "domicilio_fiscal": "POR CONFIRMAR"
+  },
+
+  "destacados": [
+    { "id": "tonkotsu", "precio": "12,95 €", "foto": "ramen" },
+    { "id": "tonyu",    "precio": "11,95 €", "foto": null },
+    { "id": "gyozas",   "precio": "3,95 €",  "foto": null },
+    { "id": "tempura",  "precio": "5,95 €",  "foto": null }
+  ],
+
+  "galeria": ["neon-okaeri","barra","vitrina","mesa","banderines","sala-noche","neon-flechas","sala"]
+}
