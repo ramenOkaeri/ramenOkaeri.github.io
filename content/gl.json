@@ -130,6 +130,10 @@
         "p": "Este sitio non instala cookies, non usa ferramentas de analítica e non carga recursos doutros servidores. Non se recolle ningún dato persoal ao navegar por el."
       },
       {
+        "h": "Aloxamento e seguridade",
+        "p": "O sitio está aloxado en GitHub Pages e sérvese a través de Cloudflare, que actúa como intermediario e rexistra as peticións para protexelo de ataques. Nin GitHub nin Cloudflare instalan cookies ao navegar por estas páxinas."
+      },
+      {
         "h": "Ligazóns a outros sitios",
         "p": "Ao premer nos botóns de Google Maps, Apple Maps, Glovo, Instagram, TikTok ou Facebook saes deste sitio. O que pase a partir de aí réxese polas condicións de cada un."
       },

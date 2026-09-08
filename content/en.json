@@ -129,6 +129,10 @@
         "p": "This site sets no cookies, uses no analytics and loads nothing from other servers. Browsing it collects no personal data."
       },
       {
+        "h": "Hosting and security",
+        "p": "The site is hosted on GitHub Pages and served through Cloudflare, which sits in front of it and logs requests to protect it from attacks. Neither GitHub nor Cloudflare sets any cookie while you browse these pages."
+      },
+      {
         "h": "Links to other sites",
         "p": "The Google Maps, Apple Maps, Glovo, Instagram, TikTok and Facebook buttons take you off this site. What happens from there is covered by each of their own terms."
       },
