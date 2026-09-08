@@ -45,7 +45,9 @@
   if (hamb && panel) {
     var scrollY = 0;
     var abierto = false;
-    var fondo = $$('body > *:not(.panel):not(.saltar)');
+    /* tambien el enlace de salto: con el panel abierto no debe poder
+       llevarte detras de el */
+    var fondo = $$('body > *:not(.panel)');
 
     var cerrar = function (devolverFoco) {
       if (!abierto) return;
@@ -81,7 +83,8 @@
         if (puesto || !abierto) return;
         puesto = true;
         panel.removeEventListener('transitionend', enfoca);
-        var primero = $('a', panel);
+        /* al botón de cerrar, que es lo que espera quien abre un diálogo */
+        var primero = $('[data-cerrar]', panel) || $('a', panel);
         if (primero) primero.focus({ preventScroll: true });
       };
       panel.addEventListener('transitionend', enfoca);
@@ -89,7 +92,10 @@
     };
 
     hamb.addEventListener('click', function () { abierto ? cerrar(true) : abrir(); });
-    panel.addEventListener('click', function (e) { if (e.target.closest('a')) cerrar(false); });
+    panel.addEventListener('click', function (e) {
+      if (e.target.closest('[data-cerrar]')) return cerrar(true);
+      if (e.target.closest('a')) cerrar(false);
+    });
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && abierto) cerrar(true);
     });
@@ -123,10 +129,11 @@
   /* Galería: flechas de escritorio sobre el scroll nativo               */
   /* El gesto táctil lo lleva el navegador, que ya trae inercia y goma.  */
   /* ------------------------------------------------------------------ */
-  var tira = $('.tira');
-  if (tira) {
-    var ant = $('.tira-ant');
-    var sig = $('.tira-sig');
+  $$('[data-carrusel]').forEach(function (caja) {
+    var tira = $('.tira', caja);
+    if (!tira) return;
+    var ant = $('.tira-ant', caja);
+    var sig = $('.tira-sig', caja);
 
     var paso = function () {
       var f = tira.querySelector('figure');
@@ -149,6 +156,53 @@
     tira.addEventListener('scroll', estado, { passive: true });
     window.addEventListener('resize', estado);
     estado();
+  });
+
+  /* ------------------------------------------------------------------ */
+  /* La carta a pantalla completa                                        */
+  /* Donde existe la API se usa (Android y escritorio). Safari de iPhone  */
+  /* no la trae para nada que no sea un vídeo, así que allí se esconde la */
+  /* barra de arriba y el visor se queda con las 100svh enteras.          */
+  /* ------------------------------------------------------------------ */
+  var bPleno = $('.visor-pleno');
+  if (bPleno) {
+    var bSalir = $('.visor-salir');
+    var raiz = document.documentElement;
+    var pedir = raiz.requestFullscreen || raiz.webkitRequestFullscreen;
+    var soltar = document.exitFullscreen || document.webkitExitFullscreen;
+    var enPantalla = function () {
+      return !!(document.fullscreenElement || document.webkitFullscreenElement);
+    };
+
+    var pinta = function (activo) {
+      document.body.classList.toggle('pleno', activo);
+      bPleno.setAttribute('aria-label', activo ? bPleno.dataset.salir : bPleno.dataset.pleno);
+    };
+
+    var entra = function () {
+      pinta(true);
+      if (pedir) {
+        var pr = pedir.call(raiz);
+        if (pr && pr.catch) pr.catch(function () {});
+      }
+    };
+    var sale = function () {
+      pinta(false);
+      if (soltar && enPantalla()) soltar.call(document);
+    };
+
+    bPleno.hidden = false;              /* sin JS no se enseña un botón muerto */
+    bPleno.addEventListener('click', entra);
+    if (bSalir) bSalir.addEventListener('click', sale);
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && document.body.classList.contains('pleno')) sale();
+    });
+    /* si se sale desde el propio navegador, la clase se sincroniza */
+    ['fullscreenchange', 'webkitfullscreenchange'].forEach(function (ev) {
+      document.addEventListener(ev, function () {
+        if (pedir && !enPantalla()) pinta(false);
+      });
+    });
   }
 
   /* ------------------------------------------------------------------ */

@@ -30,7 +30,8 @@
     "domingo":   [["13:00","16:30"],["19:30","23:30"]]
   },
 
-  "resenas": { "nota": 4.8, "total": 1020, "_fuente": "Google, via Wanderlog. Actualizar antes de publicar." },
+  "resenas": { "nota": 4.8, "total": 1063,
+    "_fuente": "RESPALDO. Los valores que usa la web salen de content/resenas.json, que refresca tools/resenas.py contra la API de Places de Google. Estos solo se usan si aquel archivo no trajera nada." },
 
   "precios": { "rango": "€€", "desde": 10.5, "hasta": 14.95, "moneda": "EUR" },
 
@@ -38,7 +39,11 @@
     "instagram": "https://www.instagram.com/ramenokaeri/",
     "tiktok": "https://www.tiktok.com/@ramen.okaeri",
     "facebook": "https://www.facebook.com/61561088498256/",
-    "glovo": "https://glovoapp.com/es/es/santiago-de-compostela/stores/ramen-okaeri-santiago-de-compostela"
+    "instagram_cuenta": "@ramenokaeri",
+    "tiktok_cuenta": "@ramen.okaeri",
+    "glovo": "https://glovoapp.com/es/es/santiago-de-compostela/stores/ramen-okaeri-santiago-de-compostela",
+    "justeat": "https://www.just-eat.es/restaurants-ramen-okaeri-santiago-de-compostela",
+    "_justeat_sin_verificar": "Enlace facilitado por Yixuan el 8/9/2026. No se pudo comprobar automaticamente: just-eat.es devuelve 403 a cualquier navegador automatizado."
   },
 
   "mapas": {
@@ -48,11 +53,13 @@
   },
 
   "legal": {
-    "razon_social": "POR CONFIRMAR",
-    "nif": "POR CONFIRMAR",
-    "domicilio_fiscal": "POR CONFIRMAR"
+    "razon_social": "RAMEN SAKURA, S.L.",
+    "nif": "B70718051",
+    "domicilio_fiscal": "Rúa das Orfas 27, 15703 Santiago de Compostela (A Coruña)",
+    "_fuente": "Facilitados por el titular el 8 de septiembre de 2026."
   },
 
+  "_destacados_fuente": "Contrastados con la carta en PDF el 8 de septiembre de 2026: tonkotsu 12,95, tonyu vegan 11,95 y gyozas 3,95 salen del propio documento. La tempura de langostino es la unica que conviene mirar a ojo en el local.",
   "destacados": [
     { "id": "tonkotsu", "precio": "12,95 €", "foto": "ramen" },
     { "id": "tonyu",    "precio": "11,95 €", "foto": null },

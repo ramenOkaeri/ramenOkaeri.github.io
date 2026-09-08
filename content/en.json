@@ -11,7 +11,9 @@
   "nav": {
     "carta": "Menu",
     "sitio": "The place",
+    "redes": "Social",
     "donde": "Find us",
+    "domicilio": "Order delivery",
     "menu_abrir": "Open menu",
     "menu_cerrar": "Close menu",
     "saltar": "Skip to content",
@@ -23,6 +25,7 @@
     "entradilla": "Slow-cooked ramen and Japanese small plates, in the old town of Santiago.",
     "cta_carta": "See the menu",
     "cta_llamar": "Call us",
+    "cta_domicilio": "Order delivery",
     "resenas": "{nota} out of 5 on Google, from over a thousand reviews",
     "bajar": "Scroll down"
   },
@@ -64,14 +67,28 @@
   },
   "sitio": {
     "antetitulo": "The place",
-    "titulo": "Inside there are lanterns, neon and a lot of manga on the walls",
+    "titulo": "We built the place we wanted to eat in",
     "cuerpo": [
-      "The restaurant sits in a stone building in the old town and inside it looks nothing like it. Red lanterns hanging from the ceiling, an OKAERI neon at the back, corrugated metal, and walls covered in manga. There's a cabinet full of figures that everyone stops to look at.",
-      "The bar does cocktails, bubble tea and Japanese and Korean drinks."
+      "From the street it's a stone building like the ones either side of it. Inside we fancied doing something else, so we did: lanterns, neon, bunting and walls covered in manga. Most people look up before they sit down.",
+      "The bar does cocktails, bubble tea and Japanese and Korean drinks, so you can come just for a drink. And the cabinet of figures is worth a proper look."
     ],
     "galeria_titulo": "Inside the restaurant",
     "anterior": "Previous",
     "siguiente": "Next"
+  },
+  "redes": {
+    "titulo": "What goes on in here doesn't fit on a website",
+    "texto": "Steam off the kitchen, bowls the moment they're up, and a Friday night in full swing. Come and find us."
+  },
+  "resenas": {
+    "antetitulo": "What people say",
+    "titulo": "Over a thousand reviews on Google, and they mostly say the same thing",
+    "cta": "Read the reviews on Google",
+    "de": "out of 5",
+    "cuenta": "{total} reviews",
+    "anterior": "Previous",
+    "siguiente": "Next",
+    "titulo_lista": "Customer reviews"
   },
   "donde": {
     "antetitulo": "Find us",
@@ -88,6 +105,13 @@
     "cta_llamar": "Call us",
     "cta_glovo": "Order on Glovo",
     "reservas": "Bookings are taken over the phone."
+  },
+  "domicilio": {
+    "antetitulo": "Delivery",
+    "titulo": "If it's raining, we'll come to you",
+    "texto": "Glovo and Just Eat bring it round. The broth still takes its ten hours either way.",
+    "cta_glovo": "Order on Glovo",
+    "cta_justeat": "Order on Just Eat"
   },
   "dias": {
     "lunes": "Monday",
@@ -107,14 +131,17 @@
   "barra": {
     "carta": "Menu",
     "llamar": "Call",
-    "llegar": "Directions"
+    "llegar": "Directions",
+    "llevar": "Delivery"
   },
   "carta": {
     "titulo": "The menu",
     "sub": "Ramen, curry rice, small plates, desserts, drinks and allergens.",
     "volver": "Back to the home page",
     "descargar": "Download the PDF",
-    "aviso": "If the viewer doesn't load, download the menu as a PDF."
+    "aviso": "If the viewer doesn't load, download the menu as a PDF.",
+    "pleno": "View full screen",
+    "salir_pleno": "Exit full screen"
   },
   "legal": {
     "titulo": "Legal notice",

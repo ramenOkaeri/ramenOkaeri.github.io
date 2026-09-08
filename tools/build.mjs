@@ -13,7 +13,14 @@ const leer = (p) => JSON.parse(readFileSync(join(RAIZ, p), 'utf8'));
 
 const D = leer('content/datos.json');
 const IM = leer('content/imagenes.json');
+const R = leer('content/resenas.json');
 const IDIOMAS = ['es', 'en', 'gl'];
+/* La nota, el total y el enlace salen de content/resenas.json, que lo refresca
+   tools/resenas.py contra la API de Places. datos.json solo queda de respaldo
+   por si algun dia se construye sin haber traido nada. */
+const NOTA = R.nota != null ? R.nota : D.resenas.nota;
+const TOTAL = R.total != null ? R.total : D.resenas.total;
+const G_ENLACE = R.enlace || D.mapas.google;
 const T = Object.fromEntries(IDIOMAS.map((l) => [l, leer(`content/${l}.json`)]));
 const BASE = { es: '', en: '/en', gl: '/gl' };
 const DIAS = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'];
@@ -29,6 +36,12 @@ const DIA_ISO = {
 /* --------------------------------------------------------------------------- */
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
   .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+/* El decimal lleva coma en espanol y gallego y punto en ingles; el separador
+   de millar, al reves. Node sin ICU completo no formatea esto de fiar. */
+const numNota = (l) => (l === 'en' ? String(NOTA) : String(NOTA).replace('.', ','));
+const numTotal = (l) => String(TOTAL)
+  .replace(/\B(?=(\d{3})+(?!\d))/g, l === 'en' ? ',' : '.');
 
 const rell = (s, v) => String(s).replace(/\{(\w+)\}/g, (_, k) => (k in v ? v[k] : `{${k}}`));
 
@@ -85,6 +98,9 @@ const ICO = {
   ig: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="3.9"/><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none"/></svg>',
   tt: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.2 3.2v10.9a3.6 3.6 0 1 1-3.1-3.57"/><path d="M14.2 3.2a5 5 0 0 0 4.9 4.3"/></svg>',
   fb: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.8 21v-8h2.7l.5-3.2h-3.2V7.7c0-.9.3-1.6 1.7-1.6h1.6V3.2A22 22 0 0 0 15.6 3c-2.4 0-4 1.5-4 4.3v2.5H8.8V13h2.8v8z"/></svg>',
+  expandir: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4.5h5v5M9.5 19.5h-5v-5M19.5 4.5l-6 6M4.5 19.5l6-6"/></svg>',
+  contraer: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 9.5h5m-5 0v-5m-5 10h-5m5 0v5M14.5 9.5l5-5M9.5 14.5l-5 5"/></svg>',
+  moto: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6.4" cy="16.8" r="2.7"/><circle cx="17.6" cy="16.8" r="2.7"/><path d="M9.1 16.8h5.8M4.4 16.8 7.7 7.2h2.9M12.4 7.2h3.4l2.2 6.9M12.4 12.4H8.2"/></svg>',
   bolsa: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1.1 11.2a1.8 1.8 0 0 1-1.8 1.6H7.9a1.8 1.8 0 0 1-1.8-1.6z"/><path d="M9 8V6.4a3 3 0 0 1 6 0V8"/></svg>'
 };
 
@@ -95,7 +111,9 @@ const cabecera = (l, { activa = 'inicio' } = {}) => {
   const t = T[l], b = BASE[l];
   const enlaces = [
     [`${b || ''}/menu/`, t.nav.carta],
+    [`${b || '/'}#domicilio`, t.nav.domicilio],
     [`${b || '/'}#sitio`, t.nav.sitio],
+    [`${b || '/'}#redes`, t.nav.redes],
     [`${b || '/'}#donde`, t.nav.donde]
   ];
   const idiomas = IDIOMAS.map((o) =>
@@ -116,10 +134,21 @@ const cabecera = (l, { activa = 'inicio' } = {}) => {
    data-abrir="${esc(t.nav.menu_abrir)}" data-cerrar="${esc(t.nav.menu_cerrar)}"><i></i></button>
  </div>
 </header>
-<nav class="panel" id="panel" aria-label="${esc(t.nav.menu_abrir)}">
+<div class="panel" id="panel" role="dialog" aria-modal="true"
+ aria-label="${esc(t.nav.menu_abrir)}">
+ <div class="panel-top">
+  <a class="marca" href="${b || '/'}" aria-label="${esc(t.alt.logo)}">
+   <img src="/assets/brand/simbolo.svg" width="38" height="38" alt="">
+   <b>Ramen Okaeri</b>
+  </a>
+  <button class="hamb hamb-x" type="button" data-cerrar
+   aria-label="${esc(t.nav.menu_cerrar)}"><i></i></button>
+ </div>
+ <nav class="panel-nav" aria-label="${esc(t.nav.menu_abrir)}">
  ${enlaces.map(([h, x]) => `<a href="${h}">${esc(x)}</a>`).join('\n ')}
  <div class="idi" role="group" aria-label="${esc(t.nav.idioma)}">${idiomas}</div>
-</nav>`;
+ </nav>
+</div>`;
 };
 
 const barra = (l) => {
@@ -128,6 +157,7 @@ const barra = (l) => {
  <a href="${b || ''}/menu/" class="destacado">${ICO.carta}<span>${esc(t.barra.carta)}</span></a>
  <a href="tel:${D.telefono}">${ICO.tel}<span>${esc(t.barra.llamar)}</span></a>
  <a href="${D.mapas.comollegar}" target="_blank" rel="noopener">${ICO.mapa}<span>${esc(t.barra.llegar)}</span></a>
+ <a href="${b || '/'}#domicilio">${ICO.moto}<span>${esc(t.barra.llevar)}</span></a>
 </nav>`;
 };
 
@@ -166,7 +196,7 @@ const pie = (l) => {
 /* --------------------------------------------------------------------------- */
 /* cabeza del documento                                                          */
 /* --------------------------------------------------------------------------- */
-function cabeza(l, { titulo, desc, ruta, jsonld = '', noindex = false }) {
+function cabeza(l, { titulo, desc, ruta, jsonld = '', noindex = false, clase = '' }) {
   const canon = D.dominio + ruta;
   const alt = IDIOMAS.map((o) => {
     const r = ruta.replace(/^\/(en|gl)\//, '/').replace(/^\/$/, '/');
@@ -207,7 +237,7 @@ ${noindex ? '<meta name="robots" content="noindex">' : ''}
 <link rel="stylesheet" href="/css/style.css">
 ${jsonld}
 </head>
-<body>
+<body${clase ? ` class="${clase}"` : ''}>
 <a class="saltar" href="#principal">${esc(T[l].nav.saltar)}</a>`;
 }
 
@@ -248,7 +278,7 @@ function ldRestaurante(l) {
     sameAs: [D.redes.instagram, D.redes.tiktok, D.redes.facebook],
     aggregateRating: {
       '@type': 'AggregateRating',
-      ratingValue: D.resenas.nota, reviewCount: D.resenas.total,
+      ratingValue: NOTA, reviewCount: TOTAL,
       bestRating: 5, worstRating: 1
     }
   };
@@ -264,6 +294,16 @@ function ldMigas(l, nombre, ruta) {
     ]
   };
   return `<script type="application/ld+json">${JSON.stringify(o)}</script>`;
+}
+
+/** Cinco estrellas con la ultima rellena a medias. Dos capas superpuestas y
+ *  la de arriba recortada al porcentaje real: 4,8 no puede pintarse como 5. */
+function estrellas(nota, etiqueta) {
+  const cinco = ICO.estrella.repeat(5);
+  return `<span class="estr" role="img" aria-label="${esc(etiqueta)}">
+     <span class="estr-fondo" aria-hidden="true">${cinco}</span>
+     <span class="estr-lleno" aria-hidden="true" style="width:${(nota / 5) * 100}%">${cinco}</span>
+    </span>`;
 }
 
 /* --------------------------------------------------------------------------- */
@@ -286,6 +326,35 @@ function portada(l) {
   const galeria = D.galeria.map((n) => `<figure>
     ${pic(n, 'v', '(min-width:900px) 400px, (min-width:600px) 46vw, 76vw', t.alt[n], { ancho: 768 })}
    </figure>`).join('\n   ');
+
+  /* Las resenas NO se traducen NUNCA: la API devuelve un juego distinto por
+     idioma, cada una escrita en el suyo, y aqui se pinta ese. El texto es
+     literal -Google no deja tocarlo- y por eso lleva su lang. Si no hubiera
+     ninguna, el bloque de la nota media se pinta igual. */
+  const suyas = (R.idiomas && R.idiomas[l]) || [];
+  const citas = !suyas.length ? '' : `<div class="citas rv" data-rv="90" data-carrusel>
+    <h3 class="oculto">${esc(t.resenas.titulo_lista)}</h3>
+    <div class="tira tira-citas" tabindex="0" role="group" aria-label="${esc(t.resenas.titulo_lista)}">
+    ${suyas.map((c) => `<figure lang="${esc(c.lang)}">
+      ${estrellas(c.estrellas, `${c.estrellas} ${t.resenas.de}`)}
+      <blockquote><p>${esc(c.texto)}</p></blockquote>
+      <figcaption>
+       ${c.avatar ? `<picture>
+        <source type="image/webp" srcset="/assets/img/resenas/${c.avatar}.webp">
+        <img class="cita-av" src="/assets/img/resenas/${c.avatar}.jpg" width="40" height="40"
+         alt="" loading="lazy" decoding="async">
+       </picture>` : `<span class="cita-av cita-av-vacio" aria-hidden="true">${esc((c.autor || '?').trim()[0])}</span>`}
+       <span class="cita-quien"><b>${esc(c.autor)}</b><span>${esc(c.fecha)}</span></span>
+      </figcaption>
+     </figure>`).join('\n    ')}
+    </div>
+    <div class="env">
+     <div class="tira-ctrl">
+      <button type="button" class="tira-ant" aria-label="${esc(t.resenas.anterior)}">${ICO.izq}</button>
+      <button type="button" class="tira-sig" aria-label="${esc(t.resenas.siguiente)}">${ICO.der}</button>
+     </div>
+    </div>
+   </div>`;
 
   const horario = DIAS.map((d) => {
     const f = (D.horarios[d] || []);
@@ -310,11 +379,11 @@ ${cabecera(l)}
    <div class="hero-btns">
     <a class="btn btn-p" href="${b || ''}/menu/">${ICO.carta}${esc(t.hero.cta_carta)}</a>
     <a class="btn btn-s" href="tel:${D.telefono}">${ICO.tel}${esc(t.hero.cta_llamar)}</a>
+    <a class="btn btn-s" href="#domicilio">${ICO.moto}${esc(t.hero.cta_domicilio)}</a>
    </div>
    <p class="estrellas">${ICO.estrella}<span>${rell(esc(t.hero.resenas), {
-      /* el decimal va con coma en español y gallego, con punto en inglés */
-      nota: `</span><b>${l === 'en' ? String(D.resenas.nota) : String(D.resenas.nota).replace('.', ',')}</b><span>`,
-      total: `</span><b>${String(D.resenas.total).replace(/\B(?=(\d{3})+(?!\d))/g, '.')}</b><span>`
+      nota: `</span><b>${numNota(l)}</b><span>`,
+      total: `</span><b>${numTotal(l)}</b><span>`
     })}</span></p>
   </div>
  </section>
@@ -350,9 +419,40 @@ ${cabecera(l)}
    <p class="nota">${esc(t.cocina.alergenos)}</p>
    <div class="acciones">
     <a class="btn btn-p" href="${b || ''}/menu/">${ICO.carta}${esc(t.cocina.cta)}</a>
-    <a class="btn btn-s" href="${D.redes.glovo}" target="_blank" rel="noopener">${ICO.bolsa}${esc(t.donde.cta_glovo)}</a>
    </div>
   </div>
+ </section>
+
+ <section class="sec sec-linea" id="domicilio">
+  <div class="env">
+   <div class="cuerpo rv">
+    <p class="antetitulo">${esc(t.domicilio.antetitulo)}</p>
+    <h2>${esc(t.domicilio.titulo)}</h2>
+    <p class="tras-h2">${esc(t.domicilio.texto)}</p>
+   </div>
+   <div class="acciones rv" data-rv="70">
+    <a class="btn btn-p" href="${D.redes.glovo}" target="_blank" rel="noopener">${ICO.bolsa}${esc(t.domicilio.cta_glovo)}</a>
+    <a class="btn btn-s" href="${D.redes.justeat}" target="_blank" rel="noopener">${ICO.moto}${esc(t.domicilio.cta_justeat)}</a>
+   </div>
+  </div>
+ </section>
+
+ <section class="sec sec-linea" id="resenas">
+  <div class="env">
+   <div class="cuerpo rv">
+    <p class="antetitulo">${esc(t.resenas.antetitulo)}</p>
+    <h2>${esc(t.resenas.titulo)}</h2>
+   </div>
+   <div class="nota-g rv tras-h2" data-rv="70">
+    <p class="nota-cifra"><b>${numNota(l)}</b><span>${esc(t.resenas.de)}</span></p>
+    <div class="nota-col">
+     ${estrellas(NOTA, `${numNota(l)} ${t.resenas.de}`)}
+     <p>${esc(rell(t.resenas.cuenta, { total: numTotal(l) }))} · ${esc(R.fuente)}</p>
+    </div>
+    <a class="btn btn-s" href="${G_ENLACE}" target="_blank" rel="noopener">${esc(t.resenas.cta)}</a>
+   </div>
+  </div>
+  ${citas}
  </section>
 
  <section class="sec sec-linea" id="sitio">
@@ -365,7 +465,7 @@ ${cabecera(l)}
     ${t.sitio.cuerpo.map((p) => `<p>${esc(p)}</p>`).join('')}
    </div>
   </div>
-  <div class="galeria rv" data-rv="120">
+  <div class="galeria rv" data-rv="120" data-carrusel>
    <h3 class="oculto">${esc(t.sitio.galeria_titulo)}</h3>
    <div class="tira" tabindex="0" role="group" aria-label="${esc(t.sitio.galeria_titulo)}">
    ${galeria}
@@ -376,6 +476,22 @@ ${cabecera(l)}
      <button type="button" class="tira-sig" aria-label="${esc(t.sitio.siguiente)}">${ICO.der}</button>
     </div>
    </div>
+  </div>
+  <div class="env">
+   <div id="redes"><div class="soc rv" data-rv="60">
+    <div class="soc-txt">
+     <b>${esc(t.redes.titulo)}</b>
+     <p>${esc(t.redes.texto)}</p>
+    </div>
+    <div class="soc-btns">
+     <a class="soc-b soc-p" href="${D.redes.instagram}" target="_blank" rel="noopener">
+      ${ICO.ig}<span>Instagram<i>${esc(D.redes.instagram_cuenta)}</i></span></a>
+     <a class="soc-b" href="${D.redes.tiktok}" target="_blank" rel="noopener">
+      ${ICO.tt}<span>TikTok<i>${esc(D.redes.tiktok_cuenta)}</i></span></a>
+     <a class="soc-b" href="${D.redes.facebook}" target="_blank" rel="noopener">
+      ${ICO.fb}<span>Facebook</span></a>
+    </div>
+   </div></div>
   </div>
  </section>
 
@@ -421,6 +537,7 @@ ${cabecera(l)}
   </div>
  </section>
 
+
 </main>
 ${pie(l)}
 ${barra(l)}
@@ -444,25 +561,23 @@ function carta(l) {
   const ruta = (b || '') + '/menu/';
   return `${cabeza(l, {
     titulo: t.meta.titulo_carta, desc: t.meta.descripcion_carta, ruta,
-    jsonld: ldMigas(l, t.carta.titulo, D.dominio + ruta)
+    jsonld: ldMigas(l, t.carta.titulo, ruta), clase: 'pag-carta'
   })}
-${cabecera(l, { activa: 'carta' })}
-<main id="principal">
- <div class="env carta-cab">
-  <h1>${esc(t.carta.titulo)}</h1>
-  <p>${esc(t.carta.sub)}</p>
-  <div class="carta-acciones">
-   <a class="btn btn-s" href="/assets/pdf/menu.pdf" download="carta-ramen-okaeri.pdf">${ICO.descarga}${esc(t.carta.descargar)}</a>
-   <a class="btn btn-s" href="${b || '/'}">${ICO.izq}${esc(t.carta.volver)}</a>
-  </div>
- </div>
- <div class="visor">
-  <iframe src="/web/viewer.html?file=/assets/pdf/menu.pdf#zoom=page-width"
-   title="${esc(t.carta.titulo)}" loading="lazy"></iframe>
- </div>
- <div class="env carta-aviso"><p>${esc(t.carta.aviso)}</p></div>
+<div class="visor-barra">
+ <a class="marca" href="${b || '/'}">
+  <img src="/assets/brand/simbolo.svg" width="30" height="30" alt="">
+  <b>Ramen Okaeri</b><span>${esc(t.carta.titulo)}</span>
+ </a>
+ <button type="button" class="visor-pleno" hidden aria-label="${esc(t.carta.pleno)}"
+  data-pleno="${esc(t.carta.pleno)}" data-salir="${esc(t.carta.salir_pleno)}">${ICO.expandir}</button>
+</div>
+<main class="visor" id="principal">
+ <h1 class="oculto">${esc(t.carta.titulo)}</h1>
+ <iframe src="/web/viewer.html?file=/assets/pdf/menu.pdf#zoom=page-width"
+  title="${esc(t.carta.titulo)}"></iframe>
+ <p class="oculto">${esc(t.carta.aviso)} <a href="/assets/pdf/menu.pdf">${esc(t.carta.descargar)}</a></p>
 </main>
-${barra(l)}
+<button type="button" class="visor-salir" aria-label="${esc(t.carta.salir_pleno)}">${ICO.contraer}</button>
 <script src="/js/main.js" defer></script>
 </body>
 </html>`;

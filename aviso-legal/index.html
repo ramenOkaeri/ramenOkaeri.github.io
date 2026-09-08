@@ -43,7 +43,7 @@
    <b>Ramen Okaeri</b>
   </a>
   <nav class="nav-esc" aria-label="Abrir el menú">
-   <ul><li><a href="/menu/">La carta</a></li><li><a href="/#sitio">El sitio</a></li><li><a href="/#donde">Dónde estamos</a></li></ul>
+   <ul><li><a href="/menu/">La carta</a></li><li><a href="/#domicilio">Pedir a domicilio</a></li><li><a href="/#sitio">El sitio</a></li><li><a href="/#redes">Redes sociales</a></li><li><a href="/#donde">Dónde estamos</a></li></ul>
   </nav>
   <div class="idi" role="group" aria-label="Idioma"><a href="/aviso-legal/"
  lang="es" hreflang="es" aria-current="true">es</a><a href="/enaviso-legal/"
@@ -54,19 +54,32 @@
    data-abrir="Abrir el menú" data-cerrar="Cerrar el menú"><i></i></button>
  </div>
 </header>
-<nav class="panel" id="panel" aria-label="Abrir el menú">
+<div class="panel" id="panel" role="dialog" aria-modal="true"
+ aria-label="Abrir el menú">
+ <div class="panel-top">
+  <a class="marca" href="/" aria-label="Ramen Okaeri">
+   <img src="/assets/brand/simbolo.svg" width="38" height="38" alt="">
+   <b>Ramen Okaeri</b>
+  </a>
+  <button class="hamb hamb-x" type="button" data-cerrar
+   aria-label="Cerrar el menú"><i></i></button>
+ </div>
+ <nav class="panel-nav" aria-label="Abrir el menú">
  <a href="/menu/">La carta</a>
+ <a href="/#domicilio">Pedir a domicilio</a>
  <a href="/#sitio">El sitio</a>
+ <a href="/#redes">Redes sociales</a>
  <a href="/#donde">Dónde estamos</a>
  <div class="idi" role="group" aria-label="Idioma"><a href="/aviso-legal/"
  lang="es" hreflang="es" aria-current="true">es</a><a href="/enaviso-legal/"
  lang="en" hreflang="en">en</a><a href="/glaviso-legal/"
  lang="gl" hreflang="gl">gl</a></div>
-</nav>
+ </nav>
+</div>
 <main id="principal">
  <div class="env legal-cuerpo cuerpo">
   <h1>Aviso legal</h1>
-  <h2>Titular del sitio</h2><p>Este sitio web pertenece a POR CONFIRMAR, con NIF POR CONFIRMAR y domicilio en POR CONFIRMAR. Teléfono de contacto: 981 684 680.</p>
+  <h2>Titular del sitio</h2><p>Este sitio web pertenece a RAMEN SAKURA, S.L., con NIF B70718051 y domicilio en Rúa das Orfas 27, 15703 Santiago de Compostela (A Coruña). Teléfono de contacto: 981 684 680.</p>
    <h2>Cookies y datos personales</h2><p>Este sitio no instala cookies, no usa herramientas de analítica y no carga recursos de otros servidores. No se recoge ningún dato personal al navegar por él.</p>
    <h2>Alojamiento y seguridad</h2><p>El sitio está alojado en GitHub Pages y se sirve a través de Cloudflare, que actúa como intermediario y registra las peticiones para protegerlo de ataques. Ni GitHub ni Cloudflare instalan cookies al navegar por estas páginas.</p>
    <h2>Enlaces a otros sitios</h2><p>Al pulsar los botones de Google Maps, Apple Maps, Glovo, Instagram, TikTok o Facebook sales de este sitio. Lo que pase a partir de ahí se rige por las condiciones de cada uno.</p>

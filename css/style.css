@@ -149,8 +149,8 @@ h3{font-size:clamp(1.1rem,3.6vw,1.35rem);line-height:1.3;letter-spacing:-.01em}
 .marca img{width:38px;height:38px}
 .marca b{font-family:var(--serif);font-size:1.02rem;letter-spacing:.02em;font-weight:700;white-space:nowrap}
 .nav-esc{display:none}
-.nav-esc ul{display:flex;align-items:center;gap:30px}
-.nav-esc a{font-size:.94rem;color:var(--washi-ten);padding:10px 0;position:relative;transition:color .2s var(--sal)}
+.nav-esc ul{display:flex;align-items:center;gap:clamp(16px,2.1vw,30px)}
+.nav-esc a{font-size:.94rem;color:var(--washi-ten);padding:10px 0;position:relative;white-space:nowrap;transition:color .2s var(--sal)}
 .nav-esc a::after{content:"";position:absolute;left:0;right:100%;bottom:4px;height:1px;
   background:var(--bengara-txt);transition:right .3s var(--sal)}
 @media (hover:hover) and (pointer:fine){.nav-esc a:hover{color:var(--washi)}.nav-esc a:hover::after{right:0}}
@@ -179,21 +179,43 @@ h3{font-size:clamp(1.1rem,3.6vw,1.35rem);line-height:1.3;letter-spacing:-.01em}
 .hamb[aria-expanded="true"] i::before{transform:translateY(6px) rotate(45deg)}
 .hamb[aria-expanded="true"] i::after{transform:translateY(-6px) rotate(-45deg)}
 
+.hamb-x i{background:transparent}
+.hamb-x i::before{transform:translateY(6px) rotate(45deg)}
+.hamb-x i::after{transform:translateY(-6px) rotate(-45deg)}
+
+/* El panel es un dialogo a pantalla completa y va POR ENCIMA de la cabecera.
+   La X vive dentro de el y no en la cabecera: al abrir el panel la cabecera
+   se marca inert, asi que su boton se seguia viendo (z-index 100) pero el
+   navegador ya no le entregaba el clic. Medido el 8 de septiembre de 2026. */
 .panel{
-  position:fixed;inset:0;z-index:99;background:var(--sumi);
-  display:flex;flex-direction:column;justify-content:center;
-  padding-inline:var(--seg-l) var(--seg-r);
+  position:fixed;inset:0;z-index:101;background:var(--sumi);
+  display:flex;flex-direction:column;
   opacity:0;visibility:hidden;transition:opacity .3s var(--sal),visibility .3s;
 }
 .panel.abierto{opacity:1;visibility:visible}
-.panel a{font-family:var(--serif);font-size:clamp(1.9rem,9vw,2.8rem);line-height:1.5;
+/* la fila de arriba calca la geometria de la cabecera: al abrir no salta nada */
+.panel-top{
+  flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding-block:14px;padding-top:max(14px,env(safe-area-inset-top));
+  padding-inline:var(--seg-l) var(--seg-r);
+}
+.panel-nav{
+  flex:1 1 auto;display:flex;flex-direction:column;justify-content:center;
+  padding-inline:var(--seg-l) var(--seg-r);
+  padding-bottom:calc(var(--seg-b) + 28px);
+}
+/* min-height propio: con cinco enlaces la escala baja y el alto de linea
+   solo ya no llega a los 44 px minimos */
+.panel-nav>a{display:flex;align-items:center;min-height:48px;
+  font-family:var(--serif);font-size:clamp(1.55rem,7.4vw,2.4rem);line-height:1.42;
   color:var(--washi);opacity:0;transform:translateY(14px);
   transition:opacity .4s var(--sal),transform .4s var(--sal)}
-.panel.abierto a{opacity:1;transform:none}
-.panel.abierto a:nth-of-type(1){transition-delay:.06s}
-.panel.abierto a:nth-of-type(2){transition-delay:.12s}
-.panel.abierto a:nth-of-type(3){transition-delay:.18s}
-.panel.abierto a:nth-of-type(4){transition-delay:.24s}
+.panel.abierto .panel-nav>a{opacity:1;transform:none}
+.panel.abierto .panel-nav>a:nth-of-type(1){transition-delay:.06s}
+.panel.abierto .panel-nav>a:nth-of-type(2){transition-delay:.12s}
+.panel.abierto .panel-nav>a:nth-of-type(3){transition-delay:.18s}
+.panel.abierto .panel-nav>a:nth-of-type(4){transition-delay:.24s}
+.panel.abierto .panel-nav>a:nth-of-type(5){transition-delay:.3s}
 .panel .idi{margin-top:34px;gap:8px}
 .panel .idi a{font-family:var(--sans);font-size:.85rem;border:1px solid var(--sumi-borde);
   min-width:60px;min-height:46px;transform:none;opacity:1;transition-delay:.3s}
@@ -241,7 +263,8 @@ h3{font-size:clamp(1.1rem,3.6vw,1.35rem);line-height:1.3;letter-spacing:-.01em}
 .plato .precio{flex:0 0 auto;font-family:var(--serif);font-size:1.15rem;color:var(--bengara-txt);
   font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
 .nota{margin-top:22px;font-size:.86rem;color:var(--washi-ten)}
-.nota a{border-bottom:1px solid currentColor;padding-block:4px}
+.nota a{border-bottom:1px solid currentColor;padding-block:4px;position:relative}
+.nota a::after{content:"";position:absolute;inset:-9px -7px;min-height:44px}
 .acciones{margin-top:34px;display:flex;flex-wrap:wrap;gap:14px;align-items:center}
 
 .retrato{position:relative;border-radius:var(--radio);overflow:hidden;background:var(--sumi-sup)}
@@ -265,6 +288,77 @@ h3{font-size:clamp(1.1rem,3.6vw,1.35rem);line-height:1.3;letter-spacing:-.01em}
 .tira-ctrl button:active{transform:scale(.94)}
 .tira-ctrl button:disabled{opacity:.32;cursor:default}
 @media (hover:hover) and (pointer:fine){.tira-ctrl button:not(:disabled):hover{border-color:var(--bengara-txt)}}
+
+/* ---------- reseñas ---------- */
+.nota-g{
+  margin-top:40px;display:flex;flex-wrap:wrap;align-items:center;gap:16px 28px;
+  padding:24px;border:1px solid var(--sumi-borde);border-radius:var(--radio);
+  background:var(--sumi-sup);
+}
+.nota-cifra{flex:0 0 auto;display:flex;align-items:baseline;gap:9px}
+.nota-cifra b{font-family:var(--serif);font-weight:700;line-height:1;color:var(--washi);
+  font-size:clamp(2.7rem,10vw,3.4rem);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.nota-cifra span{font-size:.85rem;color:var(--washi-ten)}
+.nota-col{flex:1 1 150px;min-width:0}
+.nota-col p{margin-top:7px;font-size:.88rem;color:var(--washi-ten)}
+.nota-g .btn{flex:1 1 100%}
+
+/* cinco estrellas con la última rellena a medias: 4,8 no se pinta como 5 */
+.estr{position:relative;display:inline-block;vertical-align:middle}
+.estr>span{display:flex;gap:3px}
+.estr-fondo{color:var(--sumi-borde)}
+.estr-lleno{position:absolute;top:0;left:0;overflow:hidden;color:var(--bengara-txt)}
+.estr svg{flex:0 0 auto}
+
+/* las citas van en su propio carrusel, con la misma mecánica que la galería */
+.citas{margin-top:34px;position:relative}
+ /* alto natural en cada tarjeta: el texto de una resena es literal y no se
+   puede recortar, asi que estirarlas todas a la mas larga deja huecos enormes */
+.tira.tira-citas{align-items:flex-start;padding-block:2px}
+.tira.tira-citas figure{
+  width:min(82vw,400px);display:flex;flex-direction:column;gap:15px;
+  padding:26px 24px;border:1px solid var(--sumi-borde);border-radius:var(--radio);
+  background:var(--sumi-sup);
+}
+.tira-citas blockquote p{color:var(--washi);font-size:.97rem;line-height:1.62}
+.tira-citas figcaption{margin-top:auto;padding-top:6px;font-size:.84rem;color:var(--washi-ten);
+  display:flex;gap:11px;align-items:center}
+.tira-citas figcaption picture{flex:0 0 auto;display:block}
+.cita-av{width:40px;height:40px;min-width:40px;border-radius:50%;object-fit:cover;
+  background:var(--sumi-borde)}
+/* si alguien no tiene foto, su inicial en el mismo hueco */
+.cita-av-vacio{display:grid;place-items:center;font-family:var(--serif);font-weight:700;
+  font-size:1.05rem;color:var(--washi-ten);text-transform:uppercase}
+.cita-quien{display:flex;flex-direction:column;min-width:0}
+.cita-quien b{color:var(--washi);font-weight:700;line-height:1.35}
+.cita-quien span{font-size:.8rem}
+
+/* ---------- llamada a las redes ---------- */
+.soc{
+  margin-top:44px;display:grid;gap:20px;
+  padding:24px;border:1px solid var(--sumi-borde);border-radius:var(--radio);
+  background:var(--sumi-sup);
+}
+.soc-txt b{display:block;font-family:var(--serif);font-weight:700;color:var(--washi);
+  font-size:clamp(1.1rem,4vw,1.45rem);line-height:1.28;margin-bottom:7px;max-width:22em}
+.soc-txt p{font-size:.92rem;color:var(--washi-ten);line-height:1.55;max-width:52ch}
+.soc-btns{display:flex;flex-wrap:wrap;gap:10px}
+.soc-b{
+  flex:1 1 100%;display:inline-flex;align-items:center;justify-content:center;gap:11px;
+  min-height:54px;padding:9px 22px;border-radius:999px;
+  border:1px solid var(--sumi-borde);color:var(--washi);background:rgba(229,215,202,.03);
+  font-weight:700;font-size:.95rem;
+  transition:background-color .2s var(--sal),border-color .2s var(--sal),transform .12s var(--sal);
+}
+.soc-b>span{display:flex;flex-direction:column;line-height:1.24;text-align:left}
+.soc-b i{font-style:normal;font-weight:400;font-size:.75rem;opacity:.75;letter-spacing:.02em}
+.soc-b svg{flex:0 0 auto}
+.soc-b:active{transform:scale(.97)}
+.soc-p{background:var(--bengara);border-color:var(--bengara);color:var(--blanco)}
+@media (hover:hover) and (pointer:fine){
+  .soc-b:hover{border-color:var(--bengara-txt);background:rgba(201,99,92,.08)}
+  .soc-p:hover{background:var(--bengara-viva);border-color:var(--bengara-viva)}
+}
 
 /* ---------- dónde estamos ---------- */
 .datos{display:grid;gap:36px;margin-top:44px}
@@ -315,7 +409,7 @@ h3{font-size:clamp(1.1rem,3.6vw,1.35rem);line-height:1.3;letter-spacing:-.01em}
 /* ---------- barra fija de móvil ---------- */
 .barra{
   position:fixed;left:0;right:0;bottom:0;z-index:98;
-  display:grid;grid-template-columns:repeat(3,1fr);
+  display:grid;grid-template-columns:repeat(4,1fr);
   background:rgba(18,24,24,.92);
   -webkit-backdrop-filter:saturate(160%) blur(16px);backdrop-filter:saturate(160%) blur(16px);
   border-top:1px solid var(--sumi-borde);
@@ -327,7 +421,8 @@ h3{font-size:clamp(1.1rem,3.6vw,1.35rem);line-height:1.3;letter-spacing:-.01em}
 }
 .barra.visible{transform:none}
 .barra a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
-  min-height:60px;font-size:.72rem;letter-spacing:.04em;color:var(--washi-ten);
+  min-height:60px;font-size:.7rem;letter-spacing:.02em;color:var(--washi-ten);
+  text-align:center;padding-inline:2px;
   transition:color .2s var(--sal),transform .12s var(--sal)}
 .barra a:active{transform:scale(.95)}
 .barra a svg{color:var(--washi)}
@@ -335,17 +430,45 @@ h3{font-size:clamp(1.1rem,3.6vw,1.35rem);line-height:1.3;letter-spacing:-.01em}
 .barra a.destacado svg{color:var(--bengara-txt)}
 
 /* ---------- página de la carta ---------- */
-.carta-cab{padding-top:calc(max(14px,env(safe-area-inset-top)) + 70px);padding-bottom:16px}
-.carta-cab h1{font-size:clamp(1.45rem,5.4vw,2.4rem);margin-bottom:4px}
-.carta-cab p{color:var(--washi-ten);font-size:.88rem}
-.carta-acciones{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
-/* en esta página los botones compiten con el visor: se compactan para que
-   la carta ocupe toda la pantalla que pueda */
-.carta-acciones .btn{min-height:46px;padding:11px 18px;font-size:.92rem;flex:1 1 auto}
-.visor{border-block:1px solid var(--sumi-borde);background:#fff;
-  height:calc(100svh - 230px);min-height:420px}
+/* Aquí lo único que importa es el PDF, así que se queda con la pantalla
+   entera: ni cabecera, ni barra de abajo, ni pie. Arriba solo el nombre,
+   que además es la vuelta al inicio. */
+.pag-carta{height:100vh;display:flex;flex-direction:column;overflow:hidden}
+@supports (height:100svh){.pag-carta{height:100svh}}
+.pag-carta::before{display:none}          /* el grano teñía el PDF */
+.visor-barra{
+  flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:5px var(--seg-r) 5px var(--seg-l);
+  padding-top:max(5px,env(safe-area-inset-top));
+  background:var(--sumi);border-bottom:1px solid var(--sumi-borde);
+}
+.visor-barra .marca{gap:9px;min-height:44px}
+.visor-barra .marca img{width:30px;height:30px}
+.visor-barra .marca b{font-size:.95rem}
+.visor-barra .marca span{font-family:var(--serif);font-size:.95rem;color:var(--washi-ten)}
+.visor-barra .marca span::before{content:"·";margin-inline:7px;opacity:.55}
+.visor-pleno,.visor-salir{
+  width:44px;height:44px;min-width:44px;display:grid;place-items:center;border-radius:11px;
+  color:var(--washi-ten);
+  transition:color .2s var(--sal),background-color .2s var(--sal),transform .12s var(--sal);
+}
+.visor-pleno{margin-right:-8px}
+.visor-pleno:active,.visor-salir:active{transform:scale(.92)}
+@media (hover:hover) and (pointer:fine){
+  .visor-pleno:hover,.visor-salir:hover{color:var(--washi);background:rgba(229,215,202,.08)}
+}
+.visor{flex:1 1 auto;min-height:0;background:#fff}
 .visor iframe{display:block;width:100%;height:100%;border:0}
-.carta-aviso{padding:16px 0 calc(28px + var(--seg-b) + 74px);font-size:.84rem;color:var(--washi-ten)}
+/* Pantalla completa. Donde existe la API se usa; en iPhone no existe fuera
+   del vídeo, así que allí se esconde la barra y queda este botón flotante. */
+.visor-salir{
+  display:none;position:fixed;z-index:120;width:46px;height:46px;border-radius:50%;
+  right:calc(12px + env(safe-area-inset-right));bottom:calc(12px + env(safe-area-inset-bottom));
+  background:rgba(18,24,24,.9);color:var(--washi);border:1px solid var(--sumi-borde);
+  -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+}
+.pag-carta.pleno .visor-barra{display:none}
+.pag-carta.pleno .visor-salir{display:grid}
 
 /* ---------- página legal ---------- */
 .legal-cuerpo{padding-top:calc(max(14px,env(safe-area-inset-top)) + 96px);
@@ -371,6 +494,10 @@ h3{font-size:clamp(1.1rem,3.6vw,1.35rem);line-height:1.3;letter-spacing:-.01em}
   .datos{grid-template-columns:1fr 1fr;gap:52px}
   .pie-top{grid-template-columns:1fr auto;align-items:center}
   .tira figure{width:min(46vw,340px)}
+  .soc{grid-template-columns:1fr auto;align-items:center;gap:32px}
+  .soc-b{flex:0 0 auto}
+  .nota-g{flex-wrap:nowrap}
+  .nota-g .btn{flex:0 0 auto;margin-left:auto}
 }
 @media (min-width:900px){
   .hamb{display:none}
@@ -383,9 +510,7 @@ h3{font-size:clamp(1.1rem,3.6vw,1.35rem);line-height:1.3;letter-spacing:-.01em}
   .tira figure{width:400px}
   .barra{display:none}
   .pie{padding-bottom:clamp(48px,8vw,80px)}
-  .carta-aviso{padding-bottom:calc(28px + var(--seg-b))}
   html{scroll-padding-top:96px}
-  .visor{height:calc(100vh - 270px)}
 }
 @media (min-width:1240px){
   .tira{padding-inline:calc((100vw - var(--ancho))/2 + var(--pad))}
@@ -399,7 +524,7 @@ h3{font-size:clamp(1.1rem,3.6vw,1.35rem);line-height:1.3;letter-spacing:-.01em}
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;
     transition-duration:.01ms!important;scroll-behavior:auto!important}
   .rv{opacity:1;transform:none;transition:opacity .3s linear}
-  .panel a{transform:none}
+  .panel-nav>a{transform:none}
 }
 @media (prefers-reduced-transparency:reduce){
   .cab.pegada,.barra{background:var(--sumi);-webkit-backdrop-filter:none;backdrop-filter:none}
