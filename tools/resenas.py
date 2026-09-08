@@ -70,6 +70,9 @@ def mote(nombre):
     return '%s-%s' % (base, h)
 
 
+vistos = set()      # motes de los avatares que siguen en uso esta pasada
+
+
 def avatar(url, nombre):
     """Baja la foto de quien escribio la resena y la deja cuadrada aqui dentro.
 
@@ -98,8 +101,16 @@ def avatar(url, nombre):
     im = ImageOps.fit(im, (LADO, LADO), Image.LANCZOS, centering=(0.5, 0.5))
     os.makedirs(AVATARES, exist_ok=True)
     n = mote(nombre)
-    im.save(os.path.join(AVATARES, n + '.webp'), 'WEBP', quality=82, method=6)
-    im.save(os.path.join(AVATARES, n + '.jpg'), 'JPEG', quality=84, optimize=True)
+    for ext, fmt, ops in (('webp', 'WEBP', {'quality': 82, 'method': 6}),
+                          ('jpg', 'JPEG', {'quality': 84, 'optimize': True})):
+        buf = io.BytesIO()
+        im.save(buf, fmt, **ops)
+        nuevos = buf.getvalue()
+        ruta = os.path.join(AVATARES, n + '.' + ext)
+        # solo se escribe si cambia: si no, git veria 28 archivos tocados cada dia
+        if not os.path.exists(ruta) or io.open(ruta, 'rb').read() != nuevos:
+            io.open(ruta, 'wb').write(nuevos)
+    vistos.add(n)
     return n
 
 
@@ -130,10 +141,6 @@ def main():
         sys.exit('la busqueda no encontro el sitio')
     pid = sitios[0]['id']
     print('sitio: %s  (%s)' % (sitios[0]['displayName']['text'], pid))
-
-    # se limpian los avatares viejos: si alguien deja de salir, su foto se va
-    for viejo in glob.glob(os.path.join(AVATARES, '*')):
-        os.remove(viejo)
 
     fuera, idiomas = [], {}
     nota = total = enlace = None
@@ -193,13 +200,39 @@ def main():
         'enlace': enlace,
         'nota': nota,
         'total': total,
-        'actualizado': __import__('datetime').date.today().isoformat(),
+        'actualizado': None,          # se rellena justo debajo
         'idiomas': idiomas,
     }
+
+    # Se conserva la fecha anterior si el contenido es el mismo. Asi este script
+    # puede correr cada dia sin dejar un commit vacio: git solo ve diferencia
+    # cuando Google devuelve algo distinto.
+    def sin_fecha(d):
+        d = dict(d or {})
+        d.pop('actualizado', None)
+        return json.dumps(d, sort_keys=True, ensure_ascii=False)
+
+    hoy = __import__('datetime').date.today().isoformat()
+    try:
+        anterior = json.load(io.open(SALIDA, encoding='utf-8'))
+    except Exception:
+        anterior = {}
+    doc['actualizado'] = (hoy if sin_fecha(doc) != sin_fecha(anterior)
+                          else anterior.get('actualizado', hoy))
+
+    # y ahora si: fuera los avatares de quien ya no aparece
+    borrados = 0
+    for viejo in glob.glob(os.path.join(AVATARES, '*')):
+        if os.path.splitext(os.path.basename(viejo))[0] not in vistos:
+            os.remove(viejo)
+            borrados += 1
+    if borrados:
+        print('  avatares retirados: %d' % borrados)
     if escribe:
         io.open(SALIDA, 'w', encoding='utf-8').write(
             json.dumps(doc, ensure_ascii=False, indent=2) + '\n')
-        print('\nescrito %s  (nota %s, total %s)' % (SALIDA, nota, total))
+        print('\nescrito %s  (nota %s, total %s, actualizado %s)'
+              % (SALIDA, nota, total, doc['actualizado']))
     else:
         print('\n(en seco: anade --escribe para guardarlo)')
 
