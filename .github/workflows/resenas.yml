@@ -1,0 +1,132 @@
+# Refresca las reseñas de Google todos los días.
+#
+# CÓMO FUNCIONA
+#   tools/resenas.py pide las reseñas a la API de Places, las escribe en
+#   content/resenas.json y baja los avatares; después node tools/build.mjs
+#   las hornea en el HTML. Si Google devuelve lo mismo que ayer, ni el JSON ni
+#   el HTML cambian y no se hace commit: el script conserva la fecha anterior
+#   y solo reescribe un avatar si sus bytes son distintos.
+#
+# POR QUÉ AQUÍ Y NO EN EL NAVEGADOR
+#   Llamando a la API al construir, la clave nunca llega al visitante, la web
+#   sigue sin pedir nada a terceros —y por tanto sin banner de cookies— y Google
+#   indexa las citas, porque acaban siendo texto de verdad en el HTML.
+#
+# LA CLAVE
+#   Vive en el secreto GOOGLE_MAPS_KEY del repositorio y en ningún otro sitio.
+#   Settings > Secrets and variables > Actions > New repository secret.
+#   Debe tener habilitada la Places API (New) y facturación en su proyecto.
+#   Este flujo gasta 4 llamadas al día, unas 120 al mes.
+
+name: Reseñas de Google
+
+on:
+  schedule:
+    # 04:17 UTC = 06:17 en Madrid en verano, 05:17 en invierno. Minuto raro a
+    # propósito: en punto se acumulan los cron de medio GitHub y se retrasan.
+    - cron: '17 4 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+
+# que dos pasadas no se pisen si una se retrasa
+concurrency:
+  group: resenas
+  cancel-in-progress: false
+
+jobs:
+  refrescar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          # historial completo, para poder rebasar si alguien empujó mientras tanto
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Instalar Pillow, que es lo que recorta los avatares
+        run: pip install --quiet Pillow
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Traer las reseñas
+        env:
+          GOOGLE_MAPS_KEY: ${{ secrets.GOOGLE_MAPS_KEY }}
+        run: |
+          if [ -z "$GOOGLE_MAPS_KEY" ]; then
+            echo "::error::Falta el secreto GOOGLE_MAPS_KEY del repositorio."
+            exit 1
+          fi
+          python tools/resenas.py --escribe
+
+      - name: Comprobar que no ha vuelto vacío
+        # Una respuesta rara de la API dejaría la web sin ninguna cita. Antes de
+        # publicar nada, se exige que haya reseñas en al menos un idioma.
+        run: |
+          python - <<'PY'
+          import json, sys
+          d = json.load(open('content/resenas.json', encoding='utf-8'))
+          n = sum(len(v) for v in d.get('idiomas', {}).values())
+          print('reseñas traídas: %d  ·  nota %s  ·  total %s' % (n, d.get('nota'), d.get('total')))
+          if n == 0:
+              sys.exit('::error::La API no ha devuelto ninguna reseña. No se publica nada.')
+          if not d.get('nota') or not d.get('total'):
+              sys.exit('::error::Falta la nota media o el total. No se publica nada.')
+          PY
+
+      - name: Reconstruir el HTML
+        run: node tools/build.mjs
+
+      - name: Que no se cuele ninguna clave
+        # Cinturón: si alguna vez un cambio dejara la clave en un archivo, aquí
+        # se para antes de empujarla a un repositorio público.
+        run: |
+          if git grep -nI 'AIza[0-9A-Za-z_-]\{35\}' -- . ':!.github' > /dev/null 2>&1; then
+            echo "::error::Hay algo con pinta de clave de Google en el árbol. No se publica."
+            git grep -nI 'AIza[0-9A-Za-z_-]\{35\}' -- . ':!.github' | head
+            exit 1
+          fi
+          echo "sin claves en el árbol"
+
+      - name: ¿Ha cambiado algo?
+        id: cambios
+        run: |
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "hay=no" >> "$GITHUB_OUTPUT"
+            echo "Google devuelve lo mismo que ayer. No se toca nada."
+          else
+            echo "hay=si" >> "$GITHUB_OUTPUT"
+            git status --short
+          fi
+
+      - name: Commit y push
+        if: steps.cambios.outputs.hay == 'si'
+        run: |
+          git config user.name  'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          RESUMEN=$(python -c "import json;d=json.load(open('content/resenas.json',encoding='utf-8'));print('%s sobre 5 con %d reseñas' % (d['nota'], d['total']))")
+          git add -A
+          git commit -m "Reseñas al día: $RESUMEN" \
+                     -m "Traídas de la API de Places por .github/workflows/resenas.yml." \
+                     -m "Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
+          git pull --rebase --autostash origin main
+          git push origin HEAD:main
+
+      - name: Pedirle a Pages que reconstruya
+        # Este repositorio publica desde la rama main (build_type legacy). Un push
+        # hecho con GITHUB_TOKEN no siempre dispara la reconstrucción, así que se
+        # pide a mano. Si el permiso no llegara, no se rompe la pasada: el push ya
+        # está hecho y Pages acaba recogiéndolo igual.
+        if: steps.cambios.outputs.hay == 'si'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh api --method POST "repos/${{ github.repository }}/pages/builds"

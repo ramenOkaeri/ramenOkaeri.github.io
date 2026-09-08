@@ -5,6 +5,7 @@
    El texto vive en un solo sitio; aquí solo está la estructura.
    ============================================================================= */
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -14,6 +15,17 @@ const leer = (p) => JSON.parse(readFileSync(join(RAIZ, p), 'utf8'));
 const D = leer('content/datos.json');
 const IM = leer('content/imagenes.json');
 const R = leer('content/resenas.json');
+/* Huella del contenido en la URL de la hoja y del script.
+   Cloudflare sirve el CSS con max-age de cuatro horas y el HTML con diez
+   minutos, asi que sin esto un visitante se come el HTML nuevo con el CSS
+   viejo: las clases que aun no existian se quedan sin estilo y la pagina
+   parece rota. Con la huella, cada despliegue cambia la URL y no queda copia
+   vieja que servir. Medido el 8 de septiembre de 2026. */
+const huella = (rel) =>
+  `/${rel}?v=${createHash('sha1').update(readFileSync(join(RAIZ, rel))).digest('hex').slice(0, 8)}`;
+const CSS = huella('css/style.css');
+const JS = huella('js/main.js');
+
 const IDIOMAS = ['es', 'en', 'gl'];
 /* La nota, el total y el enlace salen de content/resenas.json, que lo refresca
    tools/resenas.py contra la API de Places. datos.json solo queda de respaldo
@@ -234,7 +246,7 @@ ${noindex ? '<meta name="robots" content="noindex">' : ''}
 <link rel="preconnect" href="${D.dominio}">
 <link rel="preload" href="/assets/fonts/shippori-700-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/zenkaku-400-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="${CSS}">
 ${jsonld}
 </head>
 <body${clase ? ` class="${clase}"` : ''}>
@@ -548,7 +560,7 @@ ${barra(l)}
       abre: t.donde.abre, cierra: t.donde.cierra
     }
   })};</script>
-<script src="/js/main.js" defer></script>
+<script src="${JS}" defer></script>
 </body>
 </html>`;
 }
@@ -578,7 +590,7 @@ function carta(l) {
  <p class="oculto">${esc(t.carta.aviso)} <a href="/assets/pdf/menu.pdf">${esc(t.carta.descargar)}</a></p>
 </main>
 <button type="button" class="visor-salir" aria-label="${esc(t.carta.salir_pleno)}">${ICO.contraer}</button>
-<script src="/js/main.js" defer></script>
+<script src="${JS}" defer></script>
 </body>
 </html>`;
 }
@@ -607,6 +619,7 @@ ${cabecera(l, { activa: 'legal' })}
  </div>
 </main>
 ${pie(l)}
+<script src="${JS}" defer></script>
 </body>
 </html>`;
 }
@@ -627,7 +640,7 @@ ${cabecera('es')}
   <p><a class="btn btn-p" href="/">Volver al inicio</a></p>
  </div>
 </main>
-<script src="/js/main.js" defer></script>
+<script src="${JS}" defer></script>
 </body>
 </html>`;
 }
