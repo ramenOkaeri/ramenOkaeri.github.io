@@ -1,0 +1,156 @@
+# Publica la carta cuando alguien pulsa el botón de /admin/.
+#
+# CÓMO FUNCIONA
+#   El panel llama a la Edge Function `publicar`, que comprueba que quien llama
+#   es admin y manda un repository_dispatch aquí. Este flujo exporta la carta de
+#   Supabase a content/carta.json, reconstruye el HTML con node tools/build.mjs
+#   y hace commit. Si la carta es la misma que la publicada, carta.mjs no toca el
+#   archivo y no se hace commit.
+#
+# POR QUÉ SE HORNEA Y NO SE PIDE EN EL NAVEGADOR
+#   Es la misma razón que en resenas.yml: exportando al construir, la clave nunca
+#   llega al visitante, la web sigue sin pedir nada a terceros —y por tanto sin
+#   banner de cookies— y Google indexa cada plato, porque acaba siendo texto de
+#   verdad en el HTML. De paso, content/carta.json queda versionado en git: si el
+#   proyecto de Supabase desapareciera, la carta entera sigue en el repositorio.
+#
+# LOS SECRETOS
+#   SUPABASE_URL          https://ymlswznlfmmjrxxisgva.supabase.co
+#   SUPABASE_SERVICE_KEY  clave service_role (salta RLS; solo vive aquí)
+#   Settings > Secrets and variables > Actions > New repository secret.
+
+name: Publicar la carta
+
+on:
+  repository_dispatch:
+    types: [carta]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+
+# que dos publicaciones seguidas no se pisen
+concurrency:
+  group: carta
+  cancel-in-progress: false
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          # historial completo, para poder rebasar si el cron de reseñas empujó
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Traer la carta de Supabase
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: |
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_SERVICE_KEY" ]; then
+            echo "::error::Faltan los secretos SUPABASE_URL o SUPABASE_SERVICE_KEY."
+            exit 1
+          fi
+          node tools/carta.mjs
+
+      - name: Comprobar que la carta tiene sentido
+        # Una respuesta rara dejaría la web con la carta vacía, que es peor que
+        # dejarla como estaba. Antes de publicar nada se exige un mínimo.
+        run: |
+          node - <<'JS'
+          const { readFileSync } = require('node:fs');
+          const c = JSON.parse(readFileSync('content/carta.json', 'utf8'));
+          const platos = c.platos || [];
+          const fallos = [];
+          if (platos.length < 10) fallos.push(`Solo han venido ${platos.length} platos.`);
+          if (!(c.categorias || []).length) fallos.push('No hay ninguna categoría.');
+          if ((c.alergenos || []).length !== 14) fallos.push('La lista de alérgenos no tiene 14 entradas.');
+          for (const p of platos) {
+            if (!p.nombre?.es) fallos.push(`"${p.slug}" no tiene nombre en español.`);
+            if (!p.precios?.length) fallos.push(`"${p.slug}" no tiene ningún precio.`);
+          }
+          console.log(`${platos.length} platos · ${c.categorias.length} categorías`);
+          const sinGl = platos.filter((p) => !p.nombre?.gl).length;
+          if (sinGl) console.log(`::warning::${sinGl} plato(s) sin nombre en gallego.`);
+          if (fallos.length) {
+            for (const f of fallos) console.error('::error::' + f);
+            process.exit(1);
+          }
+          JS
+        shell: bash
+
+      - name: Reconstruir el HTML
+        run: node tools/build.mjs
+
+      - name: Que no se cuele ninguna clave
+        # Cinturon: la clave publicable SI vive en content/supabase.json y es
+        # correcto que sea publica; cualquier otro JWT en el arbol no lo es.
+        # Y se comprueba ademas que esa clave publicable no sea por error una
+        # service_role, que es el fallo que de verdad haria dano.
+        run: |
+          if git grep -nI -E 'sb_secret_[A-Za-z0-9_-]{10,}' -- . ':!.github' > /dev/null 2>&1; then
+            echo "::error::Hay una clave secreta de Supabase en el arbol."
+            exit 1
+          fi
+          if git grep -nI -E 'eyJ[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{20,}'              -- . ':!.github' ':!content/supabase.json' > /dev/null 2>&1; then
+            echo "::error::Hay un JWT fuera de content/supabase.json."
+            git grep -nI -E 'eyJ[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{20,}'               -- . ':!.github' ':!content/supabase.json' | head
+            exit 1
+          fi
+          node -e "
+            const c = require('./content/supabase.json');
+            if (!c.anon || c.anon === 'PENDIENTE') { console.log('sin clave publicable todavia'); process.exit(0); }
+            let rol = null;
+            const t = c.anon.split('.');
+            if (t.length === 3) { try { rol = JSON.parse(Buffer.from(t[1], 'base64url')).role; } catch (e) {} }
+            if (rol === 'service_role') {
+              console.error('::error::content/supabase.json lleva una clave service_role. Esa NO es publica.');
+              process.exit(1);
+            }
+            console.log('clave publicable correcta' + (rol ? ' (rol ' + rol + ')' : ''));
+          "
+          echo "sin claves sueltas en el arbol"
+
+      - name: ¿Ha cambiado algo?
+        id: cambios
+        run: |
+          # assets/version.json lleva la fecha y cambia siempre; si es lo único
+          # que ha cambiado, la carta es la misma y no hay nada que publicar.
+          if [ -z "$(git status --porcelain -- . ':!assets/version.json')" ]; then
+            echo "hay=no" >> "$GITHUB_OUTPUT"
+            echo "La carta es la misma que la publicada. No se toca nada."
+            git checkout -- assets/version.json || true
+          else
+            echo "hay=si" >> "$GITHUB_OUTPUT"
+            git status --short
+          fi
+
+      - name: Commit y push
+        if: steps.cambios.outputs.hay == 'si'
+        run: |
+          git config user.name  'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          RESUMEN=$(node -e "const c=require('./content/carta.json');console.log(c.platos.length+' platos en '+c.categorias.length+' secciones')")
+          git add -A
+          git commit -m "Carta al día: $RESUMEN" \
+                     -m "Exportada de Supabase por .github/workflows/carta.yml." \
+                     -m "Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
+          git pull --rebase --autostash origin main
+          git push origin HEAD:main
+
+      - name: Pedirle a Pages que reconstruya
+        # Este repositorio publica desde la rama main (build_type legacy). Un push
+        # hecho con GITHUB_TOKEN no siempre dispara la reconstrucción, así que se
+        # pide a mano. Si el permiso no llegara, no se rompe la pasada.
+        if: steps.cambios.outputs.hay == 'si'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh api --method POST "repos/${{ github.repository }}/pages/builds"

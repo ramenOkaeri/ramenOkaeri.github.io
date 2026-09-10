@@ -2,5 +2,6 @@ User-agent: *
 Allow: /
 Disallow: /web/
 Disallow: /build/
+Disallow: /admin/
 
 Sitemap: https://ramenokaeri.com/sitemap.xml

@@ -541,3 +541,187 @@ h3{font-size:clamp(1.1rem,3.6vw,1.35rem);line-height:1.3;letter-spacing:-.01em}
   body{background:#fff;color:#000}
   .hero{min-height:auto}
 }
+
+/* ===========================================================================
+   LA CARTA EN HTML  ·  /menu/
+   Clases propias y no las de los destacados de la portada: .plato de alli es
+   un flex con align-items:baseline y .platos trae margin-top, y las dos se
+   pelean con la rejilla de aqui. Una clase compartida no comparte solo la
+   maquetacion, comparte todo el bloque. Leccion del 8 de septiembre de 2026.
+   =========================================================================== */
+
+/* Esta pagina no tiene hero, asi que el titulo caeria debajo de la cabecera
+   fija. Mismo desplazamiento que usa .legal-cuerpo. */
+.carta-cab{padding-top:calc(max(14px,env(safe-area-inset-top)) + 96px);text-align:center}
+.carta-sub{color:var(--washi-ten);margin:10px auto 22px;max-width:46ch}
+.carta-cab .btn svg{width:18px;height:18px}
+
+/* anclas de seccion: se pegan al bajar */
+/* NO pegajosa: vivia dentro de un .env mas corto que el scroll, asi que se iba
+   con el contenedor en cuanto pasaba de largo. Un sticky solo se pega mientras
+   su contenedor sigue en pantalla. Medido el 9 de septiembre de 2026. */
+.carta-anclas{display:block;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;
+  padding:12px 0;margin-bottom:6px;border-bottom:1px solid var(--sumi-borde)}
+.carta-anclas .env{display:flex;gap:8px;width:max-content;min-width:100%}
+.carta-anclas::-webkit-scrollbar{display:none}
+.carta-anclas a{flex:0 0 auto;display:grid;place-items:center;min-height:44px;padding:0 16px;
+  border:1px solid var(--sumi-borde);border-radius:999px;color:var(--washi-ten);
+  font-size:.9rem;text-decoration:none;white-space:nowrap;
+  transition:color .2s var(--sal),border-color .2s var(--sal)}
+.carta-anclas a:hover,.carta-anclas a:focus-visible{color:var(--washi);border-color:var(--washi-ten)}
+
+/* --- barra de filtros ---------------------------------------------------- */
+/* Nace hidden y la ensena el JS: sin JavaScript la carta se lee entera y no se
+   pinta un control muerto, igual que hace el boton de pantalla completa. */
+.carta-filtros{position:sticky;top:68px;z-index:49;background:var(--sumi);
+  border-bottom:1px solid var(--sumi-borde);padding:14px 0 4px}
+.carta-filtros .env{display:grid;gap:12px}
+.filtro-buscar{display:flex;gap:8px;align-items:center}
+.filtro-buscar input{flex:1 1 auto;min-width:0;min-height:48px;padding:0 16px;font:inherit;font-size:16px;
+  color:var(--washi);background:var(--sumi-sup);border:1px solid var(--sumi-borde);
+  border-radius:999px;-webkit-appearance:none;appearance:none}
+.filtro-buscar input::placeholder{color:var(--washi-ten)}
+.filtro-buscar input:focus-visible{outline:2px solid var(--bengara-txt);outline-offset:2px}
+/* En movil los filtros se pliegan detras de un boton: desplegados de continuo,
+   la barra pegajosa medía 489 px de una pantalla de 844. */
+.filtro-abre{flex:0 0 auto;display:flex;align-items:center;gap:7px;min-height:48px;
+  padding:0 18px;border:1px solid var(--sumi-borde);border-radius:999px;
+  background:var(--sumi-sup);color:var(--washi-ten);font:inherit;font-size:.9rem;cursor:pointer}
+.filtro-abre[aria-expanded="true"]{color:var(--washi);border-color:var(--washi-ten)}
+.filtro-punto{width:7px;height:7px;border-radius:50%;background:var(--bengara-txt);display:block}
+/* display:block le gana a la regla [hidden] del navegador, que tiene la misma
+   especificidad y va antes. Sin esto el punto sale siempre. */
+.filtro-punto[hidden]{display:none}
+/* Con el cajon abierto y pegajoso, en un movil bajo (667 px) se comeria tres
+   cuartos de pantalla. Se le pone tope y se desplaza por dentro. */
+.filtro-cajon{display:grid;gap:12px;max-height:38vh;overflow-y:auto;
+  overscroll-behavior:contain;padding-right:2px}
+.carta-filtros:not(.abierto) .filtro-cajon{display:none}
+.filtro-grupo{border:0;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.filtro-grupo legend,.filtro-pic label{float:left;padding:0;margin-right:10px;font-size:.82rem;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--washi-ten);line-height:44px}
+.filtro-pic{display:flex;align-items:center;gap:10px}
+.filtro-pic select{min-height:44px;padding:0 12px;font:inherit;color:var(--washi);
+  background:var(--sumi-sup);border:1px solid var(--sumi-borde);border-radius:999px}
+.filtro-pie{display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding-bottom:10px;font-size:.9rem;color:var(--washi-ten)}
+.filtro-pie output{font-variant-numeric:tabular-nums}
+
+/* casilla con forma de pastilla */
+.chip-btn{cursor:pointer;user-select:none;min-height:44px;display:inline-flex;align-items:center}
+.chip-btn input{position:absolute;opacity:0;width:0;height:0}
+.chip-btn span{display:grid;place-items:center;min-height:36px;padding:0 14px;
+  border:1px solid var(--sumi-borde);border-radius:999px;color:var(--washi-ten);
+  font-size:.88rem;transition:color .2s var(--sal),border-color .2s var(--sal),background-color .2s var(--sal)}
+.chip-btn:hover span{color:var(--washi)}
+.chip-btn input:checked + span{background:var(--bengara);border-color:var(--bengara);color:var(--blanco)}
+.chip-btn input:focus-visible + span{outline:2px solid var(--bengara-txt);outline-offset:3px}
+
+/* --- las secciones y sus filas ------------------------------------------- */
+.carta-sec{padding-top:var(--aire)}
+/* La primera va pegada a la barra de filtros y no necesita tanto aire. */
+.carta-sec:first-of-type{padding-top:calc(var(--aire) * .45)}
+.carta-sec > .antetitulo{margin-bottom:6px}
+.carta-sec-desc{color:var(--washi-ten);margin-bottom:18px;max-width:52ch}
+h3.carta-sub{margin:30px 0 2px;font-size:1rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--washi-ten);font-family:var(--sans);font-weight:500}
+
+.carta-platos{display:grid;margin-top:14px;list-style:none}
+.cplato{border-top:1px solid var(--sumi-borde)}
+.carta-platos > .cplato:last-child{border-bottom:1px solid var(--sumi-borde)}
+.cplato details{width:100%}
+.cplato summary,.plato-fila{display:grid;grid-template-columns:56px 1fr auto;
+  column-gap:16px;row-gap:6px;align-items:start;padding:18px 0;cursor:pointer;
+  list-style:none;position:relative}
+.plato-fila{cursor:auto}
+.cplato summary::-webkit-details-marker{display:none}
+.cplato summary::marker{content:""}
+.cplato summary:focus-visible{outline:2px solid var(--bengara-txt);outline-offset:-2px;border-radius:6px}
+
+.plato-ico{grid-column:1;grid-row:1 / span 3;width:56px;height:56px;border-radius:10px;
+  background:var(--sumi-sup);border:1px solid var(--sumi-borde);padding:8px;
+  color:var(--washi-ten);fill:none;stroke:currentColor;stroke-width:1.6;
+  stroke-linecap:round;stroke-linejoin:round;box-sizing:border-box}
+img.plato-ico{object-fit:cover;padding:0}
+.plato-n{grid-column:2;grid-row:1;margin:0;font-size:1.06rem;line-height:1.35}
+.plato-num{color:var(--washi-ten);font-family:var(--sans);font-size:.85em;font-weight:400}
+.plato-desc{grid-column:2 / span 2;grid-row:2;color:var(--washi-ten);font-size:.92rem;line-height:1.5}
+.plato-chips{grid-column:2 / span 2;grid-row:3;display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
+.cplato .precio{grid-column:3;grid-row:1;justify-self:end;display:flex;flex-direction:column;
+  align-items:flex-end;gap:2px;font-family:var(--serif);font-size:1.12rem;color:var(--bengara-txt);
+  font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.precio-var{display:flex;align-items:baseline;gap:8px}
+.precio-et{font-family:var(--sans);font-size:.72rem;font-weight:400;color:var(--washi-ten);
+  text-transform:uppercase;letter-spacing:.05em}
+.precio-consulta{font-family:var(--sans);font-size:.82rem;font-weight:400;color:var(--washi-ten)}
+
+/* la flecha de abrir */
+.plato-abre{grid-column:3;grid-row:3;justify-self:end;align-self:center;width:22px;height:22px;
+  border-radius:50%;border:1px solid var(--sumi-borde);position:relative;
+  transition:transform .25s var(--sal),border-color .2s var(--sal)}
+.plato-abre::after{content:"";position:absolute;inset:0;margin:auto;width:6px;height:6px;
+  border-right:1.5px solid var(--washi-ten);border-bottom:1.5px solid var(--washi-ten);
+  transform:translateY(-2px) rotate(45deg)}
+.cplato details[open] .plato-abre{transform:rotate(180deg)}
+.cplato summary:hover .plato-abre{border-color:var(--washi-ten)}
+
+/* chips de la fila */
+.chip{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:999px;
+  font-size:.76rem;line-height:1.5;border:1px solid var(--sumi-borde);color:var(--washi-ten)}
+.chip-dieta{border-color:#3E5A46;color:#8FBF9B}
+.chip-alg[data-trazas]{opacity:.75;font-style:italic}
+.chip-nivel{border-color:#5A3A38;padding:3px 8px}
+.pips{display:inline-flex;gap:3px}
+.pips i{width:6px;height:6px;border-radius:50%;border:1px solid var(--bengara-txt);display:block}
+.pips i.on{background:var(--bengara-txt)}
+
+/* el detalle */
+.plato-mas{padding:2px 0 22px 72px;display:grid;gap:16px}
+.plato-nota{color:var(--washi-ten);font-size:.88rem;font-style:italic}
+.plato-grupo h4{margin:0 0 6px;font-family:var(--sans);font-size:.78rem;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--washi-ten)}
+.plato-grupo h4 span{font-weight:400;letter-spacing:0;text-transform:none;opacity:.8}
+.plato-grupo ul{list-style:none;display:flex;flex-wrap:wrap;gap:6px 18px;font-size:.9rem;color:var(--washi)}
+.plato-grupo .alg-lista li{color:var(--washi-ten)}
+.op-mas{color:var(--bengara-txt);font-variant-numeric:tabular-nums}
+.op-consulta{color:var(--washi-ten);font-style:italic}
+
+.carta-vacio{padding:var(--aire) 0;text-align:center;color:var(--washi-ten)}
+
+/* leyenda de alergenos */
+.carta-leyenda{margin:var(--aire) 0 0;padding:26px 24px;border:1px solid var(--sumi-borde);
+  border-radius:var(--radio);background:var(--sumi-sup)}
+.carta-leyenda h2{font-size:1.1rem;margin-bottom:8px}
+.carta-leyenda p{color:var(--washi-ten);font-size:.92rem;max-width:66ch}
+.carta-leyenda ul{list-style:none;display:flex;flex-wrap:wrap;gap:6px 10px;margin-top:14px}
+.carta-leyenda li{padding:3px 10px;border:1px solid var(--sumi-borde);border-radius:999px;
+  font-size:.78rem;color:var(--washi-ten)}
+
+/* volver del visor a la carta */
+.visor-volver{margin-left:auto;padding:0 14px;min-height:44px;display:grid;place-items:center;
+  color:var(--washi-ten);font-size:.9rem;text-decoration:none}
+.visor-volver:hover,.visor-volver:focus-visible{color:var(--washi)}
+
+@media (min-width:600px){
+  .cplato summary,.plato-fila{grid-template-columns:64px 1fr auto;column-gap:20px;padding:20px 0}
+  .plato-ico{width:64px;height:64px}
+  .plato-mas{padding-left:84px}
+}
+@media (min-width:900px){
+  .carta-filtros{top:72px}
+  /* En escritorio caben todos a la vista y el boton sobra. */
+  .filtro-abre{display:none}
+  /* Mismo selector que la regla de movil: :not(.abierto) suma especificidad,
+     asi que .carta-filtros .filtro-cajon (0,2,0) perdia contra (0,3,0). */
+  .carta-filtros:not(.abierto) .filtro-cajon{display:grid;max-height:none;overflow:visible}
+  .plato-desc{grid-column:2;grid-row:2}
+  .plato-chips{grid-column:2;grid-row:3}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .carta-anclas a,.chip-btn span,.plato-abre{transition:none}
+}
+@media print{
+  .carta-filtros,.carta-anclas{display:none!important}
+  .plato-mas{display:block}
+}

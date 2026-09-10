@@ -15,6 +15,7 @@ const leer = (p) => JSON.parse(readFileSync(join(RAIZ, p), 'utf8'));
 const D = leer('content/datos.json');
 const IM = leer('content/imagenes.json');
 const R = leer('content/resenas.json');
+const C = leer('content/carta.json');
 /* Huella del contenido en la URL de la hoja y del script.
    Cloudflare sirve el CSS con max-age de cuatro horas y el HTML con diez
    minutos, asi que sin esto un visitante se come el HTML nuevo con el CSS
@@ -25,6 +26,11 @@ const huella = (rel) =>
   `/${rel}?v=${createHash('sha1').update(readFileSync(join(RAIZ, rel))).digest('hex').slice(0, 8)}`;
 const CSS = huella('css/style.css');
 const JS = huella('js/main.js');
+/* El panel tiene su propia hoja y su propio script: el visitante no los
+   descarga nunca, asi que la web publica no engorda ni un byte por tener
+   panel. Llevan huella por lo mismo que la del sitio. */
+const ADMIN_CSS = huella('admin/admin.css');
+const ADMIN_JS = huella('admin/admin.js');
 
 const IDIOMAS = ['es', 'en', 'gl'];
 /* La nota, el total y el enlace salen de content/resenas.json, que lo refresca
@@ -568,18 +574,24 @@ ${barra(l)}
 /* --------------------------------------------------------------------------- */
 /* la carta: el visor de pdf.js, con la cabecera de la web alrededor            */
 /* --------------------------------------------------------------------------- */
-function carta(l) {
+/* El visor de pdf.js, tal cual estaba, movido a /menu/pdf/. La carta en HTML
+   se queda con /menu/, que es la ruta que ya conocen los enlaces y Google. */
+function cartaPdf(l) {
   const t = T[l], b = BASE[l];
-  const ruta = (b || '') + '/menu/';
+  const ruta = (b || '') + '/menu/pdf/';
   return `${cabeza(l, {
     titulo: t.meta.titulo_carta, desc: t.meta.descripcion_carta, ruta,
-    jsonld: ldMigas(l, t.carta.titulo, ruta), clase: 'pag-carta'
+    jsonld: ldMigas(l, t.carta.titulo, ruta), clase: 'pag-carta',
+    // El visor es un envoltorio del PDF y duplicaria a /menu/, que es la
+    // canonica y la que Google si tiene que leer.
+    noindex: true
   })}
 <div class="visor-barra">
  <a class="marca" href="${b || '/'}">
   <img src="/assets/brand/simbolo.svg" width="30" height="30" alt="">
   <b>Ramen Okaeri</b><span>${esc(t.carta.titulo)}</span>
  </a>
+ <a class="visor-volver" href="${b || ''}/menu/">${esc(t.carta.volver_carta)}</a>
  <button type="button" class="visor-pleno" hidden aria-label="${esc(t.carta.pleno)}"
   data-pleno="${esc(t.carta.pleno)}" data-salir="${esc(t.carta.salir_pleno)}">${ICO.expandir}</button>
 </div>
@@ -625,6 +637,331 @@ ${pie(l)}
 }
 
 /* --------------------------------------------------------------------------- */
+/* la carta en HTML                                                              */
+/* --------------------------------------------------------------------------- */
+
+/* Marcadores de plato. Van como <symbol> incrustados UNA vez en la pagina y
+   cada plato los usa con <use>: 73 platos y cero peticiones de red. Se pintan
+   con currentColor, asi que el color lo pone el CSS y no hay que tocarlos.
+   Hoy no hay ninguna foto de plato; cuando la haya, la foto gana y esto queda
+   de respaldo para los que sigan sin ella. */
+const MARCADORES = `<svg class="oculto" aria-hidden="true" focusable="false"><defs>
+<g id="pl-ramen"><path d="M3.5 14.5h25a12.5 12.5 0 0 1-25 0Z"/><path d="M12 10.5c0-2 2-2.2 2-4M18 10.5c0-2 2-2.2 2-4"/></g>
+<g id="pl-arroz"><path d="M4.5 16.5h23a11.5 11.5 0 0 1-23 0Z"/><path d="M9.5 16.5a6.5 6.5 0 0 1 13 0"/></g>
+<g id="pl-tapa"><path d="M4.5 19.5h23c0-5.7-5.1-9.8-11.5-9.8S4.5 13.8 4.5 19.5Z"/><path d="M10 19.5v-3.2M16 19.5v-4.6M22 19.5v-3.2"/></g>
+<g id="pl-bebida"><path d="M10 6.5h12l-1.5 18a1.7 1.7 0 0 1-1.7 1.6h-5.6a1.7 1.7 0 0 1-1.7-1.6Z"/><path d="M10.7 14h10.6"/></g>
+<g id="pl-postre"><path d="M4.5 22.5h23"/><path d="M8.5 22.5a7.5 7.5 0 0 1 15 0"/></g>
+<g id="pl-coctel"><path d="M5 7h22L16 19Z"/><path d="M16 19v7M11.5 26h9"/></g>
+<g id="pl-generico"><circle cx="16" cy="16" r="11"/><circle cx="16" cy="16" r="6"/></g>
+</defs></svg>`;
+
+/* Pliega acentos y pasa a minusculas, para que "jalapeno" encuentre "jalapeño"
+   y "cafe" encuentre "café". Se calcula al construir y viaja en data-buscar, asi
+   que el navegador solo tiene que hacer un indexOf. */
+const plegar = (s) =>
+  String(s).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+
+/* El decimal lleva coma en espanol y gallego y punto en ingles, igual que la
+   nota de Google. El simbolo va detras en es/gl y delante en en. */
+const precio = (n, l) => {
+  const v = Number(n).toFixed(2);
+  return l === 'en' ? `€${v}` : `${v.replace('.', ',')} €`;
+};
+
+const txt = (o, l) => (o && (o[l] || o.es)) || '';
+
+/* JSON-LD de la carta. Es de donde sale que alguien encuentre el restaurante
+   buscando "gyozas Santiago": hasta ahora la carta era una imagen dentro de un
+   PDF y Google no leia ni un plato. */
+function ldCarta(l) {
+  const nomCat = Object.fromEntries(
+    C.categorias.flatMap((m) => [[m.slug, txt(m.nombre, l)], ...m.hijas.map((h) => [h.slug, txt(h.nombre, l)])])
+  );
+  const secciones = [];
+  for (const m of C.categorias) {
+    const suyos = C.platos.filter((p) => p.categoria_madre === m.slug);
+    if (!suyos.length) continue;
+    secciones.push({
+      '@type': 'MenuSection',
+      name: nomCat[m.slug],
+      hasMenuItem: suyos.map((p) => {
+        const it = { '@type': 'MenuItem', name: txt(p.nombre, l) };
+        const d = txt(p.descripcion, l);
+        if (d) it.description = d;
+        const ofertas = p.precios
+          .filter((x) => x.precio != null)
+          .map((x) => ({
+            '@type': 'Offer',
+            price: Number(x.precio).toFixed(2),
+            priceCurrency: 'EUR',
+            ...(x.etiqueta ? { name: txt(x.etiqueta, l) } : {}),
+          }));
+        if (ofertas.length) it.offers = ofertas.length === 1 ? ofertas[0] : ofertas;
+        const dietas = [];
+        if (p.etiquetas.includes('vegano')) dietas.push('https://schema.org/VeganDiet');
+        else if (p.etiquetas.includes('vegetariano')) dietas.push('https://schema.org/VegetarianDiet');
+        if (dietas.length) it.suitableForDiet = dietas.length === 1 ? dietas[0] : dietas;
+        return it;
+      }),
+    });
+  }
+  return `<script type="application/ld+json">${JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'Menu',
+    name: T[l].carta.titulo,
+    inLanguage: l,
+    url: D.dominio + (BASE[l] || '') + '/menu/',
+    hasMenuSection: secciones,
+  })}</script>`;
+}
+
+/** Una fila de plato. El detalle va en <details>: accesible de fabrica, funciona
+ *  sin JavaScript y evita construir un modal que el sitio no tiene. */
+function filaPlato(p, l, t) {
+  const nombre = txt(p.nombre, l);
+  const desc = txt(p.descripcion, l);
+  const nota = txt(p.nota, l);
+  const alergenos = p.alergenos.map((a) => a.slug);
+  const picante = p.escalas.find((e) => e.slug === 'picante');
+
+  /* Todo lo que filtra viaja en atributos del propio <li>. Asi la pagina no
+     lleva ni un JSON duplicado: el HTML es el dato. */
+  const datos = [
+    `data-cat="${esc(p.categoria)}"`,
+    `data-madre="${esc(p.categoria_madre)}"`,
+    p.etiquetas.length ? `data-etq="${esc(p.etiquetas.join(' '))}"` : '',
+    alergenos.length ? `data-alg="${esc(alergenos.join(' '))}"` : '',
+    picante ? `data-picante="${picante.valor}"` : 'data-picante="0"',
+    `data-buscar="${esc(plegar([nombre, desc, p.numero || ''].join(' ')))}"`,
+  ].filter(Boolean).join(' ');
+
+  const marcador = p.imagen
+    ? `<img class="plato-ico" src="${esc(p.imagen)}" width="56" height="56" alt="" loading="lazy" decoding="async">`
+    : `<svg class="plato-ico" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><use href="#pl-${esc(p.icono)}"></use></svg>`;
+
+  const chips = [];
+  for (const e of p.etiquetas) {
+    const meta = C.etiquetas.find((x) => x.slug === e);
+    if (meta) chips.push(`<span class="chip chip-dieta">${esc(txt(meta.nombre, l))}</span>`);
+  }
+  if (picante && picante.valor > 0) {
+    const puntos = Array.from({ length: picante.maximo }, (_, i) =>
+      `<i class="${i < picante.valor ? 'on' : ''}"></i>`).join('');
+    const meta = C.escalas.find((x) => x.slug === 'picante');
+    chips.push(
+      `<span class="chip chip-nivel"><span class="oculto">${esc(txt(meta.nombre, l))}: ${picante.valor} / ${picante.maximo}</span>` +
+      `<span class="pips" aria-hidden="true">${puntos}</span></span>`
+    );
+  }
+  for (const a of p.alergenos) {
+    const meta = C.alergenos.find((x) => x.slug === a.slug);
+    if (!meta) continue;
+    const n = esc(txt(meta.nombre, l));
+    chips.push(
+      `<span class="chip chip-alg"${a.grado === 'trazas' ? ' data-trazas' : ''}>` +
+      `<span class="oculto">${esc(a.grado === 'trazas' ? t.carta.trazas : t.carta.contiene)}: </span>${n}</span>`
+    );
+  }
+
+  const precios = p.precios.map((x) => {
+    const val = x.precio == null
+      ? `<span class="precio-consulta">${esc(t.carta.consultar)}</span>`
+      : esc(precio(x.precio, l));
+    return x.etiqueta
+      ? `<span class="precio-var"><span class="precio-et">${esc(txt(x.etiqueta, l))}</span>${val}</span>`
+      : `<span class="precio-var">${val}</span>`;
+  }).join('');
+
+  /* Los grupos de opciones se buscan por slug en la raiz del documento: la
+     definicion vive una sola vez y los nueve ramen apuntan a la misma. */
+  const grupos = p.grupos.map((slug) => {
+    const g = C.grupos.find((x) => x.slug === slug);
+    if (!g) return '';
+    const pista = g.tipo === 'multiple' ? t.carta.elige_varios : t.carta.elige_uno;
+    const ops = g.opciones.map((o) => {
+      const inc = o.incremento == null
+        ? ` <span class="op-mas op-consulta">${esc(t.carta.consultar)}</span>`
+        : o.incremento > 0
+          ? ` <span class="op-mas">+${esc(precio(o.incremento, l))}</span>`
+          : '';
+      return `<li>${esc(txt(o.nombre, l))}${inc}</li>`;
+    }).join('');
+    return `<div class="plato-grupo"><h4>${esc(txt(g.nombre, l))} <span>${esc(pista)}</span></h4><ul>${ops}</ul></div>`;
+  }).join('');
+
+  const detalleAlg = p.alergenos.length
+    ? `<div class="plato-grupo"><h4>${esc(t.carta.alergenos)}</h4><ul class="alg-lista">` +
+      p.alergenos.map((a) => {
+        const meta = C.alergenos.find((x) => x.slug === a.slug);
+        return `<li>${esc(txt(meta.nombre, l))}${a.grado === 'trazas' ? ` <span>(${esc(t.carta.trazas)})</span>` : ''}</li>`;
+      }).join('') + '</ul></div>'
+    : '';
+
+  const cuerpo = [nota ? `<p class="plato-nota">${esc(nota)}</p>` : '', detalleAlg, grupos]
+    .filter(Boolean).join('');
+
+  const abrible = Boolean(cuerpo);
+
+  const cabezaFila =
+    `${marcador}` +
+    `<h3 class="plato-n">${p.numero ? `<span class="plato-num">${esc(p.numero)}</span> ` : ''}${esc(nombre)}</h3>` +
+    `<span class="precio">${precios}</span>` +
+    (desc ? `<span class="plato-desc">${esc(desc)}</span>` : '') +
+    (chips.length ? `<span class="plato-chips">${chips.join('')}</span>` : '');
+
+  if (!abrible) {
+    return `<li class="cplato" ${datos}><div class="plato-fila">${cabezaFila}</div></li>`;
+  }
+  return `<li class="cplato" ${datos}><details><summary>${cabezaFila}<span class="plato-abre" aria-hidden="true"></span></summary><div class="plato-mas">${cuerpo}</div></details></li>`;
+}
+
+function menuCarta(l) {
+  const t = T[l], b = BASE[l];
+  const ruta = (b || '') + '/menu/';
+
+  /* Secciones: una por categoria madre, con sus hijas dentro. */
+  const secciones = C.categorias.map((m) => {
+    const suyos = C.platos.filter((p) => p.categoria_madre === m.slug);
+    if (!suyos.length) return '';
+    const desc = txt(m.descripcion, l);
+
+    const bloques = m.hijas.length
+      ? m.hijas.map((h) => {
+          const dentro = suyos.filter((p) => p.categoria === h.slug);
+          if (!dentro.length) return '';
+          return `<h3 class="carta-sub">${esc(txt(h.nombre, l))}</h3>\n<ul class="carta-platos">\n${dentro.map((p) => filaPlato(p, l, t)).join('\n')}\n</ul>`;
+        }).join('\n') +
+        (() => {
+          const sueltos = suyos.filter((p) => p.categoria === m.slug);
+          return sueltos.length
+            ? `\n<ul class="carta-platos">\n${sueltos.map((p) => filaPlato(p, l, t)).join('\n')}\n</ul>`
+            : '';
+        })()
+      : `<ul class="carta-platos">\n${suyos.map((p) => filaPlato(p, l, t)).join('\n')}\n</ul>`;
+
+    return `<section class="carta-sec" id="sec-${esc(m.slug)}" data-sec="${esc(m.slug)}">
+ <h2 class="antetitulo">${esc(txt(m.nombre, l))}</h2>
+ ${desc ? `<p class="carta-sec-desc">${esc(desc)}</p>` : ''}
+ ${bloques}
+</section>`;
+  }).filter(Boolean).join('\n');
+
+  const anclas = C.categorias
+    .filter((m) => C.platos.some((p) => p.categoria_madre === m.slug))
+    .map((m) => `<a href="#sec-${esc(m.slug)}">${esc(txt(m.nombre, l))}</a>`)
+    .join('');
+
+  /* Solo se ofrece filtrar por los alergenos que algun plato declara: una
+     casilla de "sin apio" que no quita nada solo estorba. */
+  const usados = new Set(C.platos.flatMap((p) => p.alergenos.map((a) => a.slug)));
+  const casillas = C.alergenos.filter((a) => usados.has(a.slug)).map((a) =>
+    `<label class="chip chip-btn"><input type="checkbox" name="sin" value="${esc(a.slug)}">` +
+    `<span>${esc(rell(t.carta.sin_uno, { a: txt(a.nombre, l) }))}</span></label>`
+  ).join('');
+
+  const dietas = C.etiquetas.map((e) =>
+    `<label class="chip chip-btn"><input type="checkbox" name="dieta" value="${esc(e.slug)}">` +
+    `<span>${esc(txt(e.nombre, l))}</span></label>`
+  ).join('');
+
+  const escPic = C.escalas.find((e) => e.slug === 'picante');
+  const nivelesPic = escPic
+    ? Array.from({ length: escPic.maximo + 1 }, (_, i) =>
+        `<option value="${i}">${i === 0 ? esc(t.carta.picante_nada) : '🌶'.repeat(i)}</option>`).join('')
+    : '';
+
+  const leyenda = C.alergenos.map((a) =>
+    `<li>${esc(txt(a.nombre, l))}</li>`).join('');
+
+  return `${cabeza(l, {
+    titulo: t.meta.titulo_carta, desc: t.meta.descripcion_carta, ruta,
+    jsonld: ldMigas(l, t.carta.titulo, ruta) + '\n' + ldCarta(l), clase: 'pag-menu'
+  })}
+${cabecera(l)}
+<main id="principal">
+${MARCADORES}
+ <div class="env carta-cab">
+  <h1 class="display">${esc(t.carta.titulo)}</h1>
+  <p class="carta-sub">${esc(t.carta.sub)}</p>
+  <p><a class="btn btn-s" href="${b || ''}/menu/pdf/">${ICO.descarga}${esc(t.carta.pdf)}</a></p>
+ </div>
+
+ <nav class="carta-anclas" aria-label="${esc(t.carta.secciones)}"><span class="env">${anclas}</span></nav>
+
+ <form class="carta-filtros" id="filtros" hidden aria-label="${esc(t.carta.filtros)}">
+  <div class="env">
+   <div class="filtro-buscar">
+    <label for="q" class="oculto">${esc(t.carta.buscar)}</label>
+    <input type="search" id="q" name="q" placeholder="${esc(t.carta.buscar_ph)}" autocomplete="off" enterkeyhint="search">
+    <button type="button" class="filtro-abre" id="abre-filtros" aria-expanded="false" aria-controls="filtro-cajon">
+     <span>${esc(t.carta.filtros)}</span><i class="filtro-punto" hidden></i>
+    </button>
+   </div>
+   <div class="filtro-cajon" id="filtro-cajon">
+   <fieldset class="filtro-grupo">
+    <legend>${esc(t.carta.dieta)}</legend>
+    ${dietas}
+   </fieldset>
+   <fieldset class="filtro-grupo">
+    <legend>${esc(t.carta.sin_alergenos)}</legend>
+    ${casillas}
+   </fieldset>
+   ${escPic ? `<div class="filtro-grupo filtro-pic">
+    <label for="pic">${esc(t.carta.picante_max)}</label>
+    <select id="pic" name="pic"><option value="">—</option>${nivelesPic}</select>
+   </div>` : ''}
+   </div>
+   <p class="filtro-pie">
+    <output id="cuenta" for="q" data-plantilla="${esc(t.carta.resultados)}" data-uno="${esc(t.carta.resultados_uno)}"></output>
+    <button type="button" class="btn-t" id="limpiar">${esc(t.carta.limpiar)}</button>
+   </p>
+  </div>
+ </form>
+
+ <div class="env">
+  <p class="carta-vacio" id="vacio" hidden>${esc(t.carta.sin_resultados)}</p>
+${secciones}
+
+  <aside class="carta-leyenda">
+   <h2>${esc(t.carta.alergenos)}</h2>
+   <p>${esc(t.carta.aviso_alergenos)}</p>
+   <ul>${leyenda}</ul>
+  </aside>
+ </div>
+</main>
+${pie(l)}
+<script src="${JS}" defer></script>
+</body>
+</html>`;
+}
+
+/* --------------------------------------------------------------------------- */
+/* el panel                                                                     */
+/* --------------------------------------------------------------------------- */
+/* Sin cabecera ni pie del sitio y con noindex: no es una pagina del
+   restaurante, es la herramienta con la que se mantiene la carta. */
+function panel() {
+  return `<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Panel de la carta · Ramen Okaeri</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#121818">
+<meta name="color-scheme" content="dark">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="stylesheet" href="${ADMIN_CSS}">
+</head>
+<body>
+<div id="app"><p class="cargando">Cargando…</p></div>
+<p class="aviso" id="aviso" hidden></p>
+<script src="${ADMIN_JS}" defer></script>
+</body>
+</html>`;
+}
+
+/* --------------------------------------------------------------------------- */
 /* 404                                                                           */
 /* --------------------------------------------------------------------------- */
 function error404() {
@@ -659,10 +996,22 @@ const salida = [];
 for (const l of IDIOMAS) {
   const b = BASE[l].replace(/^\//, '');
   salida.push(escribe(join(b, 'index.html'), portada(l)));
-  salida.push(escribe(join(b, 'menu', 'index.html'), carta(l)));
+  salida.push(escribe(join(b, 'menu', 'index.html'), menuCarta(l)));
+  salida.push(escribe(join(b, 'menu', 'pdf', 'index.html'), cartaPdf(l)));
   salida.push(escribe(join(b, 'aviso-legal', 'index.html'), legal(l)));
 }
 salida.push(escribe('404.html', error404()));
+salida.push(escribe(join('admin', 'index.html'), panel()));
+
+/* Sello de lo publicado. El panel lo pide y lo compara con la fecha del ultimo
+   cambio en Supabase para poder decir "hay cambios sin publicar". Se sirve desde
+   el propio dominio, asi que el panel no necesita ningun token de GitHub para
+   saber como esta la cosa. */
+escribe('assets/version.json', JSON.stringify({
+  publicado: new Date().toISOString().replace(/\.\d+Z$/, 'Z'),
+  platos: (C.platos || []).length,
+  carta: createHash('sha1').update(readFileSync(join(RAIZ, 'content/carta.json'))).digest('hex').slice(0, 8)
+}, null, 1) + String.fromCharCode(10));
 
 /* manifiesto, robots y sitemap */
 escribe('site.webmanifest', JSON.stringify({
@@ -674,7 +1023,8 @@ escribe('site.webmanifest', JSON.stringify({
   ]
 }, null, 1));
 
-escribe('robots.txt', `User-agent: *\nAllow: /\nDisallow: /web/\nDisallow: /build/\n\nSitemap: ${D.dominio}/sitemap.xml\n`);
+escribe('robots.txt', `User-agent: *\nAllow: /\nDisallow: /web/\nDisallow: /build/
+Disallow: /admin/\n\nSitemap: ${D.dominio}/sitemap.xml\n`);
 
 const urls = [];
 for (const l of IDIOMAS) {

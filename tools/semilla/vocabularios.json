@@ -1,0 +1,32 @@
+{
+  "_nota": "Los vocabularios fijos de la carta. Viven aquí y en ningún otro sitio: el .sql define la estructura y este archivo el contenido. Los carga tools/semilla-carta.mjs y los lee tools/carta.mjs --desde-semilla.",
+
+  "_alergenos": "Los 14 de declaración obligatoria del Reglamento (UE) 1169/2011. Lista cerrada: no la decide el restaurante, así que no se toca desde el panel. OJO: la carta en PDF etiqueta el pictograma de LUPIN como «CHAMPIÑONES». Lupin es el altramuz; el champiñón no es alérgeno de declaración obligatoria. Aquí va bien.",
+
+  "alergenos": [
+    { "id": 1,  "slug": "gluten",       "orden": 1,  "nombre": { "es": "Gluten", "en": "Gluten", "gl": "Glute" } },
+    { "id": 2,  "slug": "crustaceos",   "orden": 2,  "nombre": { "es": "Crustáceos", "en": "Crustaceans", "gl": "Crustáceos" } },
+    { "id": 3,  "slug": "huevos",       "orden": 3,  "nombre": { "es": "Huevos", "en": "Eggs", "gl": "Ovos" } },
+    { "id": 4,  "slug": "pescado",      "orden": 4,  "nombre": { "es": "Pescado", "en": "Fish", "gl": "Peixe" } },
+    { "id": 5,  "slug": "cacahuetes",   "orden": 5,  "nombre": { "es": "Cacahuetes", "en": "Peanuts", "gl": "Cacahuetes" } },
+    { "id": 6,  "slug": "soja",         "orden": 6,  "nombre": { "es": "Soja", "en": "Soya", "gl": "Soia" } },
+    { "id": 7,  "slug": "leche",        "orden": 7,  "nombre": { "es": "Leche", "en": "Milk", "gl": "Leite" } },
+    { "id": 8,  "slug": "frutos-secos", "orden": 8,  "nombre": { "es": "Frutos secos de cáscara", "en": "Nuts", "gl": "Froitos secos de casca" } },
+    { "id": 9,  "slug": "apio",         "orden": 9,  "nombre": { "es": "Apio", "en": "Celery", "gl": "Apio" } },
+    { "id": 10, "slug": "mostaza",      "orden": 10, "nombre": { "es": "Mostaza", "en": "Mustard", "gl": "Mostaza" } },
+    { "id": 11, "slug": "sesamo",       "orden": 11, "nombre": { "es": "Sésamo", "en": "Sesame", "gl": "Sésamo" } },
+    { "id": 12, "slug": "sulfitos",     "orden": 12, "nombre": { "es": "Sulfitos", "en": "Sulphites", "gl": "Sulfitos" } },
+    { "id": 13, "slug": "altramuces",   "orden": 13, "nombre": { "es": "Altramuces", "en": "Lupin", "gl": "Chochos (altramuces)" } },
+    { "id": 14, "slug": "moluscos",     "orden": 14, "nombre": { "es": "Moluscos", "en": "Molluscs", "gl": "Moluscos" } }
+  ],
+
+  "etiquetas": [
+    { "slug": "vegano",      "orden": 1, "icono": "hoja", "nombre": { "es": "Vegano", "en": "Vegan", "gl": "Vegano" } },
+    { "slug": "vegetariano", "orden": 2, "icono": "hoja", "nombre": { "es": "Vegetariano", "en": "Vegetarian", "gl": "Vexetariano" } }
+  ],
+
+  "escalas": [
+    { "slug": "picante", "orden": 1, "maximo": 3, "icono": "chile", "nombre": { "es": "Picante", "en": "Spicy", "gl": "Picante" } },
+    { "slug": "caldo",   "orden": 2, "maximo": 3, "icono": "punto", "nombre": { "es": "Intensidad del caldo", "en": "Broth intensity", "gl": "Intensidade do caldo" } }
+  ]
+}

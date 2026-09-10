@@ -277,4 +277,157 @@
     setInterval(pinta, 60000);
     caja.hidden = false;
   }
+
+  /* ------------------------------------------------------------------ */
+  /* Buscador y filtros de la carta                                      */
+  /* ------------------------------------------------------------------ */
+  /* Todo lo que filtra viaja en atributos del propio <li>, calculados al
+     construir: no hay ningún JSON duplicado en la página y filtrar es
+     comparar cadenas. Con 73 platos es instantáneo y cero peticiones.
+
+     EL ESTADO VA EN EL HASH DE LA URL Y NO EN localStorage. Así una carta
+     filtrada se comparte por WhatsApp y el botón atrás funciona, y de paso
+     la web sigue sin estrenar almacenamiento en el navegador, que es una
+     propiedad medida del sitio y no se toca por un filtro. */
+  var forma = $('#filtros');
+  if (forma) {
+    var platos = $$('.cplato');
+    var secciones = $$('.carta-sec');
+    var cajaQ = $('#q');
+    var selPic = $('#pic');
+    var cuenta = $('#cuenta');
+    var vacio = $('#vacio');
+    var limpiar = $('#limpiar');
+    var abre = $('#abre-filtros');
+    var punto = $('.filtro-punto', forma);
+    var plantilla = cuenta ? cuenta.getAttribute('data-plantilla') || '' : '';
+    var plantillaUno = cuenta ? cuenta.getAttribute('data-uno') || '' : '';
+
+    var pliega = function (s) {
+      return String(s).normalize
+        ? String(s).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
+        : String(s).toLowerCase();
+    };
+
+    var marcadas = function (nombre) {
+      return $$('input[name="' + nombre + '"]:checked', forma).map(function (i) { return i.value; });
+    };
+
+    function aplica() {
+      var q = pliega(cajaQ ? cajaQ.value.trim() : '');
+      var dietas = marcadas('dieta');
+      var sin = marcadas('sin');
+      var pic = selPic && selPic.value !== '' ? parseInt(selPic.value, 10) : null;
+      var vistos = 0;
+
+      platos.forEach(function (li) {
+        var etq = (li.getAttribute('data-etq') || '').split(' ');
+        var alg = (li.getAttribute('data-alg') || '').split(' ');
+        var ok = true;
+
+        if (q && li.getAttribute('data-buscar').indexOf(q) === -1) ok = false;
+
+        /* Las dietas suman: pedir vegano Y vegetariano deja solo lo que es las dos. */
+        if (ok) {
+          ok = dietas.every(function (d) { return etq.indexOf(d) !== -1; });
+        }
+        /* "Sin lactosa" quita lo que la lleva. Es una exclusión, no una búsqueda. */
+        if (ok) {
+          ok = !sin.some(function (a) { return alg.indexOf(a) !== -1; });
+        }
+        if (ok && pic !== null) {
+          ok = parseInt(li.getAttribute('data-picante') || '0', 10) <= pic;
+        }
+
+        li.hidden = !ok;
+        if (ok) vistos++;
+      });
+
+      /* Una sección sin ningún plato visible sobra: su título mentiría. */
+      secciones.forEach(function (sec) {
+        sec.hidden = !$$('.cplato', sec).some(function (li) { return !li.hidden; });
+      });
+
+      if (cuenta) {
+        cuenta.textContent = vistos === 1
+          ? plantillaUno
+          : plantilla.replace('{n}', String(vistos));
+      }
+      if (vacio) vacio.hidden = vistos !== 0;
+
+      var activos = q || dietas.length || sin.length || pic !== null;
+      if (limpiar) limpiar.hidden = !activos;
+      /* Con el cajon plegado no se ve que hay filtros puestos, y la carta
+         recortada parecería rota. El punto lo dice. */
+      if (punto) punto.hidden = !(dietas.length || sin.length || pic !== null);
+      guarda(q, dietas, sin, pic);
+    }
+
+    /* --- el estado, en la URL ---------------------------------------- */
+    function guarda(q, dietas, sin, pic) {
+      var p = new URLSearchParams();
+      if (q) p.set('q', cajaQ.value.trim());
+      if (dietas.length) p.set('dieta', dietas.join(','));
+      if (sin.length) p.set('sin', sin.join(','));
+      if (pic !== null) p.set('pic', String(pic));
+      var s = p.toString();
+      var destino = location.pathname + (s ? '#' + s : '');
+      if (destino !== location.pathname + location.hash) {
+        history.replaceState(null, '', destino);
+      }
+    }
+
+    function lee() {
+      var h = location.hash.replace(/^#/, '');
+      /* Un ancla de sección (#sec-ramen) no es estado de filtro: se deja pasar
+         para que el enlace siga saltando donde tiene que saltar. */
+      if (!h || h.indexOf('=') === -1) return;
+      var p = new URLSearchParams(h);
+      if (cajaQ && p.get('q')) cajaQ.value = p.get('q');
+      ['dieta', 'sin'].forEach(function (n) {
+        var v = (p.get(n) || '').split(',');
+        $$('input[name="' + n + '"]', forma).forEach(function (i) {
+          i.checked = v.indexOf(i.value) !== -1;
+        });
+      });
+      if (selPic && p.get('pic') !== null && p.get('pic') !== undefined) {
+        selPic.value = p.get('pic') || '';
+      }
+    }
+
+    if (abre) {
+      abre.addEventListener('click', function () {
+        var abierto = forma.classList.toggle('abierto');
+        abre.setAttribute('aria-expanded', abierto ? 'true' : 'false');
+      });
+    }
+
+    forma.addEventListener('input', aplica);
+    forma.addEventListener('change', aplica);
+    /* La barra vive dentro de un <form> para que el teclado del móvil enseñe
+       "buscar", pero no hay servidor al que enviar nada. */
+    forma.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (cajaQ) cajaQ.blur();
+    });
+    if (limpiar) {
+      limpiar.addEventListener('click', function () {
+        forma.reset();
+        if (cajaQ) cajaQ.value = '';
+        aplica();
+        if (cajaQ) cajaQ.focus();
+      });
+    }
+
+    lee();
+    forma.hidden = false;
+    aplica();
+    /* Si la URL ya trae filtros —un enlace compartido—, el cajon nace abierto:
+       si no, se llega a una carta recortada sin saber por que. */
+    if (punto && !punto.hidden && abre) {
+      forma.classList.add('abierto');
+      abre.setAttribute('aria-expanded', 'true');
+    }
+  }
+
 })();

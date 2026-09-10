@@ -1,0 +1,153 @@
+/* Panel de la carta. Hoja aparte de la del sitio: el visitante no la descarga
+   nunca y asi la web publica no engorda ni un byte por tener panel.
+   Mismos tokens de marca, definidos aqui porque style.css no se carga. */
+
+:root{
+  --sumi:#121818; --sumi-hondo:#0B1010; --sumi-sup:#1A2121; --sumi-borde:#2A3332;
+  --bengara:#A34544; --bengara-viva:#B85450; --bengara-txt:#C9635C;
+  --washi:#E5D7CA; --washi-ten:#9BA39E; --blanco:#FFFFFF;
+  --verde:#8FBF9B; --ambar:#D8A657;
+  --sal:cubic-bezier(.23,1,.32,1);
+  --sans:'Zen Kaku Gothic New',"Hiragino Sans","Helvetica Neue",Arial,sans-serif;
+  --serif:'Shippori Mincho B1',"Hiragino Mincho ProN",Georgia,serif;
+  --radio:14px;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--sumi);color:var(--washi);font-family:var(--sans);
+  font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:var(--serif);font-weight:700;line-height:1.25;margin:0}
+a{color:var(--bengara-txt)}
+:focus-visible{outline:2px solid var(--bengara-txt);outline-offset:3px}
+
+input,select,textarea,button{font:inherit}
+input[type=text],input[type=email],input[type=password],input[type=number],
+input[type=search],select,textarea{
+  width:100%;min-height:46px;padding:10px 14px;color:var(--washi);
+  background:var(--sumi-sup);border:1px solid var(--sumi-borde);border-radius:10px;
+  font-size:16px;-webkit-appearance:none;appearance:none}
+textarea{min-height:88px;resize:vertical;line-height:1.5}
+input::placeholder,textarea::placeholder{color:var(--washi-ten)}
+select{background-image:none}
+label{display:block;font-size:.86rem;color:var(--washi-ten);margin-bottom:6px}
+
+.btn{display:inline-grid;place-items:center;min-height:46px;padding:0 20px;border:0;
+  border-radius:999px;cursor:pointer;text-decoration:none;font-size:.95rem;
+  transition:background-color .2s var(--sal),border-color .2s var(--sal)}
+.btn-p{background:var(--bengara);color:var(--blanco)}
+.btn-p:hover:not(:disabled){background:var(--bengara-viva)}
+.btn-p:disabled{opacity:.5;cursor:default}
+.btn-s{background:transparent;color:var(--washi);border:1px solid var(--sumi-borde)}
+.btn-s:hover{border-color:var(--washi-ten)}
+.btn-t{background:none;border:0;color:var(--washi-ten);cursor:pointer;padding:10px 6px;
+  min-height:44px;font-size:.9rem;text-decoration:underline;text-underline-offset:3px}
+.btn-t:hover{color:var(--washi)}
+.btn-t.peligro{color:var(--bengara-txt)}
+
+/* --- entrada -------------------------------------------------------------- */
+.entrada{max-width:380px;margin:14vh auto;padding:0 22px}
+.entrada h1{font-size:1.8rem;margin-bottom:6px}
+.entrada-sub{color:var(--washi-ten);font-size:.94rem;margin:0 0 22px}
+.entrada label{margin-top:14px}
+.entrada .btn{width:100%;margin-top:20px}
+.entrada-pie{margin-top:22px;text-align:center;font-size:.9rem}
+/* el enlace, no el parrafo, es lo que se toca: 44 px minimos */
+.entrada-pie a{display:inline-grid;place-items:center;min-height:44px;padding:0 12px}
+.entrada code{background:var(--sumi-sup);padding:2px 6px;border-radius:6px;font-size:.86em}
+
+/* --- armazon -------------------------------------------------------------- */
+.panel-cab{display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:14px 22px;border-bottom:1px solid var(--sumi-borde);background:var(--sumi-hondo)}
+.panel-marca strong{font-family:var(--serif);display:block;line-height:1.2}
+.panel-marca span{font-size:.8rem;color:var(--washi-ten)}
+.panel-acc{display:flex;align-items:center;gap:6px}
+
+.pest{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;
+  padding:10px 22px 0;border-bottom:1px solid var(--sumi-borde);background:var(--sumi-hondo)}
+.pest::-webkit-scrollbar{display:none}
+.pest-b{flex:0 0 auto;background:none;border:0;border-bottom:2px solid transparent;
+  color:var(--washi-ten);padding:10px 14px;min-height:44px;cursor:pointer;font-size:.94rem}
+.pest-b:hover{color:var(--washi)}
+.pest-b.activa{color:var(--washi);border-bottom-color:var(--bengara)}
+
+.panel-cuerpo{max-width:900px;margin:0 auto;padding:22px}
+.cargando,.vacio{color:var(--washi-ten);padding:40px 0;text-align:center}
+
+.barra{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:18px}
+.barra input[type=search]{flex:1 1 200px;min-width:0}
+.barra select{flex:0 1 220px}
+.barra-tit{flex:1 1 auto;font-size:1.3rem}
+.pista{color:var(--washi-ten);font-size:.84rem;margin:0 0 8px;line-height:1.5}
+.pista-suelta{margin-bottom:16px}
+
+/* --- listas --------------------------------------------------------------- */
+.lista-cat{font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--washi-ten);font-family:var(--sans);font-weight:600;margin:26px 0 4px}
+.fila{display:flex;align-items:center;gap:14px;padding:14px 0;
+  border-top:1px solid var(--sumi-borde)}
+.fila.apagado{opacity:.45}
+.fila-txt{flex:1 1 auto;min-width:0}
+.fila-txt strong{display:block;font-weight:500}
+.fila-sub{display:block;font-size:.85rem;color:var(--washi-ten)}
+.pincho{display:inline-block;margin-top:4px;padding:1px 8px;border-radius:999px;
+  border:1px solid var(--ambar);color:var(--ambar);font-size:.72rem}
+.fila-acc{display:flex;align-items:center;gap:4px;flex:0 0 auto}
+
+/* --- ficha ---------------------------------------------------------------- */
+.ficha{display:grid;gap:22px}
+.ficha-cab{display:flex;justify-content:space-between;align-items:center}
+.campo label{font-size:.86rem;color:var(--washi-ten)}
+.dos{display:grid;gap:16px}
+@media (min-width:640px){.dos{grid-template-columns:1fr 1fr}}
+
+.idiomas{display:flex;gap:4px;margin-bottom:8px}
+.idi-b{background:var(--sumi-sup);border:1px solid var(--sumi-borde);color:var(--washi-ten);
+  border-radius:8px;padding:6px 12px;min-height:34px;cursor:pointer;font-size:.82rem;
+  text-transform:uppercase;letter-spacing:.06em;position:relative}
+.idi-b.activa{color:var(--washi);border-color:var(--washi-ten)}
+.idi-b.falta::after{content:"";position:absolute;top:4px;right:4px;width:5px;height:5px;
+  border-radius:50%;background:var(--ambar)}
+
+.precios,.opciones{display:grid;gap:8px}
+.precio-fila{display:flex;gap:8px;align-items:center}
+.precio-fila input[type=number]{flex:0 0 120px}
+
+.rejilla{display:grid;gap:8px}
+@media (min-width:560px){.rejilla{grid-template-columns:1fr 1fr}}
+.rej-item{display:flex;align-items:center;gap:10px;justify-content:space-between;
+  padding:6px 10px;background:var(--sumi-sup);border:1px solid var(--sumi-borde);border-radius:10px}
+.rej-item span{font-size:.88rem;color:var(--washi-ten)}
+.rej-item select{flex:0 0 130px;min-height:38px;padding:4px 8px;font-size:.86rem}
+
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip-t{background:var(--sumi-sup);border:1px solid var(--sumi-borde);color:var(--washi-ten);
+  border-radius:999px;padding:0 16px;min-height:44px;cursor:pointer;font-size:.9rem}
+.chip-t.activa{background:var(--bengara);border-color:var(--bengara);color:var(--blanco)}
+
+.interruptores{display:flex;flex-wrap:wrap;gap:20px}
+.inter{display:flex;align-items:center;gap:10px;min-height:44px;margin:0;color:var(--washi)}
+.inter input{width:20px;height:20px;min-height:0;accent-color:var(--bengara)}
+
+/* --- modal ---------------------------------------------------------------- */
+.modal{position:fixed;inset:0;background:rgba(9,13,13,.72);display:grid;
+  place-items:center;padding:20px;z-index:100;overflow-y:auto}
+.modal-caja{background:var(--sumi);border:1px solid var(--sumi-borde);border-radius:var(--radio);
+  padding:24px;width:min(560px,100%);max-height:88vh;overflow-y:auto;display:grid;gap:18px}
+.modal-caja h3{font-size:1.2rem}
+.modal-acc{display:flex;justify-content:flex-end;gap:8px;align-items:center;flex-wrap:wrap}
+
+/* --- publicar ------------------------------------------------------------- */
+.publicar{max-width:560px}
+.publicar h2{font-size:1.3rem;margin-bottom:8px}
+.pub-estado{font-family:var(--serif);font-size:1.15rem;margin:18px 0 4px;color:var(--verde)}
+.pub-estado.pendiente{color:var(--ambar)}
+.publicar .btn{margin-top:18px}
+
+/* --- avisos --------------------------------------------------------------- */
+.aviso{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:200;
+  max-width:min(520px,92vw);padding:12px 20px;border-radius:999px;font-size:.9rem;
+  background:var(--sumi-sup);border:1px solid var(--sumi-borde);color:var(--washi)}
+.aviso.error{border-color:var(--bengara);color:var(--bengara-txt)}
+.aviso.ok{border-color:#3E5A46;color:var(--verde)}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
