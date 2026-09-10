@@ -1,180 +1,20 @@
 {
   "_nota": "GENERADO por tools/carta.mjs desde Supabase. No se edita a mano: se vuelve a ejecutar. La fuente de verdad es la base de datos; este archivo es su foto publicada y, de paso, el respaldo versionado de la carta.",
-  "generado": "2026-09-09T20:21:08Z",
-  "actualizado": null,
-  "origen": "semilla",
-  "alergenos": [
-    {
-      "slug": "gluten",
-      "nombre": {
-        "es": "Gluten",
-        "en": "Gluten",
-        "gl": "Glute"
-      }
-    },
-    {
-      "slug": "crustaceos",
-      "nombre": {
-        "es": "Crustáceos",
-        "en": "Crustaceans",
-        "gl": "Crustáceos"
-      }
-    },
-    {
-      "slug": "huevos",
-      "nombre": {
-        "es": "Huevos",
-        "en": "Eggs",
-        "gl": "Ovos"
-      }
-    },
-    {
-      "slug": "pescado",
-      "nombre": {
-        "es": "Pescado",
-        "en": "Fish",
-        "gl": "Peixe"
-      }
-    },
-    {
-      "slug": "cacahuetes",
-      "nombre": {
-        "es": "Cacahuetes",
-        "en": "Peanuts",
-        "gl": "Cacahuetes"
-      }
-    },
-    {
-      "slug": "soja",
-      "nombre": {
-        "es": "Soja",
-        "en": "Soya",
-        "gl": "Soia"
-      }
-    },
-    {
-      "slug": "leche",
-      "nombre": {
-        "es": "Leche",
-        "en": "Milk",
-        "gl": "Leite"
-      }
-    },
-    {
-      "slug": "frutos-secos",
-      "nombre": {
-        "es": "Frutos secos de cáscara",
-        "en": "Nuts",
-        "gl": "Froitos secos de casca"
-      }
-    },
-    {
-      "slug": "apio",
-      "nombre": {
-        "es": "Apio",
-        "en": "Celery",
-        "gl": "Apio"
-      }
-    },
-    {
-      "slug": "mostaza",
-      "nombre": {
-        "es": "Mostaza",
-        "en": "Mustard",
-        "gl": "Mostaza"
-      }
-    },
-    {
-      "slug": "sesamo",
-      "nombre": {
-        "es": "Sésamo",
-        "en": "Sesame",
-        "gl": "Sésamo"
-      }
-    },
-    {
-      "slug": "sulfitos",
-      "nombre": {
-        "es": "Sulfitos",
-        "en": "Sulphites",
-        "gl": "Sulfitos"
-      }
-    },
-    {
-      "slug": "altramuces",
-      "nombre": {
-        "es": "Altramuces",
-        "en": "Lupin",
-        "gl": "Chochos (altramuces)"
-      }
-    },
-    {
-      "slug": "moluscos",
-      "nombre": {
-        "es": "Moluscos",
-        "en": "Molluscs",
-        "gl": "Moluscos"
-      }
-    }
-  ],
-  "etiquetas": [
-    {
-      "slug": "vegano",
-      "nombre": {
-        "es": "Vegano",
-        "en": "Vegan",
-        "gl": "Vegano"
-      },
-      "icono": "hoja"
-    },
-    {
-      "slug": "vegetariano",
-      "nombre": {
-        "es": "Vegetariano",
-        "en": "Vegetarian",
-        "gl": "Vexetariano"
-      },
-      "icono": "hoja"
-    }
-  ],
-  "escalas": [
-    {
-      "slug": "picante",
-      "nombre": {
-        "es": "Picante",
-        "en": "Spicy",
-        "gl": "Picante"
-      },
-      "maximo": 3,
-      "icono": "chile"
-    },
-    {
-      "slug": "caldo",
-      "nombre": {
-        "es": "Intensidad del caldo",
-        "en": "Broth intensity",
-        "gl": "Intensidade do caldo"
-      },
-      "maximo": 3,
-      "icono": "punto"
-    }
-  ],
   "grupos": [
     {
       "slug": "intensidad-caldo",
+      "tipo": "unica",
       "nombre": {
-        "es": "Intensidad del caldo",
         "en": "Broth intensity",
+        "es": "Intensidad del caldo",
         "gl": "Intensidade do caldo"
       },
-      "tipo": "unica",
-      "obligatorio": false,
       "opciones": [
         {
           "slug": "bajo",
           "nombre": {
-            "es": "Bajo",
             "en": "Low",
+            "es": "Bajo",
             "gl": "Baixo"
           },
           "incremento": 0
@@ -182,8 +22,8 @@
         {
           "slug": "medio",
           "nombre": {
-            "es": "Medio",
             "en": "Medium",
+            "es": "Medio",
             "gl": "Medio"
           },
           "incremento": 0
@@ -191,29 +31,29 @@
         {
           "slug": "alto",
           "nombre": {
-            "es": "Alto",
             "en": "High",
+            "es": "Alto",
             "gl": "Alto"
           },
           "incremento": 0
         }
-      ]
+      ],
+      "obligatorio": false
     },
     {
       "slug": "sabor-ramen",
+      "tipo": "unica",
       "nombre": {
-        "es": "Sabor",
         "en": "Flavour",
+        "es": "Sabor",
         "gl": "Sabor"
       },
-      "tipo": "unica",
-      "obligatorio": false,
       "opciones": [
         {
           "slug": "normal",
           "nombre": {
-            "es": "Normal",
             "en": "Regular",
+            "es": "Normal",
             "gl": "Normal"
           },
           "incremento": 0
@@ -221,29 +61,29 @@
         {
           "slug": "picante",
           "nombre": {
-            "es": "Picante",
             "en": "Spicy",
+            "es": "Picante",
             "gl": "Picante"
           },
           "incremento": 0
         }
-      ]
+      ],
+      "obligatorio": false
     },
     {
       "slug": "extras-ramen",
+      "tipo": "multiple",
       "nombre": {
-        "es": "Extras",
         "en": "Extras",
+        "es": "Extras",
         "gl": "Extras"
       },
-      "tipo": "multiple",
-      "obligatorio": false,
       "opciones": [
         {
           "slug": "mayu",
           "nombre": {
-            "es": "Mayu (ajo ahumado)",
             "en": "Mayu (smoked garlic)",
+            "es": "Mayu (ajo ahumado)",
             "gl": "Mayu (allo afumado)"
           },
           "incremento": 2.5
@@ -251,8 +91,8 @@
         {
           "slug": "cerdo-chashu",
           "nombre": {
-            "es": "Extra cerdo chashu",
             "en": "Extra pork chashu",
+            "es": "Extra cerdo chashu",
             "gl": "Extra chashu de porco"
           },
           "incremento": null
@@ -260,8 +100,8 @@
         {
           "slug": "ternera-chashu",
           "nombre": {
-            "es": "Extra ternera chashu",
             "en": "Extra beef chashu",
+            "es": "Extra ternera chashu",
             "gl": "Extra chashu de tenreira"
           },
           "incremento": 3
@@ -269,8 +109,8 @@
         {
           "slug": "huevo",
           "nombre": {
-            "es": "Extra huevo",
             "en": "Extra egg",
+            "es": "Extra huevo",
             "gl": "Extra ovo"
           },
           "incremento": 1
@@ -278,8 +118,8 @@
         {
           "slug": "naruto",
           "nombre": {
-            "es": "Extra naruto",
             "en": "Extra naruto",
+            "es": "Extra naruto",
             "gl": "Extra naruto"
           },
           "incremento": 1
@@ -287,8 +127,8 @@
         {
           "slug": "gambas",
           "nombre": {
-            "es": "Extra gambas",
             "en": "Extra shrimp",
+            "es": "Extra gambas",
             "gl": "Extra gambas"
           },
           "incremento": 3
@@ -296,29 +136,29 @@
         {
           "slug": "fideos",
           "nombre": {
-            "es": "Extra fideos",
             "en": "Extra noodles",
+            "es": "Extra fideos",
             "gl": "Extra fideos"
           },
           "incremento": 3
         }
-      ]
+      ],
+      "obligatorio": false
     },
     {
       "slug": "sabores-mochi",
+      "tipo": "unica",
       "nombre": {
-        "es": "Sabores",
         "en": "Flavours",
+        "es": "Sabores",
         "gl": "Sabores"
       },
-      "tipo": "unica",
-      "obligatorio": false,
       "opciones": [
         {
           "slug": "chocolate",
           "nombre": {
-            "es": "Chocolate",
             "en": "Chocolate",
+            "es": "Chocolate",
             "gl": "Chocolate"
           },
           "incremento": 0
@@ -326,8 +166,8 @@
         {
           "slug": "mango",
           "nombre": {
-            "es": "Mango",
             "en": "Mango",
+            "es": "Mango",
             "gl": "Mango"
           },
           "incremento": 0
@@ -335,8 +175,8 @@
         {
           "slug": "te-verde",
           "nombre": {
-            "es": "Té verde",
             "en": "Green tea",
+            "es": "Té verde",
             "gl": "Té verde"
           },
           "incremento": 0
@@ -344,8 +184,8 @@
         {
           "slug": "vainilla",
           "nombre": {
-            "es": "Vainilla",
             "en": "Vanilla",
+            "es": "Vainilla",
             "gl": "Vainilla"
           },
           "incremento": 0
@@ -353,8 +193,8 @@
         {
           "slug": "fresa",
           "nombre": {
-            "es": "Fresa",
             "en": "Strawberry",
+            "es": "Fresa",
             "gl": "Amorodo"
           },
           "incremento": 0
@@ -362,8 +202,8 @@
         {
           "slug": "cafe",
           "nombre": {
-            "es": "Café",
             "en": "Coffee",
+            "es": "Café",
             "gl": "Café"
           },
           "incremento": 0
@@ -371,8 +211,8 @@
         {
           "slug": "castana",
           "nombre": {
-            "es": "Castaña",
             "en": "Chestnut",
+            "es": "Castaña",
             "gl": "Castaña"
           },
           "incremento": 0
@@ -380,29 +220,29 @@
         {
           "slug": "sesamo",
           "nombre": {
-            "es": "Sésamo",
             "en": "Sesame",
+            "es": "Sésamo",
             "gl": "Sésamo"
           },
           "incremento": 0
         }
-      ]
+      ],
+      "obligatorio": false
     },
     {
       "slug": "sabores-ramune",
+      "tipo": "unica",
       "nombre": {
-        "es": "Sabores",
         "en": "Flavours",
+        "es": "Sabores",
         "gl": "Sabores"
       },
-      "tipo": "unica",
-      "obligatorio": false,
       "opciones": [
         {
           "slug": "original",
           "nombre": {
-            "es": "Original",
             "en": "Original",
+            "es": "Original",
             "gl": "Orixinal"
           },
           "incremento": 0
@@ -410,8 +250,8 @@
         {
           "slug": "fresa",
           "nombre": {
-            "es": "Fresa",
             "en": "Strawberry",
+            "es": "Fresa",
             "gl": "Amorodo"
           },
           "incremento": 0
@@ -419,8 +259,8 @@
         {
           "slug": "lichi",
           "nombre": {
-            "es": "Lichi",
             "en": "Lychee",
+            "es": "Lichi",
             "gl": "Lichi"
           },
           "incremento": 0
@@ -428,8 +268,8 @@
         {
           "slug": "pomelo",
           "nombre": {
-            "es": "Pomelo",
             "en": "Grapefruit",
+            "es": "Pomelo",
             "gl": "Pomelo"
           },
           "incremento": 0
@@ -437,29 +277,29 @@
         {
           "slug": "arandano",
           "nombre": {
-            "es": "Arándano",
             "en": "Blueberry",
+            "es": "Arándano",
             "gl": "Arando"
           },
           "incremento": 0
         }
-      ]
+      ],
+      "obligatorio": false
     },
     {
       "slug": "sabores-soju",
+      "tipo": "unica",
       "nombre": {
-        "es": "Sabores",
         "en": "Flavours",
+        "es": "Sabores",
         "gl": "Sabores"
       },
-      "tipo": "unica",
-      "obligatorio": false,
       "opciones": [
         {
           "slug": "original",
           "nombre": {
-            "es": "Original",
             "en": "Original",
+            "es": "Original",
             "gl": "Orixinal"
           },
           "incremento": 0
@@ -467,8 +307,8 @@
         {
           "slug": "fresa",
           "nombre": {
-            "es": "Fresa",
             "en": "Strawberry",
+            "es": "Fresa",
             "gl": "Amorodo"
           },
           "incremento": 0
@@ -476,8 +316,8 @@
         {
           "slug": "mango",
           "nombre": {
-            "es": "Mango",
             "en": "Mango",
+            "es": "Mango",
             "gl": "Mango"
           },
           "incremento": 0
@@ -485,8 +325,8 @@
         {
           "slug": "melocoton",
           "nombre": {
-            "es": "Melocotón",
             "en": "Peach",
+            "es": "Melocotón",
             "gl": "Pexego"
           },
           "incremento": 0
@@ -494,29 +334,29 @@
         {
           "slug": "ciruela",
           "nombre": {
-            "es": "Ciruela",
             "en": "Plum",
+            "es": "Ciruela",
             "gl": "Ameixa"
           },
           "incremento": 0
         }
-      ]
+      ],
+      "obligatorio": false
     },
     {
       "slug": "combinados-licor",
+      "tipo": "unica",
       "nombre": {
-        "es": "Licor",
         "en": "Spirit",
+        "es": "Licor",
         "gl": "Licor"
       },
-      "tipo": "unica",
-      "obligatorio": false,
       "opciones": [
         {
           "slug": "ron",
           "nombre": {
-            "es": "Ron",
             "en": "Rum",
+            "es": "Ron",
             "gl": "Ron"
           },
           "incremento": 0
@@ -524,8 +364,8 @@
         {
           "slug": "ginebra",
           "nombre": {
-            "es": "Ginebra",
             "en": "Gin",
+            "es": "Ginebra",
             "gl": "Xenebra"
           },
           "incremento": 0
@@ -533,8 +373,8 @@
         {
           "slug": "vodka",
           "nombre": {
-            "es": "Vodka",
             "en": "Vodka",
+            "es": "Vodka",
             "gl": "Vodka"
           },
           "incremento": 0
@@ -542,29 +382,29 @@
         {
           "slug": "whisky",
           "nombre": {
-            "es": "Whisky",
             "en": "Whisky",
+            "es": "Whisky",
             "gl": "Whisky"
           },
           "incremento": 0
         }
-      ]
+      ],
+      "obligatorio": false
     },
     {
       "slug": "sabores-refresco",
+      "tipo": "unica",
       "nombre": {
-        "es": "Refresco",
         "en": "Soft drink",
+        "es": "Refresco",
         "gl": "Refresco"
       },
-      "tipo": "unica",
-      "obligatorio": false,
       "opciones": [
         {
           "slug": "coca-cola",
           "nombre": {
-            "es": "Coca-Cola",
             "en": "Coca-Cola",
+            "es": "Coca-Cola",
             "gl": "Coca-Cola"
           },
           "incremento": 0
@@ -572,8 +412,8 @@
         {
           "slug": "fanta",
           "nombre": {
-            "es": "Fanta",
             "en": "Fanta",
+            "es": "Fanta",
             "gl": "Fanta"
           },
           "incremento": 0
@@ -581,8 +421,8 @@
         {
           "slug": "nestea",
           "nombre": {
-            "es": "Nestea",
             "en": "Nestea",
+            "es": "Nestea",
             "gl": "Nestea"
           },
           "incremento": 0
@@ -590,8 +430,8 @@
         {
           "slug": "tonica",
           "nombre": {
-            "es": "Tónica",
             "en": "Tonic",
+            "es": "Tónica",
             "gl": "Tónica"
           },
           "incremento": 0
@@ -599,8 +439,8 @@
         {
           "slug": "sprite",
           "nombre": {
-            "es": "Sprite",
             "en": "Sprite",
+            "es": "Sprite",
             "gl": "Sprite"
           },
           "incremento": 0
@@ -608,236 +448,81 @@
         {
           "slug": "aquarius",
           "nombre": {
-            "es": "Aquarius",
             "en": "Aquarius",
+            "es": "Aquarius",
             "gl": "Aquarius"
           },
           "incremento": 0
         }
-      ]
-    }
-  ],
-  "categorias": [
-    {
-      "slug": "ramen",
-      "nombre": {
-        "es": "Ramen",
-        "en": "Ramen",
-        "gl": "Ramen"
-      },
-      "descripcion": {
-        "es": "Caldo largo, fideos y lo que le pongas encima.",
-        "en": "Long-simmered broth, noodles, and whatever you put on top.",
-        "gl": "Caldo longo, fideos e o que lle poñas enriba."
-      },
-      "icono": "ramen",
-      "hijas": []
-    },
-    {
-      "slug": "arroces",
-      "nombre": {
-        "es": "Arroces",
-        "en": "Rice dishes",
-        "gl": "Arroces"
-      },
-      "descripcion": {},
-      "icono": "arroz",
-      "hijas": []
-    },
-    {
-      "slug": "tapas",
-      "nombre": {
-        "es": "Tapas",
-        "en": "Small plates",
-        "gl": "Tapas"
-      },
-      "descripcion": {},
-      "icono": "tapa",
-      "hijas": [
-        {
-          "slug": "gyozas",
-          "nombre": {
-            "es": "Gyozas",
-            "en": "Gyoza",
-            "gl": "Gyozas"
-          },
-          "descripcion": {},
-          "icono": "tapa"
-        },
-        {
-          "slug": "baos",
-          "nombre": {
-            "es": "Baos",
-            "en": "Bao",
-            "gl": "Baos"
-          },
-          "descripcion": {},
-          "icono": "tapa"
-        },
-        {
-          "slug": "fritos",
-          "nombre": {
-            "es": "De la freidora",
-            "en": "From the fryer",
-            "gl": "Da fritideira"
-          },
-          "descripcion": {},
-          "icono": "tapa"
-        }
-      ]
-    },
-    {
-      "slug": "bebidas",
-      "nombre": {
-        "es": "Bebidas",
-        "en": "Drinks",
-        "gl": "Bebidas"
-      },
-      "descripcion": {},
-      "icono": "bebida",
-      "hijas": [
-        {
-          "slug": "refrescos",
-          "nombre": {
-            "es": "Refrescos y agua",
-            "en": "Soft drinks and water",
-            "gl": "Refrescos e auga"
-          },
-          "descripcion": {},
-          "icono": "bebida"
-        },
-        {
-          "slug": "cervezas",
-          "nombre": {
-            "es": "Cervezas",
-            "en": "Beer",
-            "gl": "Cervexas"
-          },
-          "descripcion": {},
-          "icono": "bebida"
-        },
-        {
-          "slug": "vinos",
-          "nombre": {
-            "es": "Vinos",
-            "en": "Wine",
-            "gl": "Viños"
-          },
-          "descripcion": {},
-          "icono": "bebida"
-        },
-        {
-          "slug": "orientales",
-          "nombre": {
-            "es": "Bebidas orientales",
-            "en": "Asian drinks",
-            "gl": "Bebidas orientais"
-          },
-          "descripcion": {},
-          "icono": "bebida"
-        },
-        {
-          "slug": "cafes",
-          "nombre": {
-            "es": "Café e infusiones",
-            "en": "Coffee and infusions",
-            "gl": "Café e infusións"
-          },
-          "descripcion": {},
-          "icono": "bebida"
-        }
-      ]
-    },
-    {
-      "slug": "cocteles",
-      "nombre": {
-        "es": "Cócteles",
-        "en": "Cocktails",
-        "gl": "Cócteles"
-      },
-      "descripcion": {},
-      "icono": "coctel",
-      "hijas": []
-    },
-    {
-      "slug": "postres",
-      "nombre": {
-        "es": "Postres",
-        "en": "Desserts",
-        "gl": "Sobremesas"
-      },
-      "descripcion": {},
-      "icono": "postre",
-      "hijas": []
+      ],
+      "obligatorio": false
     }
   ],
   "platos": [
     {
+      "nota": {},
       "slug": "tonkotsu-ramen",
-      "numero": "1",
-      "categoria": "ramen",
-      "categoria_madre": "ramen",
       "icono": "ramen",
+      "grupos": [
+        "intensidad-caldo",
+        "sabor-ramen",
+        "extras-ramen"
+      ],
+      "imagen": null,
       "nombre": {
-        "es": "Tonkotsu Ramen",
         "en": "Tonkotsu Ramen",
+        "es": "Tonkotsu Ramen",
         "gl": "Tonkotsu Ramen"
       },
+      "numero": "1",
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 12.95,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [
+        {
+          "slug": "gluten",
+          "grado": "contiene"
+        },
+        {
+          "slug": "huevos",
+          "grado": "contiene"
+        }
+      ],
+      "categoria": "ramen",
+      "destacado": true,
+      "etiquetas": [],
       "descripcion": {
-        "es": "Fideos, chashu de cerdo, huevo marinado, nori y verduras (oreja de judas, espinaca, cebollino y bambú marinado).",
         "en": "Noodles, pork chashu, marinated egg, nori and vegetables (wood ear, spinach, spring onion and marinated bamboo).",
+        "es": "Fideos, chashu de cerdo, huevo marinado, nori y verduras (oreja de judas, espinaca, cebollino y bambú marinado).",
         "gl": "Fideos, chashu de porco, ovo mariñado, nori e verduras (orella de xudas, espinaca, cebolino e bambú mariñado)."
       },
-      "imagen": null,
+      "categoria_madre": "ramen"
+    },
+    {
       "nota": {},
-      "destacado": true,
-      "precios": [
-        {
-          "etiqueta": null,
-          "precio": 12.95
-        }
-      ],
-      "alergenos": [
-        {
-          "slug": "gluten",
-          "grado": "contiene"
-        },
-        {
-          "slug": "huevos",
-          "grado": "contiene"
-        }
-      ],
-      "etiquetas": [],
-      "escalas": [],
+      "slug": "gyukotsu-shio-ramen",
+      "icono": "ramen",
       "grupos": [
         "intensidad-caldo",
         "sabor-ramen",
         "extras-ramen"
-      ]
-    },
-    {
-      "slug": "gyukotsu-shio-ramen",
-      "numero": "2",
-      "categoria": "ramen",
-      "categoria_madre": "ramen",
-      "icono": "ramen",
+      ],
+      "imagen": null,
       "nombre": {
-        "es": "Gyukotsu Shio Ramen",
         "en": "Gyukotsu Shio Ramen",
+        "es": "Gyukotsu Shio Ramen",
         "gl": "Gyukotsu Shio Ramen"
       },
-      "descripcion": {
-        "es": "Fideos, chashu de ternera, huevo marinado, nori y verduras (oreja de judas, espinaca, cebollino y bambú marinado).",
-        "en": "Noodles, beef chashu, marinated egg, nori and vegetables (wood ear, spinach, spring onion and marinated bamboo).",
-        "gl": "Fideos, chashu de tenreira, ovo mariñado, nori e verduras (orella de xudas, espinaca, cebolino e bambú mariñado)."
-      },
-      "imagen": null,
-      "nota": {},
-      "destacado": false,
+      "numero": "2",
+      "escalas": [],
       "precios": [
         {
-          "etiqueta": null,
-          "precio": 13.95
+          "precio": 13.95,
+          "etiqueta": null
         }
       ],
       "alergenos": [
@@ -850,37 +535,37 @@
           "grado": "contiene"
         }
       ],
+      "categoria": "ramen",
+      "destacado": false,
       "etiquetas": [],
-      "escalas": [],
+      "descripcion": {
+        "en": "Noodles, beef chashu, marinated egg, nori and vegetables (wood ear, spinach, spring onion and marinated bamboo).",
+        "es": "Fideos, chashu de ternera, huevo marinado, nori y verduras (oreja de judas, espinaca, cebollino y bambú marinado).",
+        "gl": "Fideos, chashu de tenreira, ovo mariñado, nori e verduras (orella de xudas, espinaca, cebolino e bambú mariñado)."
+      },
+      "categoria_madre": "ramen"
+    },
+    {
+      "nota": {},
+      "slug": "ebi-supu-ramen",
+      "icono": "ramen",
       "grupos": [
         "intensidad-caldo",
         "sabor-ramen",
         "extras-ramen"
-      ]
-    },
-    {
-      "slug": "ebi-supu-ramen",
-      "numero": "3",
-      "categoria": "ramen",
-      "categoria_madre": "ramen",
-      "icono": "ramen",
+      ],
+      "imagen": null,
       "nombre": {
-        "es": "Ebi Supu Ramen",
         "en": "Ebi Supu Ramen",
+        "es": "Ebi Supu Ramen",
         "gl": "Ebi Supu Ramen"
       },
-      "descripcion": {
-        "es": "Fideos, gambón, huevo marinado, nori, naruto y verduras (oreja de judas, espinaca, cebollino y bambú marinado).",
-        "en": "Noodles, prawns, marinated egg, nori, naruto and vegetables (wood ear, spinach, spring onion and marinated bamboo).",
-        "gl": "Fideos, gambón, ovo mariñado, nori, naruto e verduras (orella de xudas, espinaca, cebolino e bambú mariñado)."
-      },
-      "imagen": null,
-      "nota": {},
-      "destacado": false,
+      "numero": "3",
+      "escalas": [],
       "precios": [
         {
-          "etiqueta": null,
-          "precio": 14.95
+          "precio": 14.95,
+          "etiqueta": null
         }
       ],
       "alergenos": [
@@ -897,84 +582,84 @@
           "grado": "contiene"
         }
       ],
+      "categoria": "ramen",
+      "destacado": false,
       "etiquetas": [],
-      "escalas": [],
+      "descripcion": {
+        "en": "Noodles, prawns, marinated egg, nori, naruto and vegetables (wood ear, spinach, spring onion and marinated bamboo).",
+        "es": "Fideos, gambón, huevo marinado, nori, naruto y verduras (oreja de judas, espinaca, cebollino y bambú marinado).",
+        "gl": "Fideos, gambón, ovo mariñado, nori, naruto e verduras (orella de xudas, espinaca, cebolino e bambú mariñado)."
+      },
+      "categoria_madre": "ramen"
+    },
+    {
+      "nota": {},
+      "slug": "panna-miso-ramen",
+      "icono": "ramen",
       "grupos": [
         "intensidad-caldo",
         "sabor-ramen",
         "extras-ramen"
-      ]
-    },
-    {
-      "slug": "panna-miso-ramen",
-      "numero": "4",
-      "categoria": "ramen",
-      "categoria_madre": "ramen",
-      "icono": "ramen",
+      ],
+      "imagen": null,
       "nombre": {
-        "es": "Panna Miso Ramen",
         "en": "Panna Miso Ramen",
+        "es": "Panna Miso Ramen",
         "gl": "Panna Miso Ramen"
       },
+      "numero": "4",
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 12.95,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [
+        {
+          "slug": "gluten",
+          "grado": "contiene"
+        },
+        {
+          "slug": "huevos",
+          "grado": "contiene"
+        },
+        {
+          "slug": "soja",
+          "grado": "contiene"
+        }
+      ],
+      "categoria": "ramen",
+      "destacado": false,
+      "etiquetas": [],
       "descripcion": {
-        "es": "Fideos, pollo frito, huevo marinado, nori y verduras (maíz, oreja de judas, espinaca, cebollino y bambú marinado).",
         "en": "Noodles, fried chicken, marinated egg, nori and vegetables (sweetcorn, wood ear, spinach, spring onion and marinated bamboo).",
+        "es": "Fideos, pollo frito, huevo marinado, nori y verduras (maíz, oreja de judas, espinaca, cebollino y bambú marinado).",
         "gl": "Fideos, polo frito, ovo mariñado, nori e verduras (millo, orella de xudas, espinaca, cebolino e bambú mariñado)."
       },
-      "imagen": null,
+      "categoria_madre": "ramen"
+    },
+    {
       "nota": {},
-      "destacado": false,
-      "precios": [
-        {
-          "etiqueta": null,
-          "precio": 12.95
-        }
-      ],
-      "alergenos": [
-        {
-          "slug": "gluten",
-          "grado": "contiene"
-        },
-        {
-          "slug": "huevos",
-          "grado": "contiene"
-        },
-        {
-          "slug": "soja",
-          "grado": "contiene"
-        }
-      ],
-      "etiquetas": [],
-      "escalas": [],
+      "slug": "miso-ramen",
+      "icono": "ramen",
       "grupos": [
         "intensidad-caldo",
         "sabor-ramen",
         "extras-ramen"
-      ]
-    },
-    {
-      "slug": "miso-ramen",
-      "numero": "5",
-      "categoria": "ramen",
-      "categoria_madre": "ramen",
-      "icono": "ramen",
+      ],
+      "imagen": null,
       "nombre": {
-        "es": "Miso Ramen",
         "en": "Miso Ramen",
+        "es": "Miso Ramen",
         "gl": "Miso Ramen"
       },
-      "descripcion": {
-        "es": "Fideos, chashu de cerdo, huevo marinado, nori, aceite de ajo y verduras (maíz, oreja de judas, espinaca, cebollino y bambú marinado).",
-        "en": "Noodles, pork chashu, marinated egg, nori, garlic oil and vegetables (sweetcorn, wood ear, spinach, spring onion and marinated bamboo).",
-        "gl": "Fideos, chashu de porco, ovo mariñado, nori, aceite de allo e verduras (millo, orella de xudas, espinaca, cebolino e bambú mariñado)."
-      },
-      "imagen": null,
-      "nota": {},
-      "destacado": false,
+      "numero": "5",
+      "escalas": [],
       "precios": [
         {
-          "etiqueta": null,
-          "precio": 12.95
+          "precio": 12.95,
+          "etiqueta": null
         }
       ],
       "alergenos": [
@@ -991,37 +676,37 @@
           "grado": "contiene"
         }
       ],
+      "categoria": "ramen",
+      "destacado": false,
       "etiquetas": [],
-      "escalas": [],
+      "descripcion": {
+        "en": "Noodles, pork chashu, marinated egg, nori, garlic oil and vegetables (sweetcorn, wood ear, spinach, spring onion and marinated bamboo).",
+        "es": "Fideos, chashu de cerdo, huevo marinado, nori, aceite de ajo y verduras (maíz, oreja de judas, espinaca, cebollino y bambú marinado).",
+        "gl": "Fideos, chashu de porco, ovo mariñado, nori, aceite de allo e verduras (millo, orella de xudas, espinaca, cebolino e bambú mariñado)."
+      },
+      "categoria_madre": "ramen"
+    },
+    {
+      "nota": {},
+      "slug": "red-gyukotsu-ramen",
+      "icono": "ramen",
       "grupos": [
         "intensidad-caldo",
         "sabor-ramen",
         "extras-ramen"
-      ]
-    },
-    {
-      "slug": "red-gyukotsu-ramen",
-      "numero": "6",
-      "categoria": "ramen",
-      "categoria_madre": "ramen",
-      "icono": "ramen",
+      ],
+      "imagen": null,
       "nombre": {
-        "es": "Red Gyukotsu Ramen",
         "en": "Red Gyukotsu Ramen",
+        "es": "Red Gyukotsu Ramen",
         "gl": "Red Gyukotsu Ramen"
       },
-      "descripcion": {
-        "es": "Fideos, ternera con tomate, huevo marinado, nori y verduras (oreja de judas, espinacas, cebollino y bambú marinado).",
-        "en": "Noodles, beef with tomato, marinated egg, nori and vegetables (wood ear, spinach, spring onion and marinated bamboo).",
-        "gl": "Fideos, tenreira con tomate, ovo mariñado, nori e verduras (orella de xudas, espinacas, cebolino e bambú mariñado)."
-      },
-      "imagen": null,
-      "nota": {},
-      "destacado": false,
+      "numero": "6",
+      "escalas": [],
       "precios": [
         {
-          "etiqueta": null,
-          "precio": 13.95
+          "precio": 13.95,
+          "etiqueta": null
         }
       ],
       "alergenos": [
@@ -1034,37 +719,43 @@
           "grado": "contiene"
         }
       ],
+      "categoria": "ramen",
+      "destacado": false,
       "etiquetas": [],
-      "escalas": [],
+      "descripcion": {
+        "en": "Noodles, beef with tomato, marinated egg, nori and vegetables (wood ear, spinach, spring onion and marinated bamboo).",
+        "es": "Fideos, ternera con tomate, huevo marinado, nori y verduras (oreja de judas, espinacas, cebollino y bambú marinado).",
+        "gl": "Fideos, tenreira con tomate, ovo mariñado, nori e verduras (orella de xudas, espinacas, cebolino e bambú mariñado)."
+      },
+      "categoria_madre": "ramen"
+    },
+    {
+      "nota": {},
+      "slug": "tan-tan-man-ramen",
+      "icono": "ramen",
       "grupos": [
         "intensidad-caldo",
         "sabor-ramen",
         "extras-ramen"
-      ]
-    },
-    {
-      "slug": "tan-tan-man-ramen",
-      "numero": "7",
-      "categoria": "ramen",
-      "categoria_madre": "ramen",
-      "icono": "ramen",
+      ],
+      "imagen": null,
       "nombre": {
-        "es": "Tan Tan Man Ramen",
         "en": "Tan Tan Man Ramen",
+        "es": "Tan Tan Man Ramen",
         "gl": "Tan Tan Man Ramen"
       },
-      "descripcion": {
-        "es": "Fideos, carne picada, huevo marinado, nori, naruto, pimienta seca, semillas de sésamo y verduras (oreja de judas, espinaca, cebollino y bambú marinado).",
-        "en": "Noodles, minced meat, marinated egg, nori, naruto, dried chilli, sesame seeds and vegetables (wood ear, spinach, spring onion and marinated bamboo).",
-        "gl": "Fideos, carne picada, ovo mariñado, nori, naruto, pementa seca, sementes de sésamo e verduras (orella de xudas, espinaca, cebolino e bambú mariñado)."
-      },
-      "imagen": null,
-      "nota": {},
-      "destacado": false,
+      "numero": "7",
+      "escalas": [
+        {
+          "slug": "picante",
+          "valor": 2,
+          "maximo": 3
+        }
+      ],
       "precios": [
         {
-          "etiqueta": null,
-          "precio": 12.95
+          "precio": 12.95,
+          "etiqueta": null
         }
       ],
       "alergenos": [
@@ -1081,43 +772,36 @@
           "grado": "contiene"
         }
       ],
+      "categoria": "ramen",
+      "destacado": false,
       "etiquetas": [],
-      "escalas": [
-        {
-          "slug": "picante",
-          "valor": 2,
-          "maximo": 3
-        }
-      ],
-      "grupos": [
-        "intensidad-caldo",
-        "sabor-ramen",
-        "extras-ramen"
-      ]
+      "descripcion": {
+        "en": "Noodles, minced meat, marinated egg, nori, naruto, dried chilli, sesame seeds and vegetables (wood ear, spinach, spring onion and marinated bamboo).",
+        "es": "Fideos, carne picada, huevo marinado, nori, naruto, pimienta seca, semillas de sésamo y verduras (oreja de judas, espinaca, cebollino y bambú marinado).",
+        "gl": "Fideos, carne picada, ovo mariñado, nori, naruto, pementa seca, sementes de sésamo e verduras (orella de xudas, espinaca, cebolino e bambú mariñado)."
+      },
+      "categoria_madre": "ramen"
     },
     {
+      "nota": {},
       "slug": "tonyu-vegan-ramen",
-      "numero": "8",
-      "categoria": "ramen",
-      "categoria_madre": "ramen",
       "icono": "ramen",
+      "grupos": [
+        "intensidad-caldo",
+        "sabor-ramen"
+      ],
+      "imagen": null,
       "nombre": {
-        "es": "Tonyu Vegan Ramen",
         "en": "Tonyu Vegan Ramen",
+        "es": "Tonyu Vegan Ramen",
         "gl": "Tonyu Vegan Ramen"
       },
-      "descripcion": {
-        "es": "Fideos, tofu frito, nori y verduras (garbanzo, maíz, cebolla frita, oreja de judas, espinaca, cebollino y bambú marinado).",
-        "en": "Noodles, fried tofu, nori and vegetables (chickpeas, sweetcorn, fried onion, wood ear, spinach, spring onion and marinated bamboo).",
-        "gl": "Fideos, tofu frito, nori e verduras (garavanzo, millo, cebola frita, orella de xudas, espinaca, cebolino e bambú mariñado)."
-      },
-      "imagen": null,
-      "nota": {},
-      "destacado": true,
+      "numero": "8",
+      "escalas": [],
       "precios": [
         {
-          "etiqueta": null,
-          "precio": 11.95
+          "precio": 11.95,
+          "etiqueta": null
         }
       ],
       "alergenos": [
@@ -1130,232 +814,229 @@
           "grado": "contiene"
         }
       ],
+      "categoria": "ramen",
+      "destacado": true,
       "etiquetas": [
         "vegano",
         "vegetariano"
       ],
-      "escalas": [],
-      "grupos": [
-        "intensidad-caldo",
-        "sabor-ramen"
-      ]
+      "descripcion": {
+        "en": "Noodles, fried tofu, nori and vegetables (chickpeas, sweetcorn, fried onion, wood ear, spinach, spring onion and marinated bamboo).",
+        "es": "Fideos, tofu frito, nori y verduras (garbanzo, maíz, cebolla frita, oreja de judas, espinaca, cebollino y bambú marinado).",
+        "gl": "Fideos, tofu frito, nori e verduras (garavanzo, millo, cebola frita, orella de xudas, espinaca, cebolino e bambú mariñado)."
+      },
+      "categoria_madre": "ramen"
     },
     {
-      "slug": "tanso-ramen",
-      "numero": "9",
-      "categoria": "ramen",
-      "categoria_madre": "ramen",
-      "icono": "ramen",
-      "nombre": {
-        "es": "Tanso Ramen",
-        "en": "Tanso Ramen",
-        "gl": "Tanso Ramen"
-      },
-      "descripcion": {
-        "es": "Fideos, alita de pollo, carne picada, huevo marinado, nori y verduras (oreja de judas, espinacas, cebollino y bambú marinado).",
-        "en": "Noodles, chicken wing, minced meat, marinated egg, nori and vegetables (wood ear, spinach, spring onion and marinated bamboo).",
-        "gl": "Fideos, á de polo, carne picada, ovo mariñado, nori e verduras (orella de xudas, espinacas, cebolino e bambú mariñado)."
-      },
-      "imagen": null,
       "nota": {},
-      "destacado": false,
-      "precios": [
-        {
-          "etiqueta": null,
-          "precio": 13.95
-        }
-      ],
-      "alergenos": [
-        {
-          "slug": "gluten",
-          "grado": "contiene"
-        },
-        {
-          "slug": "huevos",
-          "grado": "contiene"
-        }
-      ],
-      "etiquetas": [],
-      "escalas": [],
+      "slug": "tanso-ramen",
+      "icono": "ramen",
       "grupos": [
         "intensidad-caldo",
         "sabor-ramen",
         "extras-ramen"
-      ]
+      ],
+      "imagen": null,
+      "nombre": {
+        "en": "Tanso Ramen",
+        "es": "Tanso Ramen",
+        "gl": "Tanso Ramen"
+      },
+      "numero": "9",
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 13.95,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [
+        {
+          "slug": "gluten",
+          "grado": "contiene"
+        },
+        {
+          "slug": "huevos",
+          "grado": "contiene"
+        }
+      ],
+      "categoria": "ramen",
+      "destacado": false,
+      "etiquetas": [],
+      "descripcion": {
+        "en": "Noodles, chicken wing, minced meat, marinated egg, nori and vegetables (wood ear, spinach, spring onion and marinated bamboo).",
+        "es": "Fideos, alita de pollo, carne picada, huevo marinado, nori y verduras (oreja de judas, espinacas, cebollino y bambú marinado).",
+        "gl": "Fideos, á de polo, carne picada, ovo mariñado, nori e verduras (orella de xudas, espinacas, cebolino e bambú mariñado)."
+      },
+      "categoria_madre": "ramen"
     },
     {
+      "nota": {},
       "slug": "arroz-pollo-curry",
-      "numero": "10",
-      "categoria": "arroces",
-      "categoria_madre": "arroces",
       "icono": "arroz",
+      "grupos": [],
+      "imagen": null,
       "nombre": {
-        "es": "Arroz con pollo al curry",
         "en": "Curry rice with fried chicken",
+        "es": "Arroz con pollo al curry",
         "gl": "Arroz con polo ao curry"
       },
+      "numero": "10",
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 11.5,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [
+        {
+          "slug": "gluten",
+          "grado": "contiene"
+        }
+      ],
+      "categoria": "arroces",
+      "destacado": false,
+      "etiquetas": [],
       "descripcion": {
-        "es": "Arroz, pollo frito, zanahoria, cebolla, cebolla frita, cebollino y curry.",
         "en": "Rice, fried chicken, carrot, onion, fried onion, spring onion and curry.",
+        "es": "Arroz, pollo frito, zanahoria, cebolla, cebolla frita, cebollino y curry.",
         "gl": "Arroz, polo frito, cenoria, cebola, cebola frita, cebolino e curry."
       },
-      "imagen": null,
-      "nota": {},
-      "destacado": false,
-      "precios": [
-        {
-          "etiqueta": null,
-          "precio": 11.5
-        }
-      ],
-      "alergenos": [
-        {
-          "slug": "gluten",
-          "grado": "contiene"
-        }
-      ],
-      "etiquetas": [],
-      "escalas": [],
-      "grupos": []
+      "categoria_madre": "arroces"
     },
     {
+      "nota": {},
       "slug": "arroz-ebi-curry",
-      "numero": "11",
-      "categoria": "arroces",
-      "categoria_madre": "arroces",
       "icono": "arroz",
+      "grupos": [],
+      "imagen": null,
       "nombre": {
-        "es": "Arroz con ebi al curry",
         "en": "Curry rice with prawn tempura",
+        "es": "Arroz con ebi al curry",
         "gl": "Arroz con ebi ao curry"
       },
+      "numero": "11",
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 11.5,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [
+        {
+          "slug": "gluten",
+          "grado": "contiene"
+        },
+        {
+          "slug": "crustaceos",
+          "grado": "contiene"
+        }
+      ],
+      "categoria": "arroces",
+      "destacado": false,
+      "etiquetas": [],
       "descripcion": {
-        "es": "Arroz, tempura de langostino, zanahoria, cebolla, cebolla frita, cebollino y curry.",
         "en": "Rice, prawn tempura, carrot, onion, fried onion, spring onion and curry.",
+        "es": "Arroz, tempura de langostino, zanahoria, cebolla, cebolla frita, cebollino y curry.",
         "gl": "Arroz, tempura de lagostino, cenoria, cebola, cebola frita, cebolino e curry."
       },
-      "imagen": null,
-      "nota": {},
-      "destacado": false,
-      "precios": [
-        {
-          "etiqueta": null,
-          "precio": 11.5
-        }
-      ],
-      "alergenos": [
-        {
-          "slug": "gluten",
-          "grado": "contiene"
-        },
-        {
-          "slug": "crustaceos",
-          "grado": "contiene"
-        }
-      ],
-      "etiquetas": [],
-      "escalas": [],
-      "grupos": []
+      "categoria_madre": "arroces"
     },
     {
+      "nota": {},
       "slug": "arroz-croquetas-calabaza-curry",
-      "numero": "12",
-      "categoria": "arroces",
-      "categoria_madre": "arroces",
       "icono": "arroz",
+      "grupos": [],
+      "imagen": null,
       "nombre": {
-        "es": "Arroz con croquetas de calabaza al curry",
         "en": "Curry rice with pumpkin croquettes",
+        "es": "Arroz con croquetas de calabaza al curry",
         "gl": "Arroz con croquetas de cabaza ao curry"
       },
+      "numero": "12",
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 10.5,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [
+        {
+          "slug": "gluten",
+          "grado": "contiene"
+        }
+      ],
+      "categoria": "arroces",
+      "destacado": false,
+      "etiquetas": [
+        "vegetariano"
+      ],
       "descripcion": {
-        "es": "Arroz, croqueta de calabaza, zanahoria, cebolla, cebolla frita, cebollino y curry.",
         "en": "Rice, pumpkin croquette, carrot, onion, fried onion, spring onion and curry.",
+        "es": "Arroz, croqueta de calabaza, zanahoria, cebolla, cebolla frita, cebollino y curry.",
         "gl": "Arroz, croqueta de cabaza, cenoria, cebola, cebola frita, cebolino e curry."
       },
-      "imagen": null,
-      "nota": {},
-      "destacado": false,
-      "precios": [
-        {
-          "etiqueta": null,
-          "precio": 10.5
-        }
-      ],
-      "alergenos": [
-        {
-          "slug": "gluten",
-          "grado": "contiene"
-        }
-      ],
-      "etiquetas": [
-        "vegetariano"
-      ],
-      "escalas": [],
-      "grupos": []
+      "categoria_madre": "arroces"
     },
     {
+      "nota": {},
       "slug": "arroz-tonkatsu-curry",
-      "numero": "13",
-      "categoria": "arroces",
-      "categoria_madre": "arroces",
       "icono": "arroz",
+      "grupos": [],
+      "imagen": null,
       "nombre": {
-        "es": "Arroz con tonkatsu al curry",
         "en": "Curry rice with tonkatsu",
+        "es": "Arroz con tonkatsu al curry",
         "gl": "Arroz con tonkatsu ao curry"
       },
+      "numero": "13",
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 12.5,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [
+        {
+          "slug": "gluten",
+          "grado": "contiene"
+        },
+        {
+          "slug": "huevos",
+          "grado": "contiene"
+        }
+      ],
+      "categoria": "arroces",
+      "destacado": false,
+      "etiquetas": [],
       "descripcion": {
-        "es": "Arroz, tonkatsu (cerdo empanado), zanahoria, cebolla, cebolla frita, cebollino y curry.",
         "en": "Rice, tonkatsu (breaded pork), carrot, onion, fried onion, spring onion and curry.",
+        "es": "Arroz, tonkatsu (cerdo empanado), zanahoria, cebolla, cebolla frita, cebollino y curry.",
         "gl": "Arroz, tonkatsu (porco empanado), cenoria, cebola, cebola frita, cebolino e curry."
       },
-      "imagen": null,
-      "nota": {},
-      "destacado": false,
-      "precios": [
-        {
-          "etiqueta": null,
-          "precio": 12.5
-        }
-      ],
-      "alergenos": [
-        {
-          "slug": "gluten",
-          "grado": "contiene"
-        },
-        {
-          "slug": "huevos",
-          "grado": "contiene"
-        }
-      ],
-      "etiquetas": [],
-      "escalas": [],
-      "grupos": []
+      "categoria_madre": "arroces"
     },
     {
+      "nota": {},
       "slug": "arroz-torikatsu-curry",
-      "numero": "13P",
-      "categoria": "arroces",
-      "categoria_madre": "arroces",
       "icono": "arroz",
+      "grupos": [],
+      "imagen": null,
       "nombre": {
-        "es": "Arroz con torikatsu al curry",
         "en": "Curry rice with torikatsu",
+        "es": "Arroz con torikatsu al curry",
         "gl": "Arroz con torikatsu ao curry"
       },
-      "descripcion": {
-        "es": "Arroz, torikatsu (pollo empanado), zanahoria, cebolla, cebolla frita, cebollino y curry.",
-        "en": "Rice, torikatsu (breaded chicken), carrot, onion, fried onion, spring onion and curry.",
-        "gl": "Arroz, torikatsu (polo empanado), cenoria, cebola, cebola frita, cebolino e curry."
-      },
-      "imagen": null,
-      "nota": {},
-      "destacado": false,
+      "numero": "13P",
+      "escalas": [],
       "precios": [
         {
-          "etiqueta": null,
-          "precio": 12.5
+          "precio": 12.5,
+          "etiqueta": null
         }
       ],
       "alergenos": [
@@ -1368,89 +1049,93 @@
           "grado": "contiene"
         }
       ],
+      "categoria": "arroces",
+      "destacado": false,
       "etiquetas": [],
-      "escalas": [],
-      "grupos": []
+      "descripcion": {
+        "en": "Rice, torikatsu (breaded chicken), carrot, onion, fried onion, spring onion and curry.",
+        "es": "Arroz, torikatsu (pollo empanado), zanahoria, cebolla, cebolla frita, cebollino y curry.",
+        "gl": "Arroz, torikatsu (polo empanado), cenoria, cebola, cebola frita, cebolino e curry."
+      },
+      "categoria_madre": "arroces"
     },
     {
+      "nota": {},
       "slug": "arroz-chashu-cerdo",
-      "numero": "14",
-      "categoria": "arroces",
-      "categoria_madre": "arroces",
       "icono": "arroz",
+      "grupos": [],
+      "imagen": null,
       "nombre": {
-        "es": "Arroz con chashu de cerdo",
         "en": "Rice with pork chashu",
+        "es": "Arroz con chashu de cerdo",
         "gl": "Arroz con chashu de porco"
       },
+      "numero": "14",
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 11.5,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [],
+      "categoria": "arroces",
+      "destacado": false,
+      "etiquetas": [],
       "descripcion": {
-        "es": "Arroz, chashu de cerdo, cebolla frita, cebollino y salsa de la casa.",
         "en": "Rice, pork chashu, fried onion, spring onion and house sauce.",
+        "es": "Arroz, chashu de cerdo, cebolla frita, cebollino y salsa de la casa.",
         "gl": "Arroz, chashu de porco, cebola frita, cebolino e salsa da casa."
       },
-      "imagen": null,
-      "nota": {},
-      "destacado": false,
-      "precios": [
-        {
-          "etiqueta": null,
-          "precio": 11.5
-        }
-      ],
-      "alergenos": [],
-      "etiquetas": [],
-      "escalas": [],
-      "grupos": []
+      "categoria_madre": "arroces"
     },
     {
+      "nota": {},
       "slug": "arroz-chashu-ternera",
-      "numero": "15",
-      "categoria": "arroces",
-      "categoria_madre": "arroces",
       "icono": "arroz",
+      "grupos": [],
+      "imagen": null,
       "nombre": {
-        "es": "Arroz con chashu de ternera",
         "en": "Rice with beef chashu",
+        "es": "Arroz con chashu de ternera",
         "gl": "Arroz con chashu de tenreira"
       },
-      "descripcion": {
-        "es": "Arroz, chashu de ternera, cebolla frita, cebollino y salsa de la casa.",
-        "en": "Rice, beef chashu, fried onion, spring onion and house sauce.",
-        "gl": "Arroz, chashu de tenreira, cebola frita, cebolino e salsa da casa."
-      },
-      "imagen": null,
-      "nota": {},
-      "destacado": false,
+      "numero": "15",
+      "escalas": [],
       "precios": [
         {
-          "etiqueta": null,
-          "precio": 12.5
+          "precio": 12.5,
+          "etiqueta": null
         }
       ],
       "alergenos": [],
+      "categoria": "arroces",
+      "destacado": false,
       "etiquetas": [],
-      "escalas": [],
-      "grupos": []
+      "descripcion": {
+        "en": "Rice, beef chashu, fried onion, spring onion and house sauce.",
+        "es": "Arroz, chashu de ternera, cebolla frita, cebollino y salsa de la casa.",
+        "gl": "Arroz, chashu de tenreira, cebola frita, cebolino e salsa da casa."
+      },
+      "categoria_madre": "arroces"
     },
     {
+      "nota": {},
       "slug": "gyozas-pollo",
-      "numero": null,
-      "categoria": "gyozas",
-      "categoria_madre": "tapas",
       "icono": "tapa",
+      "grupos": [],
+      "imagen": null,
       "nombre": {
-        "es": "Gyozas de pollo",
         "en": "Chicken gyoza",
+        "es": "Gyozas de pollo",
         "gl": "Gyozas de polo"
       },
-      "descripcion": {},
-      "imagen": null,
-      "nota": {},
-      "destacado": false,
+      "numero": null,
+      "escalas": [],
       "precios": [
         {
-          "etiqueta": null,
-          "precio": 3.95
+          "precio": 3.95,
+          "etiqueta": null
         }
       ],
       "alergenos": [
@@ -1459,194 +1144,33 @@
           "grado": "contiene"
         }
       ],
-      "etiquetas": [],
-      "escalas": [],
-      "grupos": []
-    },
-    {
-      "slug": "gyozas-cerdo",
-      "numero": null,
       "categoria": "gyozas",
-      "categoria_madre": "tapas",
-      "icono": "tapa",
-      "nombre": {
-        "es": "Gyozas de cerdo",
-        "en": "Pork gyoza",
-        "gl": "Gyozas de porco"
-      },
-      "descripcion": {},
-      "imagen": null,
-      "nota": {},
       "destacado": false,
-      "precios": [
-        {
-          "etiqueta": null,
-          "precio": 3.95
-        }
-      ],
-      "alergenos": [
-        {
-          "slug": "gluten",
-          "grado": "contiene"
-        }
-      ],
       "etiquetas": [],
-      "escalas": [],
-      "grupos": []
+      "descripcion": {},
+      "categoria_madre": "tapas"
     },
     {
-      "slug": "gyozas-langostino",
-      "numero": null,
-      "categoria": "gyozas",
-      "categoria_madre": "tapas",
-      "icono": "tapa",
-      "nombre": {
-        "es": "Gyozas de langostino",
-        "en": "Prawn gyoza",
-        "gl": "Gyozas de lagostino"
-      },
-      "descripcion": {},
-      "imagen": null,
-      "nota": {},
-      "destacado": false,
-      "precios": [
-        {
-          "etiqueta": null,
-          "precio": 4.95
-        }
-      ],
-      "alergenos": [
-        {
-          "slug": "gluten",
-          "grado": "contiene"
-        },
-        {
-          "slug": "crustaceos",
-          "grado": "contiene"
-        }
-      ],
-      "etiquetas": [],
-      "escalas": [],
-      "grupos": []
-    },
-    {
-      "slug": "gyozas-vegetales",
-      "numero": null,
-      "categoria": "gyozas",
-      "categoria_madre": "tapas",
-      "icono": "tapa",
-      "nombre": {
-        "es": "Gyozas vegetales",
-        "en": "Vegetable gyoza",
-        "gl": "Gyozas vexetais"
-      },
-      "descripcion": {},
-      "imagen": null,
-      "nota": {},
-      "destacado": true,
-      "precios": [
-        {
-          "etiqueta": null,
-          "precio": 3.95
-        }
-      ],
-      "alergenos": [
-        {
-          "slug": "gluten",
-          "grado": "contiene"
-        }
-      ],
-      "etiquetas": [
-        "vegetariano"
-      ],
-      "escalas": [],
-      "grupos": []
-    },
-    {
-      "slug": "nai-bao",
-      "numero": null,
-      "categoria": "baos",
-      "categoria_madre": "tapas",
-      "icono": "tapa",
-      "nombre": {
-        "es": "«Nai» bao",
-        "en": "\"Nai\" bao",
-        "gl": "«Nai» bao"
-      },
-      "descripcion": {},
-      "imagen": null,
       "nota": {
-        "es": "Por confirmar en el local.",
         "en": "To be confirmed at the restaurant.",
+        "es": "Por confirmar en el local.",
         "gl": "Por confirmar no local."
       },
-      "destacado": false,
-      "precios": [
-        {
-          "etiqueta": null,
-          "precio": 3.95
-        }
-      ],
-      "alergenos": [
-        {
-          "slug": "gluten",
-          "grado": "contiene"
-        }
-      ],
-      "etiquetas": [],
-      "escalas": [],
-      "grupos": []
-    },
-    {
-      "slug": "bao-pato",
-      "numero": null,
-      "categoria": "baos",
-      "categoria_madre": "tapas",
+      "slug": "nai-bao",
       "icono": "tapa",
-      "nombre": {
-        "es": "Bao de pato",
-        "en": "Duck bao",
-        "gl": "Bao de pato"
-      },
-      "descripcion": {},
+      "grupos": [],
       "imagen": null,
-      "nota": {},
-      "destacado": false,
-      "precios": [
-        {
-          "etiqueta": null,
-          "precio": 5.95
-        }
-      ],
-      "alergenos": [
-        {
-          "slug": "gluten",
-          "grado": "contiene"
-        }
-      ],
-      "etiquetas": [],
-      "escalas": [],
-      "grupos": []
-    },
-    {
-      "slug": "bao-rabo-toro",
+      "nombre": {
+        "en": "\"Nai\" bao",
+        "es": "«Nai» bao",
+        "gl": "«Nai» bao"
+      },
       "numero": null,
-      "categoria": "baos",
-      "categoria_madre": "tapas",
-      "icono": "tapa",
-      "nombre": {
-        "es": "Bao de rabo de toro",
-        "en": "Oxtail bao",
-        "gl": "Bao de rabo de touro"
-      },
-      "descripcion": {},
-      "imagen": null,
-      "nota": {},
-      "destacado": false,
+      "escalas": [],
       "precios": [
         {
-          "etiqueta": null,
-          "precio": 5.95
+          "precio": 3.95,
+          "etiqueta": null
         }
       ],
       "alergenos": [
@@ -1655,91 +1179,29 @@
           "grado": "contiene"
         }
       ],
-      "etiquetas": [],
-      "escalas": [],
-      "grupos": []
-    },
-    {
-      "slug": "bao-cerdo",
-      "numero": null,
       "categoria": "baos",
-      "categoria_madre": "tapas",
-      "icono": "tapa",
-      "nombre": {
-        "es": "Bao de cerdo",
-        "en": "Pork bao",
-        "gl": "Bao de porco"
-      },
-      "descripcion": {},
-      "imagen": null,
-      "nota": {},
       "destacado": false,
-      "precios": [
-        {
-          "etiqueta": null,
-          "precio": 5.5
-        }
-      ],
-      "alergenos": [
-        {
-          "slug": "gluten",
-          "grado": "contiene"
-        }
-      ],
       "etiquetas": [],
-      "escalas": [],
-      "grupos": []
+      "descripcion": {},
+      "categoria_madre": "tapas"
     },
     {
-      "slug": "bao-pollo",
-      "numero": null,
-      "categoria": "baos",
-      "categoria_madre": "tapas",
-      "icono": "tapa",
-      "nombre": {
-        "es": "Bao de pollo",
-        "en": "Chicken bao",
-        "gl": "Bao de polo"
-      },
-      "descripcion": {},
-      "imagen": null,
       "nota": {},
-      "destacado": false,
-      "precios": [
-        {
-          "etiqueta": null,
-          "precio": 5.95
-        }
-      ],
-      "alergenos": [
-        {
-          "slug": "gluten",
-          "grado": "contiene"
-        }
-      ],
-      "etiquetas": [],
-      "escalas": [],
-      "grupos": []
-    },
-    {
       "slug": "tempura-langostino",
-      "numero": null,
-      "categoria": "fritos",
-      "categoria_madre": "tapas",
       "icono": "tapa",
+      "grupos": [],
+      "imagen": null,
       "nombre": {
-        "es": "Tempura de langostino",
         "en": "Prawn tempura",
+        "es": "Tempura de langostino",
         "gl": "Tempura de lagostino"
       },
-      "descripcion": {},
-      "imagen": null,
-      "nota": {},
-      "destacado": true,
+      "numero": null,
+      "escalas": [],
       "precios": [
         {
-          "etiqueta": null,
-          "precio": 5.95
+          "precio": 5.95,
+          "etiqueta": null
         }
       ],
       "alergenos": [
@@ -1752,29 +1214,91 @@
           "grado": "contiene"
         }
       ],
+      "categoria": "fritos",
+      "destacado": true,
       "etiquetas": [],
-      "escalas": [],
-      "grupos": []
+      "descripcion": {},
+      "categoria_madre": "tapas"
     },
     {
-      "slug": "pollo-karaage",
-      "numero": null,
-      "categoria": "fritos",
-      "categoria_madre": "tapas",
-      "icono": "tapa",
-      "nombre": {
-        "es": "Pollo karaage",
-        "en": "Karaage fried chicken",
-        "gl": "Polo karaage"
-      },
-      "descripcion": {},
-      "imagen": null,
       "nota": {},
-      "destacado": false,
+      "slug": "bao-pato",
+      "icono": "tapa",
+      "grupos": [],
+      "imagen": null,
+      "nombre": {
+        "en": "Duck bao",
+        "es": "Bao de pato",
+        "gl": "Bao de pato"
+      },
+      "numero": null,
+      "escalas": [],
       "precios": [
         {
-          "etiqueta": null,
-          "precio": 5.95
+          "precio": 5.95,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [
+        {
+          "slug": "gluten",
+          "grado": "contiene"
+        }
+      ],
+      "categoria": "baos",
+      "destacado": false,
+      "etiquetas": [],
+      "descripcion": {},
+      "categoria_madre": "tapas"
+    },
+    {
+      "nota": {},
+      "slug": "gyozas-cerdo",
+      "icono": "tapa",
+      "grupos": [],
+      "imagen": null,
+      "nombre": {
+        "en": "Pork gyoza",
+        "es": "Gyozas de cerdo",
+        "gl": "Gyozas de porco"
+      },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 3.95,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [
+        {
+          "slug": "gluten",
+          "grado": "contiene"
+        }
+      ],
+      "categoria": "gyozas",
+      "destacado": false,
+      "etiquetas": [],
+      "descripcion": {},
+      "categoria_madre": "tapas"
+    },
+    {
+      "nota": {},
+      "slug": "pollo-karaage",
+      "icono": "tapa",
+      "grupos": [],
+      "imagen": null,
+      "nombre": {
+        "en": "Karaage fried chicken",
+        "es": "Pollo karaage",
+        "gl": "Polo karaage"
+      },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 5.95,
+          "etiqueta": null
         }
       ],
       "alergenos": [
@@ -1787,29 +1311,64 @@
           "grado": "contiene"
         }
       ],
+      "categoria": "fritos",
+      "destacado": false,
       "etiquetas": [],
-      "escalas": [],
-      "grupos": []
+      "descripcion": {},
+      "categoria_madre": "tapas"
     },
     {
-      "slug": "croquetas-calabaza",
-      "numero": null,
-      "categoria": "fritos",
-      "categoria_madre": "tapas",
-      "icono": "tapa",
-      "nombre": {
-        "es": "Croquetas de calabaza",
-        "en": "Pumpkin croquettes",
-        "gl": "Croquetas de cabaza"
-      },
-      "descripcion": {},
-      "imagen": null,
       "nota": {},
-      "destacado": false,
+      "slug": "gyozas-langostino",
+      "icono": "tapa",
+      "grupos": [],
+      "imagen": null,
+      "nombre": {
+        "en": "Prawn gyoza",
+        "es": "Gyozas de langostino",
+        "gl": "Gyozas de lagostino"
+      },
+      "numero": null,
+      "escalas": [],
       "precios": [
         {
-          "etiqueta": null,
-          "precio": 3.95
+          "precio": 4.95,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [
+        {
+          "slug": "gluten",
+          "grado": "contiene"
+        },
+        {
+          "slug": "crustaceos",
+          "grado": "contiene"
+        }
+      ],
+      "categoria": "gyozas",
+      "destacado": false,
+      "etiquetas": [],
+      "descripcion": {},
+      "categoria_madre": "tapas"
+    },
+    {
+      "nota": {},
+      "slug": "bao-rabo-toro",
+      "icono": "tapa",
+      "grupos": [],
+      "imagen": null,
+      "nombre": {
+        "en": "Oxtail bao",
+        "es": "Bao de rabo de toro",
+        "gl": "Bao de rabo de touro"
+      },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 5.95,
+          "etiqueta": null
         }
       ],
       "alergenos": [
@@ -1818,35 +1377,62 @@
           "grado": "contiene"
         }
       ],
+      "categoria": "baos",
+      "destacado": false,
+      "etiquetas": [],
+      "descripcion": {},
+      "categoria_madre": "tapas"
+    },
+    {
+      "nota": {},
+      "slug": "croquetas-calabaza",
+      "icono": "tapa",
+      "grupos": [],
+      "imagen": null,
+      "nombre": {
+        "en": "Pumpkin croquettes",
+        "es": "Croquetas de calabaza",
+        "gl": "Croquetas de cabaza"
+      },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 3.95,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [
+        {
+          "slug": "gluten",
+          "grado": "contiene"
+        }
+      ],
+      "categoria": "fritos",
+      "destacado": false,
       "etiquetas": [
         "vegetariano"
       ],
-      "escalas": [],
-      "grupos": []
+      "descripcion": {},
+      "categoria_madre": "tapas"
     },
     {
+      "nota": {},
       "slug": "takoyaki",
-      "numero": null,
-      "categoria": "fritos",
-      "categoria_madre": "tapas",
       "icono": "tapa",
+      "grupos": [],
+      "imagen": null,
       "nombre": {
-        "es": "Takoyaki (bolitas de pulpo)",
         "en": "Takoyaki (octopus balls)",
+        "es": "Takoyaki (bolitas de pulpo)",
         "gl": "Takoyaki (bóliñas de polbo)"
       },
-      "descripcion": {
-        "es": "4 unidades.",
-        "en": "4 pieces.",
-        "gl": "4 unidades."
-      },
-      "imagen": null,
-      "nota": {},
-      "destacado": false,
+      "numero": null,
+      "escalas": [],
       "precios": [
         {
-          "etiqueta": null,
-          "precio": 5.95
+          "precio": 5.95,
+          "etiqueta": null
         }
       ],
       "alergenos": [
@@ -1863,29 +1449,128 @@
           "grado": "contiene"
         }
       ],
+      "categoria": "fritos",
+      "destacado": false,
       "etiquetas": [],
-      "escalas": [],
-      "grupos": []
+      "descripcion": {
+        "en": "4 pieces.",
+        "es": "4 unidades.",
+        "gl": "4 unidades."
+      },
+      "categoria_madre": "tapas"
     },
     {
-      "slug": "brochetas-pollo-teriyaki",
-      "numero": null,
-      "categoria": "fritos",
-      "categoria_madre": "tapas",
+      "nota": {},
+      "slug": "gyozas-vegetales",
       "icono": "tapa",
+      "grupos": [],
+      "imagen": null,
       "nombre": {
-        "es": "Brochetas de pollo con salsa teriyaki",
+        "en": "Vegetable gyoza",
+        "es": "Gyozas vegetales",
+        "gl": "Gyozas vexetais"
+      },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 3.95,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [
+        {
+          "slug": "gluten",
+          "grado": "contiene"
+        }
+      ],
+      "categoria": "gyozas",
+      "destacado": true,
+      "etiquetas": [
+        "vegetariano"
+      ],
+      "descripcion": {},
+      "categoria_madre": "tapas"
+    },
+    {
+      "nota": {},
+      "slug": "bao-cerdo",
+      "icono": "tapa",
+      "grupos": [],
+      "imagen": null,
+      "nombre": {
+        "en": "Pork bao",
+        "es": "Bao de cerdo",
+        "gl": "Bao de porco"
+      },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 5.5,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [
+        {
+          "slug": "gluten",
+          "grado": "contiene"
+        }
+      ],
+      "categoria": "baos",
+      "destacado": false,
+      "etiquetas": [],
+      "descripcion": {},
+      "categoria_madre": "tapas"
+    },
+    {
+      "nota": {},
+      "slug": "bao-pollo",
+      "icono": "tapa",
+      "grupos": [],
+      "imagen": null,
+      "nombre": {
+        "en": "Chicken bao",
+        "es": "Bao de pollo",
+        "gl": "Bao de polo"
+      },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 5.95,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [
+        {
+          "slug": "gluten",
+          "grado": "contiene"
+        }
+      ],
+      "categoria": "baos",
+      "destacado": false,
+      "etiquetas": [],
+      "descripcion": {},
+      "categoria_madre": "tapas"
+    },
+    {
+      "nota": {},
+      "slug": "brochetas-pollo-teriyaki",
+      "icono": "tapa",
+      "grupos": [],
+      "imagen": null,
+      "nombre": {
         "en": "Chicken skewers with teriyaki sauce",
+        "es": "Brochetas de pollo con salsa teriyaki",
         "gl": "Espetos de polo con salsa teriyaki"
       },
-      "descripcion": {},
-      "imagen": null,
-      "nota": {},
-      "destacado": false,
+      "numero": null,
+      "escalas": [],
       "precios": [
         {
-          "etiqueta": null,
-          "precio": 5.95
+          "precio": 5.95,
+          "etiqueta": null
         }
       ],
       "alergenos": [
@@ -1898,41 +1583,41 @@
           "grado": "contiene"
         }
       ],
+      "categoria": "fritos",
+      "destacado": false,
       "etiquetas": [],
-      "escalas": [],
-      "grupos": []
+      "descripcion": {},
+      "categoria_madre": "tapas"
     },
     {
+      "nota": {},
       "slug": "alitas-pollo-japonesas",
-      "numero": null,
-      "categoria": "fritos",
-      "categoria_madre": "tapas",
       "icono": "tapa",
+      "grupos": [],
+      "imagen": null,
       "nombre": {
-        "es": "Alitas de pollo japonesas",
         "en": "Japanese chicken wings",
+        "es": "Alitas de pollo japonesas",
         "gl": "Ás de polo xaponesas"
       },
-      "descripcion": {},
-      "imagen": null,
-      "nota": {},
-      "destacado": false,
+      "numero": null,
+      "escalas": [],
       "precios": [
         {
+          "precio": 4.2,
           "etiqueta": {
-            "es": "2 uds",
             "en": "2 pcs",
+            "es": "2 uds",
             "gl": "2 uds"
-          },
-          "precio": 4.2
+          }
         },
         {
+          "precio": 7.95,
           "etiqueta": {
-            "es": "4 uds",
             "en": "4 pcs",
+            "es": "4 uds",
             "gl": "4 uds"
-          },
-          "precio": 7.95
+          }
         }
       ],
       "alergenos": [
@@ -1945,72 +1630,68 @@
           "grado": "contiene"
         }
       ],
+      "categoria": "fritos",
+      "destacado": false,
       "etiquetas": [],
-      "escalas": [],
-      "grupos": []
+      "descripcion": {},
+      "categoria_madre": "tapas"
     },
     {
+      "nota": {},
       "slug": "tonkatsu",
-      "numero": null,
-      "categoria": "fritos",
-      "categoria_madre": "tapas",
       "icono": "tapa",
+      "grupos": [],
+      "imagen": null,
       "nombre": {
-        "es": "Tonkatsu",
         "en": "Tonkatsu",
+        "es": "Tonkatsu",
         "gl": "Tonkatsu"
       },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 8.95,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [
+        {
+          "slug": "gluten",
+          "grado": "contiene"
+        },
+        {
+          "slug": "huevos",
+          "grado": "contiene"
+        }
+      ],
+      "categoria": "fritos",
+      "destacado": false,
+      "etiquetas": [],
       "descripcion": {
-        "es": "Cerdo empanado y crujiente.",
         "en": "Crispy breaded pork cutlet.",
+        "es": "Cerdo empanado y crujiente.",
         "gl": "Porco empanado e crocante."
       },
-      "imagen": null,
-      "nota": {},
-      "destacado": false,
-      "precios": [
-        {
-          "etiqueta": null,
-          "precio": 8.95
-        }
-      ],
-      "alergenos": [
-        {
-          "slug": "gluten",
-          "grado": "contiene"
-        },
-        {
-          "slug": "huevos",
-          "grado": "contiene"
-        }
-      ],
-      "etiquetas": [],
-      "escalas": [],
-      "grupos": []
+      "categoria_madre": "tapas"
     },
     {
+      "nota": {},
       "slug": "chickinkatsu",
-      "numero": null,
-      "categoria": "fritos",
-      "categoria_madre": "tapas",
       "icono": "tapa",
+      "grupos": [],
+      "imagen": null,
       "nombre": {
-        "es": "Chickinkatsu",
         "en": "Chickenkatsu",
+        "es": "Chickinkatsu",
         "gl": "Chickinkatsu"
       },
-      "descripcion": {
-        "es": "Pollo empanado y crujiente.",
-        "en": "Crispy breaded chicken cutlet.",
-        "gl": "Polo empanado e crocante."
-      },
-      "imagen": null,
-      "nota": {},
-      "destacado": false,
+      "numero": null,
+      "escalas": [],
       "precios": [
         {
-          "etiqueta": null,
-          "precio": 8.95
+          "precio": 8.95,
+          "etiqueta": null
         }
       ],
       "alergenos": [
@@ -2023,29 +1704,33 @@
           "grado": "contiene"
         }
       ],
+      "categoria": "fritos",
+      "destacado": false,
       "etiquetas": [],
-      "escalas": [],
-      "grupos": []
+      "descripcion": {
+        "en": "Crispy breaded chicken cutlet.",
+        "es": "Pollo empanado y crujiente.",
+        "gl": "Polo empanado e crocante."
+      },
+      "categoria_madre": "tapas"
     },
     {
+      "nota": {},
       "slug": "pato-frito-hoisin",
-      "numero": null,
-      "categoria": "fritos",
-      "categoria_madre": "tapas",
       "icono": "tapa",
+      "grupos": [],
+      "imagen": null,
       "nombre": {
-        "es": "Pato frito crujiente con salsa hoisin",
         "en": "Crispy fried duck with hoisin sauce",
+        "es": "Pato frito crujiente con salsa hoisin",
         "gl": "Pato frito crocante con salsa hoisin"
       },
-      "descripcion": {},
-      "imagen": null,
-      "nota": {},
-      "destacado": false,
+      "numero": null,
+      "escalas": [],
       "precios": [
         {
-          "etiqueta": null,
-          "precio": 8.95
+          "precio": 8.95,
+          "etiqueta": null
         }
       ],
       "alergenos": [
@@ -2062,58 +1747,58 @@
           "grado": "contiene"
         }
       ],
+      "categoria": "fritos",
+      "destacado": false,
       "etiquetas": [],
-      "escalas": [],
-      "grupos": []
+      "descripcion": {},
+      "categoria_madre": "tapas"
     },
     {
+      "nota": {},
       "slug": "ensalada-wakame",
-      "numero": null,
-      "categoria": "fritos",
-      "categoria_madre": "tapas",
       "icono": "tapa",
+      "grupos": [],
+      "imagen": null,
       "nombre": {
-        "es": "Ensalada de alga wakame",
         "en": "Wakame seaweed salad",
+        "es": "Ensalada de alga wakame",
         "gl": "Ensalada de alga wakame"
       },
-      "descripcion": {},
-      "imagen": null,
-      "nota": {},
-      "destacado": false,
+      "numero": null,
+      "escalas": [],
       "precios": [
         {
-          "etiqueta": null,
-          "precio": 4.95
+          "precio": 4.95,
+          "etiqueta": null
         }
       ],
       "alergenos": [],
+      "categoria": "fritos",
+      "destacado": false,
       "etiquetas": [
         "vegano",
         "vegetariano"
       ],
-      "escalas": [],
-      "grupos": []
+      "descripcion": {},
+      "categoria_madre": "tapas"
     },
     {
+      "nota": {},
       "slug": "edamame",
-      "numero": null,
-      "categoria": "fritos",
-      "categoria_madre": "tapas",
       "icono": "tapa",
+      "grupos": [],
+      "imagen": null,
       "nombre": {
-        "es": "Edamame",
         "en": "Edamame",
+        "es": "Edamame",
         "gl": "Edamame"
       },
-      "descripcion": {},
-      "imagen": null,
-      "nota": {},
-      "destacado": false,
+      "numero": null,
+      "escalas": [],
       "precios": [
         {
-          "etiqueta": null,
-          "precio": 3.95
+          "precio": 3.95,
+          "etiqueta": null
         }
       ],
       "alergenos": [
@@ -2122,116 +1807,64 @@
           "grado": "contiene"
         }
       ],
+      "categoria": "fritos",
+      "destacado": false,
       "etiquetas": [
         "vegano",
         "vegetariano"
       ],
-      "escalas": [],
-      "grupos": []
+      "descripcion": {},
+      "categoria_madre": "tapas"
     },
     {
-      "slug": "refrescos",
-      "numero": null,
-      "categoria": "refrescos",
-      "categoria_madre": "bebidas",
-      "icono": "bebida",
-      "nombre": {
-        "es": "Refrescos",
-        "en": "Soft drinks",
-        "gl": "Refrescos"
-      },
-      "descripcion": {
-        "es": "Coca-Cola, Fanta, Nestea, tónica, Sprite y Aquarius.",
-        "en": "Coca-Cola, Fanta, Nestea, tonic, Sprite and Aquarius.",
-        "gl": "Coca-Cola, Fanta, Nestea, tónica, Sprite e Aquarius."
-      },
-      "imagen": null,
       "nota": {},
-      "destacado": false,
-      "precios": [
-        {
-          "etiqueta": null,
-          "precio": 2.5
-        }
-      ],
-      "alergenos": [],
-      "etiquetas": [],
-      "escalas": [],
+      "slug": "refrescos",
+      "icono": "bebida",
       "grupos": [
         "sabores-refresco"
-      ]
-    },
-    {
-      "slug": "agua-mineral",
-      "numero": null,
-      "categoria": "refrescos",
-      "categoria_madre": "bebidas",
-      "icono": "bebida",
-      "nombre": {
-        "es": "Agua mineral",
-        "en": "Still water",
-        "gl": "Auga mineral"
-      },
-      "descripcion": {},
+      ],
       "imagen": null,
-      "nota": {},
-      "destacado": false,
+      "nombre": {
+        "en": "Soft drinks",
+        "es": "Refrescos",
+        "gl": "Refrescos"
+      },
+      "numero": null,
+      "escalas": [],
       "precios": [
         {
-          "etiqueta": null,
-          "precio": 2
+          "precio": 2.5,
+          "etiqueta": null
         }
       ],
       "alergenos": [],
-      "etiquetas": [],
-      "escalas": [],
-      "grupos": []
-    },
-    {
-      "slug": "agua-con-gas",
-      "numero": null,
       "categoria": "refrescos",
-      "categoria_madre": "bebidas",
-      "icono": "bebida",
-      "nombre": {
-        "es": "Agua con gas",
-        "en": "Sparkling water",
-        "gl": "Auga con gas"
-      },
-      "descripcion": {},
-      "imagen": null,
-      "nota": {},
       "destacado": false,
-      "precios": [
-        {
-          "etiqueta": null,
-          "precio": 2.2
-        }
-      ],
-      "alergenos": [],
       "etiquetas": [],
-      "escalas": [],
-      "grupos": []
+      "descripcion": {
+        "en": "Coca-Cola, Fanta, Nestea, tonic, Sprite and Aquarius.",
+        "es": "Coca-Cola, Fanta, Nestea, tónica, Sprite y Aquarius.",
+        "gl": "Coca-Cola, Fanta, Nestea, tónica, Sprite e Aquarius."
+      },
+      "categoria_madre": "bebidas"
     },
     {
+      "nota": {},
       "slug": "cerveza-asahi",
-      "numero": null,
-      "categoria": "cervezas",
-      "categoria_madre": "bebidas",
       "icono": "bebida",
+      "grupos": [],
+      "imagen": null,
       "nombre": {
-        "es": "Asahi",
         "en": "Asahi",
+        "es": "Asahi",
         "gl": "Asahi"
       },
-      "descripcion": {},
-      "imagen": null,
-      "nota": {},
-      "destacado": false,
+      "numero": null,
+      "escalas": [],
       "precios": [
         {
-          "etiqueta": null,
-          "precio": 2.9
+          "precio": 2.9,
+          "etiqueta": null
         }
       ],
       "alergenos": [
@@ -2240,1145 +1873,1197 @@
           "grado": "contiene"
         }
       ],
-      "etiquetas": [],
-      "escalas": [],
-      "grupos": []
-    },
-    {
-      "slug": "cerveza-estrella",
-      "numero": null,
       "categoria": "cervezas",
-      "categoria_madre": "bebidas",
-      "icono": "bebida",
-      "nombre": {
-        "es": "Estrella",
-        "en": "Estrella",
-        "gl": "Estrella"
-      },
-      "descripcion": {},
-      "imagen": null,
-      "nota": {},
       "destacado": false,
-      "precios": [
-        {
-          "etiqueta": null,
-          "precio": 2.9
-        }
-      ],
-      "alergenos": [
-        {
-          "slug": "gluten",
-          "grado": "contiene"
-        }
-      ],
       "etiquetas": [],
-      "escalas": [],
-      "grupos": []
+      "descripcion": {},
+      "categoria_madre": "bebidas"
     },
     {
-      "slug": "cerveza-1906",
-      "numero": null,
-      "categoria": "cervezas",
-      "categoria_madre": "bebidas",
-      "icono": "bebida",
-      "nombre": {
-        "es": "1906",
-        "en": "1906",
-        "gl": "1906"
-      },
-      "descripcion": {},
-      "imagen": null,
       "nota": {},
-      "destacado": false,
-      "precios": [
-        {
-          "etiqueta": null,
-          "precio": 3.2
-        }
-      ],
-      "alergenos": [
-        {
-          "slug": "gluten",
-          "grado": "contiene"
-        }
-      ],
-      "etiquetas": [],
-      "escalas": [],
-      "grupos": []
-    },
-    {
-      "slug": "cerveza-tirada",
-      "numero": null,
-      "categoria": "cervezas",
-      "categoria_madre": "bebidas",
-      "icono": "bebida",
-      "nombre": {
-        "es": "Cerveza de barril",
-        "en": "Draught beer",
-        "gl": "Cervexa de barril"
-      },
-      "descripcion": {},
-      "imagen": null,
-      "nota": {},
-      "destacado": false,
-      "precios": [
-        {
-          "etiqueta": {
-            "es": "Caña",
-            "en": "Half pint",
-            "gl": "Cunca"
-          },
-          "precio": 2.5
-        },
-        {
-          "etiqueta": {
-            "es": "Pinta",
-            "en": "Pint",
-            "gl": "Pinta"
-          },
-          "precio": 3.5
-        }
-      ],
-      "alergenos": [
-        {
-          "slug": "gluten",
-          "grado": "contiene"
-        }
-      ],
-      "etiquetas": [],
-      "escalas": [],
-      "grupos": []
-    },
-    {
-      "slug": "sidra",
-      "numero": null,
-      "categoria": "cervezas",
-      "categoria_madre": "bebidas",
-      "icono": "bebida",
-      "nombre": {
-        "es": "Sidra",
-        "en": "Cider",
-        "gl": "Sidra"
-      },
-      "descripcion": {},
-      "imagen": null,
-      "nota": {},
-      "destacado": false,
-      "precios": [
-        {
-          "etiqueta": null,
-          "precio": 2.9
-        }
-      ],
-      "alergenos": [
-        {
-          "slug": "sulfitos",
-          "grado": "contiene"
-        }
-      ],
-      "etiquetas": [],
-      "escalas": [],
-      "grupos": []
-    },
-    {
       "slug": "vino-ribeiro-san-claudio",
-      "numero": null,
-      "categoria": "vinos",
-      "categoria_madre": "bebidas",
       "icono": "bebida",
+      "grupos": [],
+      "imagen": null,
       "nombre": {
-        "es": "Ribeiro San Claudio",
         "en": "Ribeiro San Claudio",
+        "es": "Ribeiro San Claudio",
         "gl": "Ribeiro San Claudio"
       },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 3,
+          "etiqueta": {
+            "en": "Glass",
+            "es": "Copa",
+            "gl": "Copa"
+          }
+        },
+        {
+          "precio": 17,
+          "etiqueta": {
+            "en": "Bottle",
+            "es": "Botella",
+            "gl": "Botella"
+          }
+        }
+      ],
+      "alergenos": [
+        {
+          "slug": "sulfitos",
+          "grado": "contiene"
+        }
+      ],
+      "categoria": "vinos",
+      "destacado": false,
+      "etiquetas": [],
       "descripcion": {
-        "es": "Blanco.",
         "en": "White.",
+        "es": "Blanco.",
         "gl": "Branco."
       },
-      "imagen": null,
-      "nota": {},
-      "destacado": false,
-      "precios": [
-        {
-          "etiqueta": {
-            "es": "Copa",
-            "en": "Glass",
-            "gl": "Copa"
-          },
-          "precio": 3
-        },
-        {
-          "etiqueta": {
-            "es": "Botella",
-            "en": "Bottle",
-            "gl": "Botella"
-          },
-          "precio": 17
-        }
-      ],
-      "alergenos": [
-        {
-          "slug": "sulfitos",
-          "grado": "contiene"
-        }
-      ],
-      "etiquetas": [],
-      "escalas": [],
-      "grupos": []
+      "categoria_madre": "bebidas"
     },
     {
-      "slug": "vino-albarino-gran-bazan",
-      "numero": null,
-      "categoria": "vinos",
-      "categoria_madre": "bebidas",
-      "icono": "bebida",
-      "nombre": {
-        "es": "Albariño Gran Bazán",
-        "en": "Albariño Gran Bazán",
-        "gl": "Albariño Gran Bazán"
-      },
-      "descripcion": {
-        "es": "Blanco.",
-        "en": "White.",
-        "gl": "Branco."
-      },
-      "imagen": null,
       "nota": {},
-      "destacado": false,
-      "precios": [
-        {
-          "etiqueta": {
-            "es": "Copa",
-            "en": "Glass",
-            "gl": "Copa"
-          },
-          "precio": 3
-        },
-        {
-          "etiqueta": {
-            "es": "Botella",
-            "en": "Bottle",
-            "gl": "Botella"
-          },
-          "precio": 20
-        }
-      ],
-      "alergenos": [
-        {
-          "slug": "sulfitos",
-          "grado": "contiene"
-        }
-      ],
-      "etiquetas": [],
-      "escalas": [],
-      "grupos": []
-    },
-    {
-      "slug": "vino-ponte-da-boga-mencia",
-      "numero": null,
-      "categoria": "vinos",
-      "categoria_madre": "bebidas",
-      "icono": "bebida",
-      "nombre": {
-        "es": "Ribeira Sacra Ponte da Boga Mencía",
-        "en": "Ribeira Sacra Ponte da Boga Mencía",
-        "gl": "Ribeira Sacra Ponte da Boga Mencía"
-      },
-      "descripcion": {
-        "es": "Tinto.",
-        "en": "Red.",
-        "gl": "Tinto."
-      },
-      "imagen": null,
-      "nota": {},
-      "destacado": false,
-      "precios": [
-        {
-          "etiqueta": {
-            "es": "Copa",
-            "en": "Glass",
-            "gl": "Copa"
-          },
-          "precio": 3
-        },
-        {
-          "etiqueta": {
-            "es": "Botella",
-            "en": "Bottle",
-            "gl": "Botella"
-          },
-          "precio": 17
-        }
-      ],
-      "alergenos": [
-        {
-          "slug": "sulfitos",
-          "grado": "contiene"
-        }
-      ],
-      "etiquetas": [],
-      "escalas": [],
-      "grupos": []
-    },
-    {
-      "slug": "vino-rio-vallobera-crianza",
-      "numero": null,
-      "categoria": "vinos",
-      "categoria_madre": "bebidas",
-      "icono": "bebida",
-      "nombre": {
-        "es": "Río Vallobera Crianza",
-        "en": "Río Vallobera Crianza",
-        "gl": "Río Vallobera Crianza"
-      },
-      "descripcion": {
-        "es": "Tinto.",
-        "en": "Red.",
-        "gl": "Tinto."
-      },
-      "imagen": null,
-      "nota": {},
-      "destacado": false,
-      "precios": [
-        {
-          "etiqueta": {
-            "es": "Copa",
-            "en": "Glass",
-            "gl": "Copa"
-          },
-          "precio": 3
-        },
-        {
-          "etiqueta": {
-            "es": "Botella",
-            "en": "Bottle",
-            "gl": "Botella"
-          },
-          "precio": 16
-        }
-      ],
-      "alergenos": [
-        {
-          "slug": "sulfitos",
-          "grado": "contiene"
-        }
-      ],
-      "etiquetas": [],
-      "escalas": [],
-      "grupos": []
-    },
-    {
-      "slug": "tinto-de-verano",
-      "numero": null,
-      "categoria": "vinos",
-      "categoria_madre": "bebidas",
-      "icono": "bebida",
-      "nombre": {
-        "es": "Tinto de verano",
-        "en": "Tinto de verano",
-        "gl": "Tinto de verán"
-      },
-      "descripcion": {},
-      "imagen": null,
-      "nota": {},
-      "destacado": false,
-      "precios": [
-        {
-          "etiqueta": null,
-          "precio": 4.5
-        }
-      ],
-      "alergenos": [
-        {
-          "slug": "sulfitos",
-          "grado": "contiene"
-        }
-      ],
-      "etiquetas": [],
-      "escalas": [],
-      "grupos": []
-    },
-    {
-      "slug": "combinados",
-      "numero": null,
-      "categoria": "vinos",
-      "categoria_madre": "bebidas",
-      "icono": "bebida",
-      "nombre": {
-        "es": "Combinados",
-        "en": "Mixed drinks",
-        "gl": "Combinados"
-      },
-      "descripcion": {
-        "es": "Ron, ginebra, vodka o whisky.",
-        "en": "Rum, gin, vodka or whisky.",
-        "gl": "Ron, xenebra, vodka ou whisky."
-      },
-      "imagen": null,
-      "nota": {},
-      "destacado": false,
-      "precios": [
-        {
-          "etiqueta": null,
-          "precio": 7
-        }
-      ],
-      "alergenos": [],
-      "etiquetas": [],
-      "escalas": [],
-      "grupos": [
-        "combinados-licor"
-      ]
-    },
-    {
       "slug": "wang-lao-ji",
-      "numero": null,
-      "categoria": "orientales",
-      "categoria_madre": "bebidas",
       "icono": "bebida",
+      "grupos": [],
+      "imagen": null,
       "nombre": {
-        "es": "Wang Lao Ji",
         "en": "Wang Lao Ji",
+        "es": "Wang Lao Ji",
         "gl": "Wang Lao Ji"
       },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 3,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [],
+      "categoria": "orientales",
+      "destacado": false,
+      "etiquetas": [],
       "descripcion": {
-        "es": "Té helado chino.",
         "en": "Chinese iced tea.",
+        "es": "Té helado chino.",
         "gl": "Té xeado chinés."
       },
-      "imagen": null,
-      "nota": {},
-      "destacado": false,
-      "precios": [
-        {
-          "etiqueta": null,
-          "precio": 3
-        }
-      ],
-      "alergenos": [],
-      "etiquetas": [],
-      "escalas": [],
-      "grupos": []
+      "categoria_madre": "bebidas"
     },
     {
-      "slug": "leche-de-coco",
-      "numero": null,
-      "categoria": "orientales",
-      "categoria_madre": "bebidas",
-      "icono": "bebida",
-      "nombre": {
-        "es": "Leche de coco",
-        "en": "Coconut milk",
-        "gl": "Leite de coco"
-      },
-      "descripcion": {},
-      "imagen": null,
       "nota": {},
-      "destacado": false,
-      "precios": [
-        {
-          "etiqueta": null,
-          "precio": 3
-        }
-      ],
-      "alergenos": [],
-      "etiquetas": [
-        "vegano",
-        "vegetariano"
-      ],
-      "escalas": [],
-      "grupos": []
-    },
-    {
-      "slug": "soju",
-      "numero": null,
-      "categoria": "orientales",
-      "categoria_madre": "bebidas",
-      "icono": "bebida",
-      "nombre": {
-        "es": "Soju",
-        "en": "Soju",
-        "gl": "Soju"
-      },
-      "descripcion": {
-        "es": "Coreano. Original, fresa, mango, melocotón o ciruela.",
-        "en": "Korean. Original, strawberry, mango, peach or plum.",
-        "gl": "Coreano. Orixinal, amorodo, mango, pexego ou ameixa."
-      },
-      "imagen": null,
-      "nota": {},
-      "destacado": false,
-      "precios": [
-        {
-          "etiqueta": {
-            "es": "Botella 350 ml",
-            "en": "350 ml bottle",
-            "gl": "Botella 350 ml"
-          },
-          "precio": 15
-        },
-        {
-          "etiqueta": {
-            "es": "Tokkuri 150 ml",
-            "en": "150 ml tokkuri",
-            "gl": "Tokkuri 150 ml"
-          },
-          "precio": 8
-        },
-        {
-          "etiqueta": {
-            "es": "Chupito",
-            "en": "Shot",
-            "gl": "Chupito"
-          },
-          "precio": 2
-        }
-      ],
-      "alergenos": [],
-      "etiquetas": [],
-      "escalas": [],
-      "grupos": [
-        "sabores-soju"
-      ]
-    },
-    {
-      "slug": "ramune",
-      "numero": null,
-      "categoria": "orientales",
-      "categoria_madre": "bebidas",
-      "icono": "bebida",
-      "nombre": {
-        "es": "Ramune",
-        "en": "Ramune",
-        "gl": "Ramune"
-      },
-      "descripcion": {
-        "es": "Japonés. Original, fresa, lichi, pomelo o arándano.",
-        "en": "Japanese. Original, strawberry, lychee, grapefruit or blueberry.",
-        "gl": "Xaponés. Orixinal, amorodo, lichi, pomelo ou arando."
-      },
-      "imagen": null,
-      "nota": {},
-      "destacado": false,
-      "precios": [
-        {
-          "etiqueta": null,
-          "precio": 3.5
-        }
-      ],
-      "alergenos": [],
-      "etiquetas": [],
-      "escalas": [],
-      "grupos": [
-        "sabores-ramune"
-      ]
-    },
-    {
-      "slug": "sake",
-      "numero": null,
-      "categoria": "orientales",
-      "categoria_madre": "bebidas",
-      "icono": "bebida",
-      "nombre": {
-        "es": "Sake",
-        "en": "Sake",
-        "gl": "Sake"
-      },
-      "descripcion": {},
-      "imagen": null,
-      "nota": {},
-      "destacado": false,
-      "precios": [
-        {
-          "etiqueta": {
-            "es": "Botella 300 ml",
-            "en": "300 ml bottle",
-            "gl": "Botella 300 ml"
-          },
-          "precio": 15
-        },
-        {
-          "etiqueta": {
-            "es": "Tokkuri 150 ml",
-            "en": "150 ml tokkuri",
-            "gl": "Tokkuri 150 ml"
-          },
-          "precio": 8
-        },
-        {
-          "etiqueta": {
-            "es": "Chupito",
-            "en": "Shot",
-            "gl": "Chupito"
-          },
-          "precio": 2
-        }
-      ],
-      "alergenos": [],
-      "etiquetas": [],
-      "escalas": [],
-      "grupos": []
-    },
-    {
       "slug": "cafe-expreso",
-      "numero": null,
-      "categoria": "cafes",
-      "categoria_madre": "bebidas",
       "icono": "bebida",
+      "grupos": [],
+      "imagen": null,
       "nombre": {
-        "es": "Expreso, cortado o americano",
         "en": "Espresso, cortado or americano",
+        "es": "Expreso, cortado o americano",
         "gl": "Expreso, cortado ou americano"
       },
-      "descripcion": {},
-      "imagen": null,
-      "nota": {},
-      "destacado": false,
+      "numero": null,
+      "escalas": [],
       "precios": [
         {
-          "etiqueta": null,
-          "precio": 1.5
+          "precio": 1.5,
+          "etiqueta": null
         }
       ],
       "alergenos": [],
+      "categoria": "cafes",
+      "destacado": false,
       "etiquetas": [],
-      "escalas": [],
-      "grupos": []
+      "descripcion": {},
+      "categoria_madre": "bebidas"
     },
     {
-      "slug": "cafe-latte",
-      "numero": null,
-      "categoria": "cafes",
-      "categoria_madre": "bebidas",
-      "icono": "bebida",
-      "nombre": {
-        "es": "Café latte",
-        "en": "Latte",
-        "gl": "Café latte"
-      },
-      "descripcion": {},
-      "imagen": null,
       "nota": {},
-      "destacado": false,
+      "slug": "cerveza-estrella",
+      "icono": "bebida",
+      "grupos": [],
+      "imagen": null,
+      "nombre": {
+        "en": "Estrella",
+        "es": "Estrella",
+        "gl": "Estrella"
+      },
+      "numero": null,
+      "escalas": [],
       "precios": [
         {
-          "etiqueta": null,
-          "precio": 1.8
+          "precio": 2.9,
+          "etiqueta": null
         }
       ],
       "alergenos": [
         {
-          "slug": "leche",
+          "slug": "gluten",
           "grado": "contiene"
         }
       ],
-      "etiquetas": [
-        "vegetariano"
-      ],
-      "escalas": [],
-      "grupos": []
-    },
-    {
-      "slug": "cafe-solo-doble",
-      "numero": null,
-      "categoria": "cafes",
-      "categoria_madre": "bebidas",
-      "icono": "bebida",
-      "nombre": {
-        "es": "Solo doble",
-        "en": "Double espresso",
-        "gl": "Só dobre"
-      },
-      "descripcion": {},
-      "imagen": null,
-      "nota": {},
+      "categoria": "cervezas",
       "destacado": false,
-      "precios": [
-        {
-          "etiqueta": null,
-          "precio": 1.8
-        }
-      ],
-      "alergenos": [],
       "etiquetas": [],
-      "escalas": [],
-      "grupos": []
+      "descripcion": {},
+      "categoria_madre": "bebidas"
     },
     {
-      "slug": "capuchino",
-      "numero": null,
-      "categoria": "cafes",
-      "categoria_madre": "bebidas",
-      "icono": "bebida",
-      "nombre": {
-        "es": "Capuchino",
-        "en": "Cappuccino",
-        "gl": "Capuchino"
-      },
-      "descripcion": {},
-      "imagen": null,
       "nota": {},
-      "destacado": false,
-      "precios": [
-        {
-          "etiqueta": null,
-          "precio": 2
-        }
-      ],
-      "alergenos": [
-        {
-          "slug": "leche",
-          "grado": "contiene"
-        }
-      ],
-      "etiquetas": [
-        "vegetariano"
-      ],
+      "slug": "leche-de-coco",
+      "icono": "bebida",
+      "grupos": [],
+      "imagen": null,
+      "nombre": {
+        "en": "Coconut milk",
+        "es": "Leche de coco",
+        "gl": "Leite de coco"
+      },
+      "numero": null,
       "escalas": [],
-      "grupos": []
-    },
-    {
-      "slug": "cafe-moca",
-      "numero": null,
-      "categoria": "cafes",
-      "categoria_madre": "bebidas",
-      "icono": "bebida",
-      "nombre": {
-        "es": "Café moca",
-        "en": "Mocha",
-        "gl": "Café moca"
-      },
-      "descripcion": {},
-      "imagen": null,
-      "nota": {},
-      "destacado": false,
       "precios": [
         {
-          "etiqueta": null,
-          "precio": 2
-        }
-      ],
-      "alergenos": [
-        {
-          "slug": "leche",
-          "grado": "contiene"
-        }
-      ],
-      "etiquetas": [
-        "vegetariano"
-      ],
-      "escalas": [],
-      "grupos": []
-    },
-    {
-      "slug": "chocolate",
-      "numero": null,
-      "categoria": "cafes",
-      "categoria_madre": "bebidas",
-      "icono": "bebida",
-      "nombre": {
-        "es": "Chocolate",
-        "en": "Hot chocolate",
-        "gl": "Chocolate"
-      },
-      "descripcion": {},
-      "imagen": null,
-      "nota": {},
-      "destacado": false,
-      "precios": [
-        {
-          "etiqueta": null,
-          "precio": 2
-        }
-      ],
-      "alergenos": [
-        {
-          "slug": "leche",
-          "grado": "contiene"
-        }
-      ],
-      "etiquetas": [
-        "vegetariano"
-      ],
-      "escalas": [],
-      "grupos": []
-    },
-    {
-      "slug": "infusiones",
-      "numero": null,
-      "categoria": "cafes",
-      "categoria_madre": "bebidas",
-      "icono": "bebida",
-      "nombre": {
-        "es": "Infusiones",
-        "en": "Infusions",
-        "gl": "Infusións"
-      },
-      "descripcion": {},
-      "imagen": null,
-      "nota": {},
-      "destacado": false,
-      "precios": [
-        {
-          "etiqueta": null,
-          "precio": 1.5
+          "precio": 3,
+          "etiqueta": null
         }
       ],
       "alergenos": [],
+      "categoria": "orientales",
+      "destacado": false,
       "etiquetas": [
         "vegano",
         "vegetariano"
       ],
-      "escalas": [],
-      "grupos": []
+      "descripcion": {},
+      "categoria_madre": "bebidas"
     },
     {
-      "slug": "coctel-pina-colada",
-      "numero": null,
-      "categoria": "cocteles",
-      "categoria_madre": "cocteles",
-      "icono": "coctel",
+      "nota": {},
+      "slug": "agua-mineral",
+      "icono": "bebida",
+      "grupos": [],
+      "imagen": null,
       "nombre": {
-        "es": "Piña colada",
+        "en": "Still water",
+        "es": "Agua mineral",
+        "gl": "Auga mineral"
+      },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 2,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [],
+      "categoria": "refrescos",
+      "destacado": false,
+      "etiquetas": [],
+      "descripcion": {},
+      "categoria_madre": "bebidas"
+    },
+    {
+      "nota": {},
+      "slug": "cafe-latte",
+      "icono": "bebida",
+      "grupos": [],
+      "imagen": null,
+      "nombre": {
+        "en": "Latte",
+        "es": "Café latte",
+        "gl": "Café latte"
+      },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 1.8,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [
+        {
+          "slug": "leche",
+          "grado": "contiene"
+        }
+      ],
+      "categoria": "cafes",
+      "destacado": false,
+      "etiquetas": [
+        "vegetariano"
+      ],
+      "descripcion": {},
+      "categoria_madre": "bebidas"
+    },
+    {
+      "nota": {},
+      "slug": "vino-albarino-gran-bazan",
+      "icono": "bebida",
+      "grupos": [],
+      "imagen": null,
+      "nombre": {
+        "en": "Albariño Gran Bazán",
+        "es": "Albariño Gran Bazán",
+        "gl": "Albariño Gran Bazán"
+      },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 3,
+          "etiqueta": {
+            "en": "Glass",
+            "es": "Copa",
+            "gl": "Copa"
+          }
+        },
+        {
+          "precio": 20,
+          "etiqueta": {
+            "en": "Bottle",
+            "es": "Botella",
+            "gl": "Botella"
+          }
+        }
+      ],
+      "alergenos": [
+        {
+          "slug": "sulfitos",
+          "grado": "contiene"
+        }
+      ],
+      "categoria": "vinos",
+      "destacado": false,
+      "etiquetas": [],
+      "descripcion": {
+        "en": "White.",
+        "es": "Blanco.",
+        "gl": "Branco."
+      },
+      "categoria_madre": "bebidas"
+    },
+    {
+      "nota": {},
+      "slug": "cafe-solo-doble",
+      "icono": "bebida",
+      "grupos": [],
+      "imagen": null,
+      "nombre": {
+        "en": "Double espresso",
+        "es": "Solo doble",
+        "gl": "Só dobre"
+      },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 1.8,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [],
+      "categoria": "cafes",
+      "destacado": false,
+      "etiquetas": [],
+      "descripcion": {},
+      "categoria_madre": "bebidas"
+    },
+    {
+      "nota": {},
+      "slug": "vino-ponte-da-boga-mencia",
+      "icono": "bebida",
+      "grupos": [],
+      "imagen": null,
+      "nombre": {
+        "en": "Ribeira Sacra Ponte da Boga Mencía",
+        "es": "Ribeira Sacra Ponte da Boga Mencía",
+        "gl": "Ribeira Sacra Ponte da Boga Mencía"
+      },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 3,
+          "etiqueta": {
+            "en": "Glass",
+            "es": "Copa",
+            "gl": "Copa"
+          }
+        },
+        {
+          "precio": 17,
+          "etiqueta": {
+            "en": "Bottle",
+            "es": "Botella",
+            "gl": "Botella"
+          }
+        }
+      ],
+      "alergenos": [
+        {
+          "slug": "sulfitos",
+          "grado": "contiene"
+        }
+      ],
+      "categoria": "vinos",
+      "destacado": false,
+      "etiquetas": [],
+      "descripcion": {
+        "en": "Red.",
+        "es": "Tinto.",
+        "gl": "Tinto."
+      },
+      "categoria_madre": "bebidas"
+    },
+    {
+      "nota": {},
+      "slug": "soju",
+      "icono": "bebida",
+      "grupos": [
+        "sabores-soju"
+      ],
+      "imagen": null,
+      "nombre": {
+        "en": "Soju",
+        "es": "Soju",
+        "gl": "Soju"
+      },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 15,
+          "etiqueta": {
+            "en": "350 ml bottle",
+            "es": "Botella 350 ml",
+            "gl": "Botella 350 ml"
+          }
+        },
+        {
+          "precio": 8,
+          "etiqueta": {
+            "en": "150 ml tokkuri",
+            "es": "Tokkuri 150 ml",
+            "gl": "Tokkuri 150 ml"
+          }
+        },
+        {
+          "precio": 2,
+          "etiqueta": {
+            "en": "Shot",
+            "es": "Chupito",
+            "gl": "Chupito"
+          }
+        }
+      ],
+      "alergenos": [],
+      "categoria": "orientales",
+      "destacado": false,
+      "etiquetas": [],
+      "descripcion": {
+        "en": "Korean. Original, strawberry, mango, peach or plum.",
+        "es": "Coreano. Original, fresa, mango, melocotón o ciruela.",
+        "gl": "Coreano. Orixinal, amorodo, mango, pexego ou ameixa."
+      },
+      "categoria_madre": "bebidas"
+    },
+    {
+      "nota": {},
+      "slug": "cerveza-1906",
+      "icono": "bebida",
+      "grupos": [],
+      "imagen": null,
+      "nombre": {
+        "en": "1906",
+        "es": "1906",
+        "gl": "1906"
+      },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 3.2,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [
+        {
+          "slug": "gluten",
+          "grado": "contiene"
+        }
+      ],
+      "categoria": "cervezas",
+      "destacado": false,
+      "etiquetas": [],
+      "descripcion": {},
+      "categoria_madre": "bebidas"
+    },
+    {
+      "nota": {},
+      "slug": "agua-con-gas",
+      "icono": "bebida",
+      "grupos": [],
+      "imagen": null,
+      "nombre": {
+        "en": "Sparkling water",
+        "es": "Agua con gas",
+        "gl": "Auga con gas"
+      },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 2.2,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [],
+      "categoria": "refrescos",
+      "destacado": false,
+      "etiquetas": [],
+      "descripcion": {},
+      "categoria_madre": "bebidas"
+    },
+    {
+      "nota": {},
+      "slug": "capuchino",
+      "icono": "bebida",
+      "grupos": [],
+      "imagen": null,
+      "nombre": {
+        "en": "Cappuccino",
+        "es": "Capuchino",
+        "gl": "Capuchino"
+      },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 2,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [
+        {
+          "slug": "leche",
+          "grado": "contiene"
+        }
+      ],
+      "categoria": "cafes",
+      "destacado": false,
+      "etiquetas": [
+        "vegetariano"
+      ],
+      "descripcion": {},
+      "categoria_madre": "bebidas"
+    },
+    {
+      "nota": {},
+      "slug": "vino-rio-vallobera-crianza",
+      "icono": "bebida",
+      "grupos": [],
+      "imagen": null,
+      "nombre": {
+        "en": "Río Vallobera Crianza",
+        "es": "Río Vallobera Crianza",
+        "gl": "Río Vallobera Crianza"
+      },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 3,
+          "etiqueta": {
+            "en": "Glass",
+            "es": "Copa",
+            "gl": "Copa"
+          }
+        },
+        {
+          "precio": 16,
+          "etiqueta": {
+            "en": "Bottle",
+            "es": "Botella",
+            "gl": "Botella"
+          }
+        }
+      ],
+      "alergenos": [
+        {
+          "slug": "sulfitos",
+          "grado": "contiene"
+        }
+      ],
+      "categoria": "vinos",
+      "destacado": false,
+      "etiquetas": [],
+      "descripcion": {
+        "en": "Red.",
+        "es": "Tinto.",
+        "gl": "Tinto."
+      },
+      "categoria_madre": "bebidas"
+    },
+    {
+      "nota": {},
+      "slug": "ramune",
+      "icono": "bebida",
+      "grupos": [
+        "sabores-ramune"
+      ],
+      "imagen": null,
+      "nombre": {
+        "en": "Ramune",
+        "es": "Ramune",
+        "gl": "Ramune"
+      },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 3.5,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [],
+      "categoria": "orientales",
+      "destacado": false,
+      "etiquetas": [],
+      "descripcion": {
+        "en": "Japanese. Original, strawberry, lychee, grapefruit or blueberry.",
+        "es": "Japonés. Original, fresa, lichi, pomelo o arándano.",
+        "gl": "Xaponés. Orixinal, amorodo, lichi, pomelo ou arando."
+      },
+      "categoria_madre": "bebidas"
+    },
+    {
+      "nota": {},
+      "slug": "cerveza-tirada",
+      "icono": "bebida",
+      "grupos": [],
+      "imagen": null,
+      "nombre": {
+        "en": "Draught beer",
+        "es": "Cerveza de barril",
+        "gl": "Cervexa de barril"
+      },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 2.5,
+          "etiqueta": {
+            "en": "Half pint",
+            "es": "Caña",
+            "gl": "Cunca"
+          }
+        },
+        {
+          "precio": 3.5,
+          "etiqueta": {
+            "en": "Pint",
+            "es": "Pinta",
+            "gl": "Pinta"
+          }
+        }
+      ],
+      "alergenos": [
+        {
+          "slug": "gluten",
+          "grado": "contiene"
+        }
+      ],
+      "categoria": "cervezas",
+      "destacado": false,
+      "etiquetas": [],
+      "descripcion": {},
+      "categoria_madre": "bebidas"
+    },
+    {
+      "nota": {},
+      "slug": "tinto-de-verano",
+      "icono": "bebida",
+      "grupos": [],
+      "imagen": null,
+      "nombre": {
+        "en": "Tinto de verano",
+        "es": "Tinto de verano",
+        "gl": "Tinto de verán"
+      },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 4.5,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [
+        {
+          "slug": "sulfitos",
+          "grado": "contiene"
+        }
+      ],
+      "categoria": "vinos",
+      "destacado": false,
+      "etiquetas": [],
+      "descripcion": {},
+      "categoria_madre": "bebidas"
+    },
+    {
+      "nota": {},
+      "slug": "sake",
+      "icono": "bebida",
+      "grupos": [],
+      "imagen": null,
+      "nombre": {
+        "en": "Sake",
+        "es": "Sake",
+        "gl": "Sake"
+      },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 15,
+          "etiqueta": {
+            "en": "300 ml bottle",
+            "es": "Botella 300 ml",
+            "gl": "Botella 300 ml"
+          }
+        },
+        {
+          "precio": 8,
+          "etiqueta": {
+            "en": "150 ml tokkuri",
+            "es": "Tokkuri 150 ml",
+            "gl": "Tokkuri 150 ml"
+          }
+        },
+        {
+          "precio": 2,
+          "etiqueta": {
+            "en": "Shot",
+            "es": "Chupito",
+            "gl": "Chupito"
+          }
+        }
+      ],
+      "alergenos": [],
+      "categoria": "orientales",
+      "destacado": false,
+      "etiquetas": [],
+      "descripcion": {},
+      "categoria_madre": "bebidas"
+    },
+    {
+      "nota": {},
+      "slug": "sidra",
+      "icono": "bebida",
+      "grupos": [],
+      "imagen": null,
+      "nombre": {
+        "en": "Cider",
+        "es": "Sidra",
+        "gl": "Sidra"
+      },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 2.9,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [
+        {
+          "slug": "sulfitos",
+          "grado": "contiene"
+        }
+      ],
+      "categoria": "cervezas",
+      "destacado": false,
+      "etiquetas": [],
+      "descripcion": {},
+      "categoria_madre": "bebidas"
+    },
+    {
+      "nota": {},
+      "slug": "cafe-moca",
+      "icono": "bebida",
+      "grupos": [],
+      "imagen": null,
+      "nombre": {
+        "en": "Mocha",
+        "es": "Café moca",
+        "gl": "Café moca"
+      },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 2,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [
+        {
+          "slug": "leche",
+          "grado": "contiene"
+        }
+      ],
+      "categoria": "cafes",
+      "destacado": false,
+      "etiquetas": [
+        "vegetariano"
+      ],
+      "descripcion": {},
+      "categoria_madre": "bebidas"
+    },
+    {
+      "nota": {},
+      "slug": "chocolate",
+      "icono": "bebida",
+      "grupos": [],
+      "imagen": null,
+      "nombre": {
+        "en": "Hot chocolate",
+        "es": "Chocolate",
+        "gl": "Chocolate"
+      },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 2,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [
+        {
+          "slug": "leche",
+          "grado": "contiene"
+        }
+      ],
+      "categoria": "cafes",
+      "destacado": false,
+      "etiquetas": [
+        "vegetariano"
+      ],
+      "descripcion": {},
+      "categoria_madre": "bebidas"
+    },
+    {
+      "nota": {},
+      "slug": "combinados",
+      "icono": "bebida",
+      "grupos": [
+        "combinados-licor"
+      ],
+      "imagen": null,
+      "nombre": {
+        "en": "Mixed drinks",
+        "es": "Combinados",
+        "gl": "Combinados"
+      },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 7,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [],
+      "categoria": "vinos",
+      "destacado": false,
+      "etiquetas": [],
+      "descripcion": {
+        "en": "Rum, gin, vodka or whisky.",
+        "es": "Ron, ginebra, vodka o whisky.",
+        "gl": "Ron, xenebra, vodka ou whisky."
+      },
+      "categoria_madre": "bebidas"
+    },
+    {
+      "nota": {},
+      "slug": "infusiones",
+      "icono": "bebida",
+      "grupos": [],
+      "imagen": null,
+      "nombre": {
+        "en": "Infusions",
+        "es": "Infusiones",
+        "gl": "Infusións"
+      },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 1.5,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [],
+      "categoria": "cafes",
+      "destacado": false,
+      "etiquetas": [
+        "vegano",
+        "vegetariano"
+      ],
+      "descripcion": {},
+      "categoria_madre": "bebidas"
+    },
+    {
+      "nota": {},
+      "slug": "coctel-pina-colada",
+      "icono": "coctel",
+      "grupos": [],
+      "imagen": null,
+      "nombre": {
         "en": "Piña colada",
+        "es": "Piña colada",
         "gl": "Piña colada"
       },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 7.5,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [],
+      "categoria": "cocteles",
+      "destacado": false,
+      "etiquetas": [],
       "descripcion": {
-        "es": "Ron de coco, ron añejo, leche de coco y sirope de piña.",
         "en": "Coconut rum, aged rum, coconut milk and pineapple syrup.",
+        "es": "Ron de coco, ron añejo, leche de coco y sirope de piña.",
         "gl": "Ron de coco, ron avellentado, leite de coco e xarope de piña."
       },
-      "imagen": null,
-      "nota": {},
-      "destacado": false,
-      "precios": [
-        {
-          "etiqueta": null,
-          "precio": 7.5
-        }
-      ],
-      "alergenos": [],
-      "etiquetas": [],
-      "escalas": [],
-      "grupos": []
+      "categoria_madre": "cocteles"
     },
     {
+      "nota": {},
       "slug": "coctel-fukuoka-cocomilk",
-      "numero": null,
-      "categoria": "cocteles",
-      "categoria_madre": "cocteles",
       "icono": "coctel",
+      "grupos": [],
+      "imagen": null,
       "nombre": {
-        "es": "Fukuoka cocomilk",
         "en": "Fukuoka cocomilk",
+        "es": "Fukuoka cocomilk",
         "gl": "Fukuoka cocomilk"
       },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 7.5,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [],
+      "categoria": "cocteles",
+      "destacado": false,
+      "etiquetas": [],
       "descripcion": {
-        "es": "Ron de coco, licor japonés Fukuoka Amaou, leche de coco y sirope de fresa.",
         "en": "Coconut rum, Fukuoka Amaou Japanese liqueur, coconut milk and strawberry syrup.",
+        "es": "Ron de coco, licor japonés Fukuoka Amaou, leche de coco y sirope de fresa.",
         "gl": "Ron de coco, licor xaponés Fukuoka Amaou, leite de coco e xarope de amorodo."
       },
-      "imagen": null,
-      "nota": {},
-      "destacado": false,
-      "precios": [
-        {
-          "etiqueta": null,
-          "precio": 7.5
-        }
-      ],
-      "alergenos": [],
-      "etiquetas": [],
-      "escalas": [],
-      "grupos": []
+      "categoria_madre": "cocteles"
     },
     {
+      "nota": {},
       "slug": "coctel-mix-furutsu",
-      "numero": null,
-      "categoria": "cocteles",
-      "categoria_madre": "cocteles",
       "icono": "coctel",
+      "grupos": [],
+      "imagen": null,
       "nombre": {
-        "es": "Mix furutsu",
         "en": "Mix furutsu",
+        "es": "Mix furutsu",
         "gl": "Mix furutsu"
       },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 6.95,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [],
+      "categoria": "cocteles",
+      "destacado": false,
+      "etiquetas": [],
       "descripcion": {
-        "es": "Ron de coco, sirope de frutas y tónica.",
         "en": "Coconut rum, mixed fruit syrup and tonic.",
+        "es": "Ron de coco, sirope de frutas y tónica.",
         "gl": "Ron de coco, xarope de froitas e tónica."
       },
-      "imagen": null,
-      "nota": {},
-      "destacado": false,
-      "precios": [
-        {
-          "etiqueta": null,
-          "precio": 6.95
-        }
-      ],
-      "alergenos": [],
-      "etiquetas": [],
-      "escalas": [],
-      "grupos": []
+      "categoria_madre": "cocteles"
     },
     {
+      "nota": {},
       "slug": "coctel-momo-ice-tea",
-      "numero": null,
-      "categoria": "cocteles",
-      "categoria_madre": "cocteles",
       "icono": "coctel",
+      "grupos": [],
+      "imagen": null,
       "nombre": {
-        "es": "Momo ice tea",
         "en": "Momo ice tea",
+        "es": "Momo ice tea",
         "gl": "Momo ice tea"
       },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 6.95,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [],
+      "categoria": "cocteles",
+      "destacado": false,
+      "etiquetas": [],
       "descripcion": {
-        "es": "Té negro, sirope de melocotón y vodka.",
         "en": "Black tea, peach syrup and vodka.",
+        "es": "Té negro, sirope de melocotón y vodka.",
         "gl": "Té negro, xarope de pexego e vodka."
       },
-      "imagen": null,
-      "nota": {},
-      "destacado": false,
-      "precios": [
-        {
-          "etiqueta": null,
-          "precio": 6.95
-        }
-      ],
-      "alergenos": [],
-      "etiquetas": [],
-      "escalas": [],
-      "grupos": []
+      "categoria_madre": "cocteles"
     },
     {
+      "nota": {},
       "slug": "coctel-moji-hibisco",
-      "numero": null,
-      "categoria": "cocteles",
-      "categoria_madre": "cocteles",
       "icono": "coctel",
+      "grupos": [],
+      "imagen": null,
       "nombre": {
-        "es": "Moji hibisco",
         "en": "Moji hibiscus",
+        "es": "Moji hibisco",
         "gl": "Moji hibisco"
       },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 6.95,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [],
+      "categoria": "cocteles",
+      "destacado": false,
+      "etiquetas": [],
       "descripcion": {
-        "es": "Ron añejo, sirope de hibisco y tónica.",
         "en": "Aged rum, hibiscus syrup and tonic.",
+        "es": "Ron añejo, sirope de hibisco y tónica.",
         "gl": "Ron avellentado, xarope de hibisco e tónica."
       },
-      "imagen": null,
-      "nota": {},
-      "destacado": false,
-      "precios": [
-        {
-          "etiqueta": null,
-          "precio": 6.95
-        }
-      ],
-      "alergenos": [],
-      "etiquetas": [],
-      "escalas": [],
-      "grupos": []
+      "categoria_madre": "cocteles"
     },
     {
+      "nota": {},
       "slug": "coctel-murasaki-hime",
-      "numero": null,
-      "categoria": "cocteles",
-      "categoria_madre": "cocteles",
       "icono": "coctel",
+      "grupos": [],
+      "imagen": null,
       "nombre": {
-        "es": "Murasaki hime",
         "en": "Murasaki hime",
+        "es": "Murasaki hime",
         "gl": "Murasaki hime"
       },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 6.95,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [],
+      "categoria": "cocteles",
+      "destacado": false,
+      "etiquetas": [],
       "descripcion": {
-        "es": "Vodka, sirope de arándanos y tónica.",
         "en": "Vodka, cranberry syrup and tonic.",
+        "es": "Vodka, sirope de arándanos y tónica.",
         "gl": "Vodka, xarope de arandos e tónica."
       },
-      "imagen": null,
-      "nota": {},
-      "destacado": false,
-      "precios": [
-        {
-          "etiqueta": null,
-          "precio": 6.95
-        }
-      ],
-      "alergenos": [],
-      "etiquetas": [],
-      "escalas": [],
-      "grupos": []
+      "categoria_madre": "cocteles"
     },
     {
+      "nota": {},
       "slug": "coctel-moji-mango",
-      "numero": null,
-      "categoria": "cocteles",
-      "categoria_madre": "cocteles",
       "icono": "coctel",
+      "grupos": [],
+      "imagen": null,
       "nombre": {
-        "es": "Moji mango",
         "en": "Moji mango",
+        "es": "Moji mango",
         "gl": "Moji mango"
       },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 6.95,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [],
+      "categoria": "cocteles",
+      "destacado": false,
+      "etiquetas": [],
       "descripcion": {
-        "es": "Ron añejo, sirope de mango y tónica.",
         "en": "Aged rum, mango syrup and tonic.",
+        "es": "Ron añejo, sirope de mango y tónica.",
         "gl": "Ron avellentado, xarope de mango e tónica."
       },
-      "imagen": null,
-      "nota": {},
-      "destacado": false,
-      "precios": [
-        {
-          "etiqueta": null,
-          "precio": 6.95
-        }
-      ],
-      "alergenos": [],
-      "etiquetas": [],
-      "escalas": [],
-      "grupos": []
+      "categoria_madre": "cocteles"
     },
     {
+      "nota": {},
       "slug": "coctel-moji-maracuya",
-      "numero": null,
-      "categoria": "cocteles",
-      "categoria_madre": "cocteles",
       "icono": "coctel",
+      "grupos": [],
+      "imagen": null,
       "nombre": {
-        "es": "Moji maracuyá",
         "en": "Moji passion fruit",
+        "es": "Moji maracuyá",
         "gl": "Moji maracuxá"
       },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 6.95,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [],
+      "categoria": "cocteles",
+      "destacado": false,
+      "etiquetas": [],
       "descripcion": {
-        "es": "Ron añejo, sirope de maracuyá y tónica.",
         "en": "Aged rum, passion fruit syrup and tonic.",
+        "es": "Ron añejo, sirope de maracuyá y tónica.",
         "gl": "Ron avellentado, xarope de maracuxá e tónica."
       },
-      "imagen": null,
-      "nota": {},
-      "destacado": false,
-      "precios": [
-        {
-          "etiqueta": null,
-          "precio": 6.95
-        }
-      ],
-      "alergenos": [],
-      "etiquetas": [],
-      "escalas": [],
-      "grupos": []
+      "categoria_madre": "cocteles"
     },
     {
-      "slug": "mochi",
-      "numero": null,
-      "categoria": "postres",
-      "categoria_madre": "postres",
-      "icono": "postre",
-      "nombre": {
-        "es": "Mochi",
-        "en": "Mochi",
-        "gl": "Mochi"
-      },
-      "descripcion": {
-        "es": "Chocolate, mango, té verde, vainilla, fresa, café, castaña o sésamo.",
-        "en": "Chocolate, mango, green tea, vanilla, strawberry, coffee, chestnut or sesame.",
-        "gl": "Chocolate, mango, té verde, vainilla, amorodo, café, castaña ou sésamo."
-      },
-      "imagen": null,
       "nota": {},
-      "destacado": false,
-      "precios": [
-        {
-          "etiqueta": {
-            "es": "1 ud",
-            "en": "1 pc",
-            "gl": "1 ud"
-          },
-          "precio": 2.5
-        },
-        {
-          "etiqueta": {
-            "es": "3 uds",
-            "en": "3 pcs",
-            "gl": "3 uds"
-          },
-          "precio": 5.95
-        }
-      ],
-      "alergenos": [],
-      "etiquetas": [
-        "vegetariano"
-      ],
-      "escalas": [],
+      "slug": "mochi",
+      "icono": "postre",
       "grupos": [
         "sabores-mochi"
-      ]
+      ],
+      "imagen": null,
+      "nombre": {
+        "en": "Mochi",
+        "es": "Mochi",
+        "gl": "Mochi"
+      },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 2.5,
+          "etiqueta": {
+            "en": "1 pc",
+            "es": "1 ud",
+            "gl": "1 ud"
+          }
+        },
+        {
+          "precio": 5.95,
+          "etiqueta": {
+            "en": "3 pcs",
+            "es": "3 uds",
+            "gl": "3 uds"
+          }
+        }
+      ],
+      "alergenos": [],
+      "categoria": "postres",
+      "destacado": false,
+      "etiquetas": [
+        "vegetariano"
+      ],
+      "descripcion": {
+        "en": "Chocolate, mango, green tea, vanilla, strawberry, coffee, chestnut or sesame.",
+        "es": "Chocolate, mango, té verde, vainilla, fresa, café, castaña o sésamo.",
+        "gl": "Chocolate, mango, té verde, vainilla, amorodo, café, castaña ou sésamo."
+      },
+      "categoria_madre": "postres"
     },
     {
+      "nota": {},
       "slug": "dorayaki-ogura",
-      "numero": null,
-      "categoria": "postres",
-      "categoria_madre": "postres",
       "icono": "postre",
+      "grupos": [],
+      "imagen": null,
       "nombre": {
-        "es": "Dorayaki ogura",
         "en": "Ogura dorayaki",
+        "es": "Dorayaki ogura",
         "gl": "Dorayaki ogura"
       },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 2.95,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [
+        {
+          "slug": "gluten",
+          "grado": "contiene"
+        },
+        {
+          "slug": "huevos",
+          "grado": "contiene"
+        }
+      ],
+      "categoria": "postres",
+      "destacado": false,
+      "etiquetas": [
+        "vegetariano"
+      ],
       "descripcion": {
-        "es": "De judía dulce.",
         "en": "Filled with sweet red bean.",
+        "es": "De judía dulce.",
         "gl": "De faba doce."
       },
-      "imagen": null,
-      "nota": {},
-      "destacado": false,
-      "precios": [
-        {
-          "etiqueta": null,
-          "precio": 2.95
-        }
-      ],
-      "alergenos": [
-        {
-          "slug": "gluten",
-          "grado": "contiene"
-        },
-        {
-          "slug": "huevos",
-          "grado": "contiene"
-        }
-      ],
-      "etiquetas": [
-        "vegetariano"
-      ],
-      "escalas": [],
-      "grupos": []
+      "categoria_madre": "postres"
     },
     {
+      "nota": {},
       "slug": "dorayaki-chocolate",
-      "numero": null,
-      "categoria": "postres",
-      "categoria_madre": "postres",
       "icono": "postre",
+      "grupos": [],
+      "imagen": null,
       "nombre": {
-        "es": "Dorayaki de chocolate",
         "en": "Chocolate dorayaki",
+        "es": "Dorayaki de chocolate",
         "gl": "Dorayaki de chocolate"
       },
-      "descripcion": {},
-      "imagen": null,
-      "nota": {},
-      "destacado": false,
+      "numero": null,
+      "escalas": [],
       "precios": [
         {
-          "etiqueta": null,
-          "precio": 3.5
+          "precio": 3.5,
+          "etiqueta": null
         }
       ],
       "alergenos": [
@@ -3391,11 +3076,325 @@
           "grado": "contiene"
         }
       ],
+      "categoria": "postres",
+      "destacado": false,
       "etiquetas": [
         "vegetariano"
       ],
-      "escalas": [],
-      "grupos": []
+      "descripcion": {},
+      "categoria_madre": "postres"
     }
-  ]
+  ],
+  "escalas": [
+    {
+      "slug": "picante",
+      "icono": "chile",
+      "maximo": 3,
+      "nombre": {
+        "en": "Spicy",
+        "es": "Picante",
+        "gl": "Picante"
+      }
+    },
+    {
+      "slug": "caldo",
+      "icono": "punto",
+      "maximo": 3,
+      "nombre": {
+        "en": "Broth intensity",
+        "es": "Intensidad del caldo",
+        "gl": "Intensidade do caldo"
+      }
+    }
+  ],
+  "generado": "2026-09-10T08:37:13Z",
+  "alergenos": [
+    {
+      "slug": "gluten",
+      "nombre": {
+        "en": "Gluten",
+        "es": "Gluten",
+        "gl": "Glute"
+      }
+    },
+    {
+      "slug": "crustaceos",
+      "nombre": {
+        "en": "Crustaceans",
+        "es": "Crustáceos",
+        "gl": "Crustáceos"
+      }
+    },
+    {
+      "slug": "huevos",
+      "nombre": {
+        "en": "Eggs",
+        "es": "Huevos",
+        "gl": "Ovos"
+      }
+    },
+    {
+      "slug": "pescado",
+      "nombre": {
+        "en": "Fish",
+        "es": "Pescado",
+        "gl": "Peixe"
+      }
+    },
+    {
+      "slug": "cacahuetes",
+      "nombre": {
+        "en": "Peanuts",
+        "es": "Cacahuetes",
+        "gl": "Cacahuetes"
+      }
+    },
+    {
+      "slug": "soja",
+      "nombre": {
+        "en": "Soya",
+        "es": "Soja",
+        "gl": "Soia"
+      }
+    },
+    {
+      "slug": "leche",
+      "nombre": {
+        "en": "Milk",
+        "es": "Leche",
+        "gl": "Leite"
+      }
+    },
+    {
+      "slug": "frutos-secos",
+      "nombre": {
+        "en": "Nuts",
+        "es": "Frutos secos de cáscara",
+        "gl": "Froitos secos de casca"
+      }
+    },
+    {
+      "slug": "apio",
+      "nombre": {
+        "en": "Celery",
+        "es": "Apio",
+        "gl": "Apio"
+      }
+    },
+    {
+      "slug": "mostaza",
+      "nombre": {
+        "en": "Mustard",
+        "es": "Mostaza",
+        "gl": "Mostaza"
+      }
+    },
+    {
+      "slug": "sesamo",
+      "nombre": {
+        "en": "Sesame",
+        "es": "Sésamo",
+        "gl": "Sésamo"
+      }
+    },
+    {
+      "slug": "sulfitos",
+      "nombre": {
+        "en": "Sulphites",
+        "es": "Sulfitos",
+        "gl": "Sulfitos"
+      }
+    },
+    {
+      "slug": "altramuces",
+      "nombre": {
+        "en": "Lupin",
+        "es": "Altramuces",
+        "gl": "Chochos (altramuces)"
+      }
+    },
+    {
+      "slug": "moluscos",
+      "nombre": {
+        "en": "Molluscs",
+        "es": "Moluscos",
+        "gl": "Moluscos"
+      }
+    }
+  ],
+  "etiquetas": [
+    {
+      "slug": "vegano",
+      "icono": "hoja",
+      "nombre": {
+        "en": "Vegan",
+        "es": "Vegano",
+        "gl": "Vegano"
+      }
+    },
+    {
+      "slug": "vegetariano",
+      "icono": "hoja",
+      "nombre": {
+        "en": "Vegetarian",
+        "es": "Vegetariano",
+        "gl": "Vexetariano"
+      }
+    }
+  ],
+  "categorias": [
+    {
+      "slug": "ramen",
+      "hijas": [],
+      "icono": "ramen",
+      "nombre": {
+        "en": "Ramen",
+        "es": "Ramen",
+        "gl": "Ramen"
+      },
+      "descripcion": {
+        "en": "Long-simmered broth, noodles, and whatever you put on top.",
+        "es": "Caldo largo, fideos y lo que le pongas encima.",
+        "gl": "Caldo longo, fideos e o que lle poñas enriba."
+      }
+    },
+    {
+      "slug": "arroces",
+      "hijas": [],
+      "icono": "arroz",
+      "nombre": {
+        "en": "Rice dishes",
+        "es": "Arroces",
+        "gl": "Arroces"
+      },
+      "descripcion": {}
+    },
+    {
+      "slug": "tapas",
+      "hijas": [
+        {
+          "slug": "gyozas",
+          "icono": "tapa",
+          "nombre": {
+            "en": "Gyoza",
+            "es": "Gyozas",
+            "gl": "Gyozas"
+          },
+          "descripcion": {}
+        },
+        {
+          "slug": "baos",
+          "icono": "tapa",
+          "nombre": {
+            "en": "Bao",
+            "es": "Baos",
+            "gl": "Baos"
+          },
+          "descripcion": {}
+        },
+        {
+          "slug": "fritos",
+          "icono": "tapa",
+          "nombre": {
+            "en": "From the fryer",
+            "es": "De la freidora",
+            "gl": "Da fritideira"
+          },
+          "descripcion": {}
+        }
+      ],
+      "icono": "tapa",
+      "nombre": {
+        "en": "Small plates",
+        "es": "Tapas",
+        "gl": "Tapas"
+      },
+      "descripcion": {}
+    },
+    {
+      "slug": "bebidas",
+      "hijas": [
+        {
+          "slug": "refrescos",
+          "icono": "bebida",
+          "nombre": {
+            "en": "Soft drinks and water",
+            "es": "Refrescos y agua",
+            "gl": "Refrescos e auga"
+          },
+          "descripcion": {}
+        },
+        {
+          "slug": "cervezas",
+          "icono": "bebida",
+          "nombre": {
+            "en": "Beer",
+            "es": "Cervezas",
+            "gl": "Cervexas"
+          },
+          "descripcion": {}
+        },
+        {
+          "slug": "vinos",
+          "icono": "bebida",
+          "nombre": {
+            "en": "Wine",
+            "es": "Vinos",
+            "gl": "Viños"
+          },
+          "descripcion": {}
+        },
+        {
+          "slug": "orientales",
+          "icono": "bebida",
+          "nombre": {
+            "en": "Asian drinks",
+            "es": "Bebidas orientales",
+            "gl": "Bebidas orientais"
+          },
+          "descripcion": {}
+        },
+        {
+          "slug": "cafes",
+          "icono": "bebida",
+          "nombre": {
+            "en": "Coffee and infusions",
+            "es": "Café e infusiones",
+            "gl": "Café e infusións"
+          },
+          "descripcion": {}
+        }
+      ],
+      "icono": "bebida",
+      "nombre": {
+        "en": "Drinks",
+        "es": "Bebidas",
+        "gl": "Bebidas"
+      },
+      "descripcion": {}
+    },
+    {
+      "slug": "cocteles",
+      "hijas": [],
+      "icono": "coctel",
+      "nombre": {
+        "en": "Cocktails",
+        "es": "Cócteles",
+        "gl": "Cócteles"
+      },
+      "descripcion": {}
+    },
+    {
+      "slug": "postres",
+      "hijas": [],
+      "icono": "postre",
+      "nombre": {
+        "en": "Desserts",
+        "es": "Postres",
+        "gl": "Sobremesas"
+      },
+      "descripcion": {}
+    }
+  ],
+  "actualizado": "2026-09-10T08:28:08Z"
 }
