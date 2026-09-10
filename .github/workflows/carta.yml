@@ -116,7 +116,10 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-        run: node tools/instantanea.mjs --abre >> "$GITHUB_OUTPUT"
+        # Sin redirigir: instantanea.mjs escribe la clave en $GITHUB_OUTPUT por
+        # su cuenta. Redirigiendo, sus mensajes para leer caen en un archivo que
+        # solo admite clave=valor y GitHub tumba el paso.
+        run: node tools/instantanea.mjs --abre
 
       # AQUI y no en otro sitio:
       #   · despues de validar, para no tocar el PDF si la carta viene rota
@@ -131,7 +134,7 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-        run: node tools/pdf-buzon.mjs --recoge >> "$GITHUB_OUTPUT"
+        run: node tools/pdf-buzon.mjs --recoge
 
       - name: Reconstruir el HTML
         run: node tools/build.mjs

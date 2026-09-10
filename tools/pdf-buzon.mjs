@@ -36,8 +36,10 @@ const OBJETO = 'menu.pdf';
    PARA SIEMPRE y ese espacio no se recupera. */
 const TOPE = 12 * 1024 * 1024;
 
-/* El flujo lee estas líneas con  >> "$GITHUB_OUTPUT"  para decidir los pasos
-   siguientes. En local no existe la variable y se imprimen y ya está. */
+/* Las claves se escriben DIRECTAMENTE en $GITHUB_OUTPUT, no por redirección del
+   paso: ese archivo solo admite clave=valor, y redirigiendo la salida entera se
+   colaban ahí las frases para leer y GitHub tumbaba el paso. En local no existe
+   la variable y solo se imprimen. */
 function salida(clave, valor) {
   const linea = `${clave}=${valor}`;
   if (process.env.GITHUB_OUTPUT) appendFileSync(process.env.GITHUB_OUTPUT, linea + '\n');
@@ -68,9 +70,12 @@ async function recoge() {
   }
 
   if (fallos.length) {
-    console.error('::error::El PDF del buzón no vale: ' + fallos.join(', ') + '.');
-    console.error('No se toca assets/pdf/menu.pdf. El archivo se queda en el buzón para poder mirarlo.');
-    process.exit(1);
+    /* Sale como error rojo y bien visible, pero NO tumba la publicación: la
+       carta es el producto y el PDF es un asunto lateral, y encima ya hay uno
+       bueno servido. El archivo se queda en el buzón para poder mirarlo. */
+    console.error('::error::El PDF del buzón no vale: ' + fallos.join(', ') + '. No se toca assets/pdf/menu.pdf y se queda en el buzón.');
+    salida('recogido', 'no');
+    return;
   }
 
   const antes = existsSync(DESTINO) ? sha(readFileSync(DESTINO)) : null;
@@ -99,7 +104,15 @@ async function vacia() {
 exigeEntorno();
 
 if (process.argv.includes('--recoge')) {
-  await recoge();
+  /* Un tropiezo del almacén —el buzón sin crear, un corte de red— avisa y deja
+     seguir. Que la carta no se pueda publicar porque el PDF no se ha podido
+     mirar sería cambiar un problema pequeño por uno grande. */
+  try {
+    await recoge();
+  } catch (e) {
+    console.log('::warning::No se ha podido mirar el buzón (' + e.message + '). Se publica la carta con el PDF que ya está.');
+    salida('recogido', 'no');
+  }
 } else if (process.argv.includes('--vacia')) {
   await vacia();
 } else {

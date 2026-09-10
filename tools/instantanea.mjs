@@ -43,6 +43,9 @@ function tras(bandera) {
   return i !== -1 && process.argv[i + 1] ? process.argv[i + 1] : null;
 }
 
+/* La clave se escribe DIRECTAMENTE en $GITHUB_OUTPUT, no por redirección del
+   paso: ese archivo solo admite clave=valor, y redirigiendo la salida entera se
+   colarían ahí las frases para leer y GitHub tumbaría el paso. */
 function salida(clave, valor) {
   const linea = `${clave}=${valor}`;
   if (process.env.GITHUB_OUTPUT) appendFileSync(process.env.GITHUB_OUTPUT, linea + '\n');
