@@ -41,7 +41,7 @@
     "antetitulo": "La cocina",
     "titulo": "El caldo tarda diez horas",
     "cuerpo": [
-      "Se pone a fuego lento por la mañana y no se toca hasta que está. De ahí salen los nueve ramen de la carta, y de cada uno eliges la intensidad del caldo, suave, media o fuerte, y si lo quieres picante.",
+      "Se pone a fuego lento por la mañana y no se toca hasta que está. De ahí salen los nueve ramen de la carta, y de cada uno eliges la intensidad del caldo —bajo, medio o alto— y si lo quieres picante.",
       "Alrededor hay gyozas, baos, tempura, karaage y takoyaki para ir picando, arroces al curry y postres japoneses."
     ],
     "platos": {
@@ -152,6 +152,10 @@
     "sin_uno": "Sin {a}",
     "picante_max": "Picante como mucho",
     "picante_nada": "Nada",
+    "nivel": "{n} de {m}",
+    "picante_da_igual": "Da igual",
+    "filtros_puestos": "{n} puestos",
+    "filtros_uno": "1 puesto",
     "secciones": "Secciones",
     "todas": "Toda la carta",
     "resultados_uno": "1 plato",

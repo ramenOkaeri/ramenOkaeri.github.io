@@ -84,6 +84,69 @@
 
   var lee = function (tabla, q) { return api('/rest/v1/' + tabla + '?' + (q || 'select=*')); };
 
+  /* --- el buzon del PDF ---
+     Subir el PDF es EL UNICO fetch pelado del panel: api() fuerza
+     Content-Type: application/json y aqui el cuerpo va en binario. El LISTADO
+     del buzon si pasa por api(), porque ese si es un POST con cuerpo JSON.
+     El PDF no viaja por la Edge Function porque pesa 2,2 MB y el
+     client_payload de GitHub tope en unos 64 KB. */
+  var TOPE_PDF = 8 * 1024 * 1024;
+
+  function subePdf(archivo) {
+    return new Promise(function (resolver, rechazar) {
+      if (archivo.type && archivo.type !== 'application/pdf') {
+        return rechazar(new Error('Eso no es un PDF.'));
+      }
+      if (archivo.size > TOPE_PDF) {
+        return rechazar(new Error('Ese PDF pesa ' + (archivo.size / 1048576).toFixed(1) +
+          ' MB y el tope son 8. Compáctalo antes de subirlo.'));
+      }
+      /* Los cuatro primeros bytes de un PDF son %PDF. Se miran aquí para no
+         gastar ocho megas de subida y que lo rechace el servidor al final. */
+      var lector = new FileReader();
+      lector.onerror = function () { rechazar(new Error('No se ha podido leer el archivo.')); };
+      lector.onload = function () {
+        var b = new Uint8Array(lector.result);
+        if (b[0] !== 0x25 || b[1] !== 0x50 || b[2] !== 0x44 || b[3] !== 0x46) {
+          rechazar(new Error('Eso no es un PDF de verdad: no empieza por %PDF.'));
+        } else resolver();
+      };
+      lector.readAsArrayBuffer(archivo.slice(0, 4));
+    }).then(function () {
+      return fetch(cfg.url + '/storage/v1/object/buzon/menu.pdf', {
+        method: 'POST',
+        headers: {
+          apikey: cfg.anon,
+          Authorization: 'Bearer ' + sesion.access_token,
+          'Content-Type': 'application/pdf',
+          /* Sin esto, el segundo PDF que se suba da 409: el buzón ya tiene uno.
+             El buzón guarda una sola carta y la nueva sustituye a la vieja. */
+          'x-upsert': 'true'
+        },
+        body: archivo
+      }).then(function (r) {
+        return cuerpo(r).then(function (d) {
+          if (r.status === 401 && sesion) {
+            return refresca().then(function () { return subePdf(archivo); });
+          }
+          if (r.status === 413) throw new Error('El servidor dice que ese PDF es demasiado grande.');
+          if (!r.ok) {
+            throw new Error((d && (d.message || d.error)) || ('El almacén ha dicho ' + r.status + '.'));
+          }
+          return d;
+        });
+      });
+    });
+  }
+
+  function miraBuzon() {
+    return api('/storage/v1/object/list/buzon', {
+      method: 'POST', body: JSON.stringify({ prefix: '', limit: 5 })
+    }).then(function (l) {
+      return (l || []).filter(function (o) { return o.name === 'menu.pdf'; })[0] || null;
+    }).catch(function () { return null; });
+  }
+
   function escribe(tabla, filas, unica) {
     return api('/rest/v1/' + tabla + (unica ? '?on_conflict=' + unica : ''), {
       method: 'POST',
@@ -212,7 +275,8 @@
     ['escalas', 'Niveles'],
     ['grupos', 'Opciones'],
     ['etiquetas', 'Etiquetas'],
-    ['publicar', 'Publicar']
+    ['publicar', 'Publicar'],
+    ['historial', 'Historial']
   ];
 
   function pintaApp() {
@@ -250,6 +314,7 @@
     if (pestana === 'grupos') return pintaGrupos(cuerpoEl);
     if (pestana === 'etiquetas') return pintaEtiquetas(cuerpoEl);
     if (pestana === 'publicar') return pintaPublicar(cuerpoEl);
+    if (pestana === 'historial') return pintaHistorial(cuerpoEl);
   }
 
   /* ------------------------------------------------------------------ */
@@ -691,7 +756,7 @@
       },
       campos: function (d) {
         var max = el('input', { type: 'number', min: '1', max: '10', value: d.maximo || 3 });
-        var icono = el('select', {}, ['chile', 'punto'].map(function (i) { return el('option', { value: i, texto: i }); }));
+        var icono = el('select', {}, ['chile', 'caldo', 'punto'].map(function (i) { return el('option', { value: i, texto: i }); }));
         icono.value = d.icono || 'punto';
         var orden = el('input', { type: 'number', value: d.orden || 0 });
         return {
@@ -807,11 +872,50 @@
     var boton = el('button', { clase: 'btn btn-p', type: 'button', texto: 'Publicar la carta', disabled: 'disabled' });
     var detalle = el('p', { clase: 'pista' });
 
+    /* La carta en PDF. Se deja en un buzón y sale a la web en la siguiente
+       publicación: así el PDF y los platos se cambian con el mismo botón y no
+       hay dos estados distintos en la web. */
+    var entradaPdf = el('input', { type: 'file', accept: 'application/pdf,.pdf', hidden: 'hidden' });
+    var botonPdf = el('button', {
+      type: 'button', clase: 'btn btn-s', texto: 'Elegir un PDF',
+      onclick: function () { entradaPdf.click(); }
+    });
+    var estadoPdf = el('p', { clase: 'pista', texto: 'Mirando…' });
+
+    function refrescaBuzon() {
+      return miraBuzon().then(function (o) {
+        estadoPdf.textContent = o
+          ? 'Hay un PDF esperando, subido el ' + fecha(o.updated_at) + ' · ' +
+            (((o.metadata && o.metadata.size) || 0) / 1048576).toFixed(1) +
+            ' MB. Sale a la web en cuanto publiques.'
+          : 'El PDF que hay en la web es el último que se publicó.';
+      });
+    }
+
+    entradaPdf.addEventListener('change', function () {
+      var f = this.files && this.files[0];
+      if (!f) return;
+      botonPdf.disabled = true; botonPdf.textContent = 'Subiendo…';
+      subePdf(f).then(function () {
+        aviso('PDF subido. Acuérdate de publicar.');
+        return refrescaBuzon();
+      }).catch(function (x) { aviso(x.message, 'error'); })
+        .then(function () {
+          botonPdf.disabled = false; botonPdf.textContent = 'Elegir un PDF';
+          entradaPdf.value = '';
+        });
+    });
+
     c.appendChild(el('div', { clase: 'publicar' }, [
       el('h2', { texto: 'Publicar' }),
       el('p', { clase: 'pista', texto: 'Lo que cambias aquí no sale en la web hasta que publicas. Al publicar, la carta se vuelve a generar y se sube sola: tarda un minuto o dos.' }),
-      estadoEl, detalle, boton
+      estadoEl, detalle, boton,
+      el('h2', { texto: 'La carta en PDF' }),
+      el('p', { clase: 'pista', texto: 'Es el que se abre desde «Ver la carta en PDF». Súbelo aquí y sale a la web en la próxima publicación, con todo lo demás. Tiene que ser un PDF y pesar menos de 8 MB.' }),
+      estadoPdf, botonPdf, entradaPdf
     ]));
+
+    refrescaBuzon();
 
     var ultima = estado.platos.concat(estado.categorias, estado.grupos)
       .map(function (x) { return x.actualizado; }).filter(Boolean).sort().pop();
@@ -852,6 +956,84 @@
         aviso(x.message, 'error'); boton.disabled = false; boton.textContent = 'Publicar la carta';
       });
     });
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* historial                                                           */
+  /* ------------------------------------------------------------------ */
+  /* No se mete dentro de editorLista: no es un CRUD, es un registro con una
+     sola acción, y parametrizarle "sin nuevo", "sin borrar", "sin modal" y
+     "sin nombre multiidioma" serían cuatro huecos para no repetir treinta
+     líneas. Sí se reutilizan sus clases, que es lo que importa. */
+  function pintaHistorial(c) {
+    var lista = el('div', { clase: 'lista' });
+    c.appendChild(el('div', { clase: 'barra' }, [
+      el('h2', { clase: 'barra-tit', texto: 'Historial' })
+    ]));
+    c.appendChild(el('p', { clase: 'pista pista-suelta', texto:
+      'Cada vez que publicas se guarda una copia de la carta entera: también los platos que ' +
+      'están fuera de la carta y las categorías apagadas. Se guardan las diez últimas. ' +
+      'Volver a una copia deshace todo lo que hayas cambiado desde entonces, y el PDF de ' +
+      'aquel día vuelve con ella. Esto también se deshace: antes de tocar nada se guarda ' +
+      'cómo está la carta ahora.' }));
+    c.appendChild(lista);
+
+    lista.appendChild(el('p', { clase: 'cargando', texto: 'Cargando el historial…' }));
+    /* Se pide aquí y no en cargaTodo(): es una pestaña que casi no se abre y no
+       tiene por qué costarle una petición más a cada entrada al panel. */
+    lee('publicaciones_lista', 'select=*&limit=10').then(function (filas) {
+      lista.textContent = '';
+      if (!filas || !filas.length) {
+        lista.appendChild(el('p', { clase: 'pista', texto:
+          'Todavía no hay ninguna copia. La primera se guarda la próxima vez que publiques.' }));
+        return;
+      }
+      filas.forEach(function (p, i) {
+        var sub = p.resumen || (p.platos + ' platos');
+        if (p.motivo === 'antes de restaurar') sub = 'Copia automática · ' + sub;
+        lista.appendChild(el('div', { clase: 'fila' }, [
+          el('div', { clase: 'fila-txt' }, [
+            el('strong', { texto: fecha(p.creado) }),
+            el('span', { clase: 'fila-sub', texto: sub }),
+            i === 0 ? el('span', { clase: 'pincho', texto: 'lo que hay publicado' }) : null
+          ]),
+          el('div', { clase: 'fila-acc' }, i === 0 ? [] : [
+            el('button', {
+              type: 'button', clase: 'btn btn-s', texto: 'Volver a esta',
+              onclick: function () { vuelve(p, this); }
+            })
+          ])
+        ]));
+      });
+    }).catch(function (x) {
+      lista.textContent = '';
+      lista.appendChild(el('p', { clase: 'pista', texto: 'No se ha podido cargar el historial.' }));
+      aviso(x.message, 'error');
+    });
+
+    function vuelve(p, boton) {
+      if (!confirm('¿Volver a la carta del ' + fecha(p.creado) + '?\n\n' +
+        'Se pierde todo lo que hayas cambiado desde entonces. Antes de tocar nada se guarda ' +
+        'cómo está la carta ahora, así que esto también se deshace.')) return;
+      boton.disabled = true; boton.textContent = 'Volviendo…';
+      /* Por el mismo cable que publicar: la Edge Function comprueba que quien
+         llama es admin y dispara el flujo, que es el único que sabe devolver el
+         PDF de aquel día y reconstruir la web. */
+      fetch(cfg.publicar, {
+        method: 'POST',
+        headers: { Authorization: 'Bearer ' + sesion.access_token, apikey: cfg.anon,
+                   'Content-Type': 'application/json' },
+        body: JSON.stringify({ restaurar: p.id })
+      }).then(function (r) {
+        return cuerpo(r).then(function (d) {
+          if (!r.ok) throw new Error((d && d.error) || 'No se ha podido lanzar la vuelta atrás.');
+          aviso('Volviendo a esa carta. En un minuto o dos estará en la web.');
+        });
+      }).catch(function (x) {
+        aviso(x.message, 'error');
+        boton.disabled = false; boton.textContent = 'Volver a esta';
+      });
+    }
   }
 
   function fecha(iso) {

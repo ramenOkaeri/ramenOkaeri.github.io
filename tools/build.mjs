@@ -31,6 +31,15 @@ const JS = huella('js/main.js');
    panel. Llevan huella por lo mismo que la del sitio. */
 const ADMIN_CSS = huella('admin/admin.css');
 const ADMIN_JS = huella('admin/admin.js');
+/* El PDF de la carta tambien, y ahora hace falta de verdad: desde que se puede
+   cambiar desde el panel, este archivo deja de ser el mismo para siempre.
+   Cloudflare cachea .pdf por extension, asi que sin huella el restaurante
+   cambia la carta, el flujo la commitea, y el visitante sigue descargando la
+   vieja durante horas. Mismo problema que ya se arreglo para la hoja.
+   Verificado en el codigo del visor y no supuesto: viewer.mjs pasa el
+   parametro file por URLSearchParams, asi que el ?v= codificado vuelve a salir
+   entero, y validateFileURL solo compara el origen. */
+const PDF = huella('assets/pdf/menu.pdf');
 
 const IDIOMAS = ['es', 'en', 'gl'];
 /* La nota, el total y el enlace salen de content/resenas.json, que lo refresca
@@ -597,9 +606,9 @@ function cartaPdf(l) {
 </div>
 <main class="visor" id="principal">
  <h1 class="oculto">${esc(t.carta.titulo)}</h1>
- <iframe src="/web/viewer.html?file=/assets/pdf/menu.pdf#zoom=page-width"
+ <iframe src="/web/viewer.html?file=${encodeURIComponent(PDF)}#zoom=page-width"
   title="${esc(t.carta.titulo)}"></iframe>
- <p class="oculto">${esc(t.carta.aviso)} <a href="/assets/pdf/menu.pdf">${esc(t.carta.descargar)}</a></p>
+ <p class="oculto">${esc(t.carta.aviso)} <a href="${PDF}">${esc(t.carta.descargar)}</a></p>
 </main>
 <button type="button" class="visor-salir" aria-label="${esc(t.carta.salir_pleno)}">${ICO.contraer}</button>
 <script src="${JS}" defer></script>
@@ -653,7 +662,61 @@ const MARCADORES = `<svg class="oculto" aria-hidden="true" focusable="false"><de
 <g id="pl-postre"><path d="M4.5 22.5h23"/><path d="M8.5 22.5a7.5 7.5 0 0 1 15 0"/></g>
 <g id="pl-coctel"><path d="M5 7h22L16 19Z"/><path d="M16 19v7M11.5 26h9"/></g>
 <g id="pl-generico"><circle cx="16" cy="16" r="11"/><circle cx="16" cy="16" r="6"/></g>
+
+<g id="alg-gluten"><path d="M16 29V12"/><path d="M16 21.5c-3.2 0-5.2-1.8-5.2-4.5 3.2 0 5.2 1.8 5.2 4.5Z"/><path d="M16 21.5c3.2 0 5.2-1.8 5.2-4.5-3.2 0-5.2 1.8-5.2 4.5Z"/><path d="M16 15c-3.2 0-5.2-1.8-5.2-4.5 3.2 0 5.2 1.8 5.2 4.5Z"/><path d="M16 15c3.2 0 5.2-1.8 5.2-4.5-3.2 0-5.2 1.8-5.2 4.5Z"/><path d="M16 10c0-2.5 1-4.2 2.9-5 .5 2.5-.5 4.3-2.9 5Z"/></g>
+<g id="alg-crustaceos"><path d="M24 10c-6.6 0-11.6 3.8-11.6 9 0 4.3 3.5 7.4 8.2 7.4 2.4 0 4.2-.7 5.4-1.6"/><path d="M12.6 18.4c-3.4.3-5.6 2.4-6.1 5.6"/><path d="M24 10c1.4-1.9 3.3-2.9 5.6-3"/><path d="M22.2 9.6c-.4-2.2.4-4 2.2-5.4"/><path d="M16.6 24.8c-.8 1.9-2.3 3-4.4 3.4"/></g>
+<g id="alg-huevos"><path d="M16 27.5c-4.4 0-7.6-3-7.6-7.2 0-5.2 3.6-11.8 7.6-11.8s7.6 6.6 7.6 11.8c0 4.2-3.2 7.2-7.6 7.2Z"/><circle cx="16" cy="19.5" r="3.4"/></g>
+<g id="alg-pescado"><path d="M4.5 16c3.4-4.6 7.6-6.9 12.6-6.9 4.6 0 8.2 2.3 10.8 6.9-2.6 4.6-6.2 6.9-10.8 6.9-5 0-9.2-2.3-12.6-6.9Z"/><path d="M27.9 16c1.3-.5 2.4-1.5 3.3-3v6c-.9-1.5-2-2.5-3.3-3Z"/><circle cx="11.5" cy="14.6" r="1.1"/></g>
+<g id="alg-cacahuetes"><path d="M20.4 6.5c3.4 0 5.8 2.5 5.8 5.6 0 2.2-1.1 3.4-1.1 5.1 0 1.8 1.1 2.9 1.1 5.1 0 3.1-2.4 5.6-5.8 5.6h-8.8c-3.4 0-5.8-2.5-5.8-5.6 0-2.2 1.1-3.3 1.1-5.1 0-1.7-1.1-2.9-1.1-5.1 0-3.1 2.4-5.6 5.8-5.6Z"/><path d="M7 17.2h18"/></g>
+<g id="alg-soja"><path d="M27 6.5c0 8.4-5.6 15.3-13.2 15.3-4.4 0-7.6-2.9-7.6-7 0-6.8 5.8-12.2 12.6-12.2"/><circle cx="12.4" cy="15.4" r="2.4"/><circle cx="18.6" cy="10.4" r="2.4"/><path d="M6.2 28.5c1.6-4.3 4.2-7.6 7.6-9.8"/></g>
+<g id="alg-leche"><path d="M10 12.5h12v16H10Z"/><path d="M10 12.5 13 6h6l3 6.5"/><path d="M13 6V3.5h6V6"/><path d="M10 19.5h12"/></g>
+<g id="alg-frutos-secos"><path d="M16 28.5c-4.8 0-8.4-4.2-8.4-9.6 0-5 3.2-9.4 8.4-9.4s8.4 4.4 8.4 9.4c0 5.4-3.6 9.6-8.4 9.6Z"/><path d="M7.8 14.2c1.8-1.7 4.8-2.7 8.2-2.7s6.4 1 8.2 2.7"/><path d="M16 11.5V4.8"/><path d="M16 5.2c-1.4-1.5-3.2-2.2-5.4-2.2.3 2.4 1.7 3.9 4 4.4"/></g>
+<g id="alg-apio"><path d="M11 29c-1.4-5-1.8-10.4-1.2-16.2"/><path d="M16 29c0-5.6.3-11 1-16.2"/><path d="M21 29c1.4-5 2.2-10.4 2.4-16.2"/><path d="M8.2 12.8c-.6-3.4.8-5.8 4.2-7.2 1 2.2.8 4.4-.6 6.6"/><path d="M17 12.8c-1-3.6 0-6.4 3-8.4 1.6 2.6 1.6 5.4 0 8.4"/><path d="M23.6 12.8c1.6-2.8 1.2-5.4-1.2-7.8"/></g>
+<g id="alg-mostaza"><path d="M11 12.5h10c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H11c-1.1 0-2-.9-2-2v-12c0-1.1.9-2 2-2Z"/><path d="M12 12.5v-3h8v3"/><path d="M13.5 9.5V6h5v3.5"/><path d="M9 18.5h14"/></g>
+<g id="alg-sesamo"><path d="M12 6.5c2.3 0 4 1.9 4 4.3s-1.7 4.3-4 4.3-4-1.9-4-4.3 1.7-4.3 4-4.3Z"/><path d="M23 12c2.3 0 4 1.9 4 4.3s-1.7 4.3-4 4.3-4-1.9-4-4.3 1.7-4.3 4-4.3Z"/><path d="M12.5 19.5c2.3 0 4 1.9 4 4.3s-1.7 4.3-4 4.3-4-1.9-4-4.3 1.7-4.3 4-4.3Z"/></g>
+<g id="alg-sulfitos"><path d="M13 4.5h6"/><path d="M14 4.5v7.2L7.6 24.4c-.9 1.8.4 3.9 2.4 3.9h12c2 0 3.3-2.1 2.4-3.9L18 11.7V4.5"/><path d="M10.4 19h11.2"/></g>
+<g id="alg-altramuces"><path d="M16 29V15"/><path d="M16 15c-4.2 0-6.6-2.2-6.6-5.6 4.2 0 6.6 2.2 6.6 5.6Z"/><path d="M16 15c4.2 0 6.6-2.2 6.6-5.6-4.2 0-6.6 2.2-6.6 5.6Z"/><path d="M16 9c-2.6-1.2-3.8-3.2-3.4-5.8 2.6.6 4 2.4 4 5.2"/><path d="M16 9c2.6-1.2 3.8-3.2 3.4-5.8-2.6.6-4 2.4-4 5.2"/></g>
+<g id="alg-moluscos"><path d="M16 27.5c-6.4 0-11.5-4.8-11.5-11 0-3.4 2.3-5.6 5-5.6 1.5 0 2.8.7 3.6 1.9.7-2.3 1.6-4.1 2.9-5.3 1.3 1.2 2.2 3 2.9 5.3.8-1.2 2.1-1.9 3.6-1.9 2.7 0 5 2.2 5 5.6 0 6.2-5.1 11-11.5 11Z"/><path d="M16 8.5v19"/><path d="M10.6 13.2 8.2 25.2"/><path d="M21.4 13.2 23.8 25.2"/></g>
+
+<g id="etq-hoja"><path d="M6 26C6 14 13 7.5 26 6.5 25 19.5 18 26 6 26Z"/><path d="M6 26c3.5-6.5 8-11 13.5-13.5"/></g>
+<g id="esc-chile"><path d="M21 9c1.4 7.6-3.6 15.8-11.1 16.3-3.2.2-5.4-1.8-5.4-4.5 0-2.6 2-4.3 5-4.6C16.1 15.8 20 12.9 21 9Z"/><path d="M21 9c.1-2.7 1.7-4.4 4.7-5.1"/><path d="M25.7 3.9c1.8.2 3 1.3 3.5 3.1"/></g>
+<g id="esc-caldo"><path d="M3.5 16.5h25a12.5 12.5 0 0 1-25 0Z"/><path d="M12 12c0-2 2-2.2 2-4M18 12c0-2 2-2.2 2-4"/></g>
+<g id="esc-nivel"><path d="M7 26V18M16 26V12M25 26V6"/></g>
 </defs></svg>`;
+
+/* Los alergenos son los 14 del Reglamento (UE) 1169/2011: una lista cerrada
+   POR LEY, no un vocabulario que vaya a crecer. Por eso el icono se casa aqui
+   por slug y la tabla no necesita una columna mas ni el esquema una migracion.
+   Un slug que no este en la lista simplemente sale sin icono. */
+const ICO_ALG = new Set(['gluten', 'crustaceos', 'huevos', 'pescado', 'cacahuetes',
+  'soja', 'leche', 'frutos-secos', 'apio', 'mostaza', 'sesamo', 'sulfitos',
+  'altramuces', 'moluscos']);
+/* En el filtro el icono va TACHADO cuando la casilla esta marcada: "sin gluten"
+   es una exclusion, y una pastilla que solo cambia de color no lo dice. La raya
+   va dentro del propio <svg>, al lado del <use>, porque un SVG no admite ::after.
+   Fuera del filtro no se tacha nunca. */
+const marcaAlg = (slug, tachable) => ICO_ALG.has(slug)
+  ? `<svg class="ico-alg" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><use href="#alg-${slug}"></use>` +
+    (tachable ? '<line class="tacha" x1="4.5" y1="27.5" x2="27.5" y2="4.5"/>' : '') + '</svg>'
+  : '';
+
+/* El icono de una escala y el de una etiqueta salen de su propio campo `icono`,
+   que llevaba en los datos desde el principio sin que lo leyera nadie. Lo que no
+   se reconozca cae en un icono neutro, que es mejor que un hueco. */
+const ICO_ESC = { chile: 'esc-chile', caldo: 'esc-caldo', punto: 'esc-nivel' };
+const marcaEsc = (icono) =>
+  `<svg class="ico-esc" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><use href="#${ICO_ESC[icono] || 'esc-nivel'}"></use></svg>`;
+
+/* "Sin Gluten" con la mayuscula intercalada es un calco del ingles, y sale en
+   los tres idiomas: el nombre viene capitalizado del vocabulario porque alli va
+   suelto, y en el filtro va dentro de una frase. Se le baja la inicial, que en
+   los catorce son nombres comunes y ninguno es un nombre propio. */
+const minusc = (s, l) => (s ? s.charAt(0).toLocaleLowerCase(l) + s.slice(1) : s);
+
+const ICO_ETQ = { hoja: 'etq-hoja' };
+const marcaEtq = (icono) => ICO_ETQ[icono]
+  ? `<svg class="ico-alg" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><use href="#${ICO_ETQ[icono]}"></use></svg>`
+  : '';
 
 /* Pliega acentos y pasa a minusculas, para que "jalapeno" encuentre "jalapeño"
    y "cafe" encuentre "café". Se calcula al construir y viaja en data-buscar, asi
@@ -722,7 +785,13 @@ function filaPlato(p, l, t) {
   const desc = txt(p.descripcion, l);
   const nota = txt(p.nota, l);
   const alergenos = p.alergenos.map((a) => a.slug);
-  const picante = p.escalas.find((e) => e.slug === 'picante');
+  /* Se pintan TODAS las escalas que tenga el plato, no solo el picante. La
+     intensidad del caldo llevaba en el modelo desde el primer dia y no se veia,
+     asi que rellenarla no servia de nada: se guardaba y desaparecia. El orden
+     es el de C.escalas, para que dos platos las enseñen siempre igual. */
+  const escalas = C.escalas
+    .map((e) => ({ ...e, suyo: p.escalas.find((x) => x.slug === e.slug) }))
+    .filter((e) => e.suyo && e.suyo.valor > 0);
 
   /* Todo lo que filtra viaja en atributos del propio <li>. Asi la pagina no
      lleva ni un JSON duplicado: el HTML es el dato. */
@@ -731,7 +800,12 @@ function filaPlato(p, l, t) {
     `data-madre="${esc(p.categoria_madre)}"`,
     p.etiquetas.length ? `data-etq="${esc(p.etiquetas.join(' '))}"` : '',
     alergenos.length ? `data-alg="${esc(alergenos.join(' '))}"` : '',
-    picante ? `data-picante="${picante.valor}"` : 'data-picante="0"',
+    /* Un atributo por escala y no uno cableado al picante: la proxima escala
+       que se cree entra sola en el HTML y el filtro no hay que tocarlo. */
+    ...C.escalas.map((e) => {
+      const suyo = p.escalas.find((x) => x.slug === e.slug);
+      return `data-e-${esc(e.slug)}="${suyo ? suyo.valor : 0}"`;
+    }),
     `data-buscar="${esc(plegar([nombre, desc, p.numero || ''].join(' ')))}"`,
   ].filter(Boolean).join(' ');
 
@@ -742,14 +816,18 @@ function filaPlato(p, l, t) {
   const chips = [];
   for (const e of p.etiquetas) {
     const meta = C.etiquetas.find((x) => x.slug === e);
-    if (meta) chips.push(`<span class="chip chip-dieta">${esc(txt(meta.nombre, l))}</span>`);
+    if (meta) chips.push(`<span class="chip chip-dieta">${marcaEtq(meta.icono)}${esc(txt(meta.nombre, l))}</span>`);
   }
-  if (picante && picante.valor > 0) {
-    const puntos = Array.from({ length: picante.maximo }, (_, i) =>
-      `<i class="${i < picante.valor ? 'on' : ''}"></i>`).join('');
-    const meta = C.escalas.find((x) => x.slug === 'picante');
+  /* El icono dice QUE escala es y los puntos CUANTO tiene. La frase entera va en
+     .oculto y los puntos en aria-hidden: quien ve, cuenta puntos; quien escucha,
+     oye "Picante: 2 de 3". El patron ya era correcto y no se toca. */
+  for (const e of escalas) {
+    const tope = e.suyo.maximo || e.maximo;
+    const puntos = Array.from({ length: tope }, (_, i) =>
+      `<i class="${i < e.suyo.valor ? 'on' : ''}"></i>`).join('');
     chips.push(
-      `<span class="chip chip-nivel"><span class="oculto">${esc(txt(meta.nombre, l))}: ${picante.valor} / ${picante.maximo}</span>` +
+      `<span class="chip chip-nivel">${marcaEsc(e.icono)}` +
+      `<span class="oculto">${esc(txt(e.nombre, l))}: ${esc(rell(t.carta.nivel, { n: e.suyo.valor, m: tope }))}</span>` +
       `<span class="pips" aria-hidden="true">${puntos}</span></span>`
     );
   }
@@ -758,7 +836,7 @@ function filaPlato(p, l, t) {
     if (!meta) continue;
     const n = esc(txt(meta.nombre, l));
     chips.push(
-      `<span class="chip chip-alg"${a.grado === 'trazas' ? ' data-trazas' : ''}>` +
+      `<span class="chip chip-alg"${a.grado === 'trazas' ? ' data-trazas' : ''}>${marcaAlg(a.slug)}` +
       `<span class="oculto">${esc(a.grado === 'trazas' ? t.carta.trazas : t.carta.contiene)}: </span>${n}</span>`
     );
   }
@@ -793,7 +871,7 @@ function filaPlato(p, l, t) {
     ? `<div class="plato-grupo"><h4>${esc(t.carta.alergenos)}</h4><ul class="alg-lista">` +
       p.alergenos.map((a) => {
         const meta = C.alergenos.find((x) => x.slug === a.slug);
-        return `<li>${esc(txt(meta.nombre, l))}${a.grado === 'trazas' ? ` <span>(${esc(t.carta.trazas)})</span>` : ''}</li>`;
+        return `<li>${marcaAlg(a.slug)}${esc(txt(meta.nombre, l))}${a.grado === 'trazas' ? ` <span>(${esc(t.carta.trazas)})</span>` : ''}</li>`;
       }).join('') + '</ul></div>'
     : '';
 
@@ -855,23 +933,42 @@ function menuCarta(l) {
      casilla de "sin apio" que no quita nada solo estorba. */
   const usados = new Set(C.platos.flatMap((p) => p.alergenos.map((a) => a.slug)));
   const casillas = C.alergenos.filter((a) => usados.has(a.slug)).map((a) =>
-    `<label class="chip chip-btn"><input type="checkbox" name="sin" value="${esc(a.slug)}">` +
-    `<span>${esc(rell(t.carta.sin_uno, { a: txt(a.nombre, l) }))}</span></label>`
+    `<label class="chip chip-btn chip-sin"><input type="checkbox" name="sin" value="${esc(a.slug)}">` +
+    `<span>${marcaAlg(a.slug, true)}${esc(rell(t.carta.sin_uno, { a: minusc(txt(a.nombre, l), l) }))}</span></label>`
   ).join('');
 
   const dietas = C.etiquetas.map((e) =>
     `<label class="chip chip-btn"><input type="checkbox" name="dieta" value="${esc(e.slug)}">` +
-    `<span>${esc(txt(e.nombre, l))}</span></label>`
+    `<span>${marcaEtq(e.icono)}${esc(txt(e.nombre, l))}</span></label>`
   ).join('');
 
+  /* El picante deja de ser un <select> con emojis. Un emoji no es un icono: lo
+     pinta la fuente del sistema, sale de otro color que el resto de la interfaz y
+     un lector de pantalla lee "pimiento picante, pimiento picante, pimiento
+     picante". Ahora son radios con la misma pastilla que el resto de la barra y
+     los mismos puntos que la ficha del plato, asi que el filtro y el plato se
+     leen igual. La primera opcion es "da igual", que es el estado de partida. */
   const escPic = C.escalas.find((e) => e.slug === 'picante');
+  const pastillaPic = (valor, dentro, marcado) =>
+    `<label class="chip chip-btn chip-pic"><input type="radio" name="pic" value="${valor}"${marcado ? ' checked' : ''}>` +
+    `<span>${dentro}</span></label>`;
   const nivelesPic = escPic
-    ? Array.from({ length: escPic.maximo + 1 }, (_, i) =>
-        `<option value="${i}">${i === 0 ? esc(t.carta.picante_nada) : '🌶'.repeat(i)}</option>`).join('')
+    ? [pastillaPic('', esc(t.carta.picante_da_igual), true),
+       pastillaPic('0', esc(t.carta.picante_nada), false)]
+        .concat(Array.from({ length: escPic.maximo }, (_, i) => {
+          const n = i + 1;
+          const puntos = Array.from({ length: escPic.maximo }, (_, j) =>
+            `<i class="${j < n ? 'on' : ''}"></i>`).join('');
+          return pastillaPic(String(n),
+            marcaEsc(escPic.icono) +
+            `<span class="oculto">${esc(rell(t.carta.nivel, { n, m: escPic.maximo }))}</span>` +
+            `<span class="pips" aria-hidden="true">${puntos}</span>`, false);
+        }))
+        .join('')
     : '';
 
   const leyenda = C.alergenos.map((a) =>
-    `<li>${esc(txt(a.nombre, l))}</li>`).join('');
+    `<li>${marcaAlg(a.slug)}${esc(txt(a.nombre, l))}</li>`).join('');
 
   return `${cabeza(l, {
     titulo: t.meta.titulo_carta, desc: t.meta.descripcion_carta, ruta,
@@ -893,8 +990,12 @@ ${MARCADORES}
    <div class="filtro-buscar">
     <label for="q" class="oculto">${esc(t.carta.buscar)}</label>
     <input type="search" id="q" name="q" placeholder="${esc(t.carta.buscar_ph)}" autocomplete="off" enterkeyhint="search">
-    <button type="button" class="filtro-abre" id="abre-filtros" aria-expanded="false" aria-controls="filtro-cajon">
-     <span>${esc(t.carta.filtros)}</span><i class="filtro-punto" hidden></i>
+    <!-- El aviso de "hay filtros puestos" era un <i> vacio: se veia y no decia
+         nada. Ahora es un numero, y el nombre accesible del boton se recompone
+         para que quien no ve tampoco se quede sin saberlo. -->
+    <button type="button" class="filtro-abre" id="abre-filtros" aria-expanded="false" aria-controls="filtro-cajon"
+     data-nombre="${esc(t.carta.filtros)}" data-puestos="${esc(t.carta.filtros_puestos)}" data-puesto="${esc(t.carta.filtros_uno)}">
+     <span>${esc(t.carta.filtros)}</span><span class="filtro-cuenta" id="filtro-cuenta" hidden></span>
     </button>
    </div>
    <div class="filtro-cajon" id="filtro-cajon">
@@ -906,15 +1007,21 @@ ${MARCADORES}
     <legend>${esc(t.carta.sin_alergenos)}</legend>
     ${casillas}
    </fieldset>
-   ${escPic ? `<div class="filtro-grupo filtro-pic">
-    <label for="pic">${esc(t.carta.picante_max)}</label>
-    <select id="pic" name="pic"><option value="">—</option>${nivelesPic}</select>
-   </div>` : ''}
+   ${escPic ? `<fieldset class="filtro-grupo">
+    <legend>${esc(t.carta.picante_max)}</legend>
+    ${nivelesPic}
+   </fieldset>` : ''}
    </div>
    <p class="filtro-pie">
-    <output id="cuenta" for="q" data-plantilla="${esc(t.carta.resultados)}" data-uno="${esc(t.carta.resultados_uno)}"></output>
+    <!-- aria-live="off" a proposito: <output> ya es una region viva implicita, y
+         con la de abajo puesta anunciaria dos veces cada tecleo. El recuento en
+         voz alta lo da #anuncio, que espera a que se pare de escribir. -->
+    <output id="cuenta" for="q" aria-live="off" data-plantilla="${esc(t.carta.resultados)}" data-uno="${esc(t.carta.resultados_uno)}"></output>
     <button type="button" class="btn-t" id="limpiar">${esc(t.carta.limpiar)}</button>
    </p>
+   <!-- En todo el sitio no habia ni una region viva: la carta se recortaba en
+        silencio y quien no ve no se enteraba de haber pasado de 73 platos a 12. -->
+   <p class="oculto" id="anuncio" role="status" aria-live="polite"></p>
   </div>
  </form>
 
@@ -1010,7 +1117,10 @@ salida.push(escribe(join('admin', 'index.html'), panel()));
 escribe('assets/version.json', JSON.stringify({
   publicado: new Date().toISOString().replace(/\.\d+Z$/, 'Z'),
   platos: (C.platos || []).length,
-  carta: createHash('sha1').update(readFileSync(join(RAIZ, 'content/carta.json'))).digest('hex').slice(0, 8)
+  carta: createHash('sha1').update(readFileSync(join(RAIZ, 'content/carta.json'))).digest('hex').slice(0, 8),
+  /* La huella del PDF, para que el panel pueda decir si el que hay en la web es
+     el ultimo que se subio y el registro del flujo lo cante al publicar. */
+  pdf: createHash('sha1').update(readFileSync(join(RAIZ, 'assets/pdf/menu.pdf'))).digest('hex').slice(0, 8)
 }, null, 1) + String.fromCharCode(10));
 
 /* manifiesto, robots y sitemap */

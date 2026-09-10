@@ -19,6 +19,15 @@
 #   SUPABASE_SERVICE_KEY  clave service_role (salta RLS; solo vive aquí)
 #   Settings > Secrets and variables > Actions > New repository secret.
 
+# LO QUE HACE ADEMAS DE PUBLICAR
+#   · si el aviso trae client_payload.restaurar, primero devuelve la base a esa
+#     publicacion guardada y recupera de git el PDF de aquel dia
+#   · recoge el PDF que el panel haya dejado en el buzon de Supabase Storage
+#   · guarda una copia completa del estado en la tabla publicaciones, en dos
+#     fases: se abre cuando la carta ya ha pasado las comprobaciones y se cierra
+#     cuando el push ha salido bien. Si no hubo nada que publicar, se descarta.
+#     Asi una copia solo existe si esa carta llego de verdad a la web.
+
 name: Publicar la carta
 
 on:
@@ -48,6 +57,20 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
+
+      # Va antes de exportar: si esta pasada es una vuelta atras, la base tiene
+      # que estar ya restaurada cuando carta.mjs vaya a leerla.
+      - name: Volver a una publicación guardada
+        if: github.event.client_payload.restaurar != ''
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          # NUNCA interpolado dentro del run. Un ${{ }} de client_payload metido
+          # en un script de shell es una via de inyeccion, porque ese valor lo
+          # manda quien llame a la Edge Function. Entra por el entorno y
+          # restaura.mjs comprueba que es un uuid antes de usarlo para nada.
+          INSTANTANEA: ${{ github.event.client_payload.restaurar }}
+        run: node tools/restaura.mjs
 
       - name: Traer la carta de Supabase
         env:
@@ -85,6 +108,30 @@ jobs:
           }
           JS
         shell: bash
+
+      # Se abre cuando la carta ya ha pasado las comprobaciones: capturar antes
+      # guardaria estados que la validacion acaba de rechazar.
+      - name: Abrir la copia de seguridad
+        id: copia
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: node tools/instantanea.mjs --abre >> "$GITHUB_OUTPUT"
+
+      # AQUI y no en otro sitio:
+      #   · despues de validar, para no tocar el PDF si la carta viene rota
+      #   · ANTES de build.mjs, porque build.mjs sella la huella del PDF dentro
+      #     de la URL del visor. Al reves, el HTML llevaria la huella del PDF
+      #     viejo y Cloudflare serviria el viejo con la URL nueva.
+      # En una vuelta atras se salta: el PDF ya lo ha puesto restaura.mjs y el
+      # que hubiera en el buzon se queda esperando a la proxima publicacion.
+      - name: Recoger el PDF del buzón
+        id: buzon
+        if: github.event.client_payload.restaurar == ''
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: node tools/pdf-buzon.mjs --recoge >> "$GITHUB_OUTPUT"
 
       - name: Reconstruir el HTML
         run: node tools/build.mjs
@@ -133,6 +180,7 @@ jobs:
           fi
 
       - name: Commit y push
+        id: commit
         if: steps.cambios.outputs.hay == 'si'
         run: |
           git config user.name  'github-actions[bot]'
@@ -144,6 +192,45 @@ jobs:
                      -m "Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
           git pull --rebase --autostash origin main
           git push origin HEAD:main
+          # El sha del blob del PDF EN EL ARBOL QUE SE ACABA DE PUBLICAR. Es lo
+          # unico que hay que guardar del PDF: git lo devuelve intacto con
+          # `git cat-file blob <sha>` y no lo borra nunca.
+          {
+            echo "resumen=$RESUMEN"
+            echo "commit=$(git rev-parse HEAD)"
+            echo "pdf=$(git rev-parse HEAD:assets/pdf/menu.pdf)"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Cerrar la copia de seguridad
+        if: steps.copia.outputs.id != '' && steps.cambios.outputs.hay == 'si'
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: |
+          node tools/instantanea.mjs --cierra "${{ steps.copia.outputs.id }}" \
+            --resumen "${{ steps.commit.outputs.resumen }}" \
+            --commit  "${{ steps.commit.outputs.commit }}" \
+            --pdf     "${{ steps.commit.outputs.pdf }}"
+
+      # Si no habia nada que publicar, o si la pasada se ha caido, la copia
+      # abierta se tira. Sin esto, darle dos veces seguidas al boton dejaria dos
+      # copias identicas y echaria una buena de las diez.
+      - name: Descartar la copia si no hubo nada que publicar
+        if: always() && steps.copia.outputs.id != '' && steps.cambios.outputs.hay != 'si'
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: node tools/instantanea.mjs --descarta "${{ steps.copia.outputs.id }}"
+
+      # El buzon se vacia solo si el PDF llego a la web, o si resulto ser el
+      # mismo que ya estaba: entonces no hay commit, pero tampoco hay nada
+      # esperando, y si no se vaciara se bajarian 2,2 MB en cada publicacion.
+      - name: Vaciar el buzón
+        if: steps.buzon.outputs.recogido == 'si' && (steps.cambios.outputs.hay == 'si' || steps.buzon.outputs.identico == 'si')
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: node tools/pdf-buzon.mjs --vacia
 
       - name: Pedirle a Pages que reconstruya
         # Este repositorio publica desde la rama main (build_type legacy). Un push

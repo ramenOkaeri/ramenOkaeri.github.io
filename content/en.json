@@ -41,7 +41,7 @@
     "antetitulo": "The kitchen",
     "titulo": "The broth takes ten hours",
     "cuerpo": [
-      "It goes on low in the morning and nobody touches it until it's ready. That's the base for the nine ramen on the menu, and for each one you pick how strong you want the broth, mild, medium or strong, and whether you want it spicy.",
+      "It goes on low in the morning and nobody touches it until it's ready. That's the base for the nine ramen on the menu, and for each one you pick the broth — low, medium or high — and whether you want it spicy.",
       "Around that there are gyoza, bao, tempura, karaage and takoyaki to pick at, curry rice bowls and Japanese desserts."
     ],
     "platos": {
@@ -152,6 +152,10 @@
     "sin_uno": "No {a}",
     "picante_max": "At most this spicy",
     "picante_nada": "Not at all",
+    "nivel": "{n} of {m}",
+    "picante_da_igual": "Any",
+    "filtros_puestos": "{n} on",
+    "filtros_uno": "1 on",
     "secciones": "Sections",
     "todas": "The whole menu",
     "resultados_uno": "1 dish",

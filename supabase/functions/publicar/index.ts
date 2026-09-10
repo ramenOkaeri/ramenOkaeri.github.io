@@ -22,6 +22,17 @@
 const REPO = 'ramenOkaeri/ramenOkaeri.github.io';
 const EVENTO = 'carta';
 
+/* El panel manda {} para publicar, o {"restaurar":"<uuid>"} para volver a una
+   publicacion guardada. Lo unico que viaja son 36 caracteres, muy por debajo
+   del tope de unos 64 KB del client_payload — que es justo por lo que el PDF,
+   de 2,2 MB, no puede ir por aqui y va por el buzon de Storage.
+
+   Y SE COMPRUEBA QUE ES UN UUID AQUI, porque del otro lado ese valor acaba en
+   una variable de entorno de un paso de GitHub Actions. tools/restaura.mjs lo
+   vuelve a comprobar: una comprobacion que solo existe en un sitio es una
+   comprobacion que un dia se olvida. */
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 const CORS = {
   'Access-Control-Allow-Origin': 'https://ramenokaeri.com',
   'Access-Control-Allow-Headers': 'authorization, apikey, content-type',
@@ -61,6 +72,19 @@ Deno.serve(async (req: Request) => {
   const esAdmin = await comprueba.json().catch(() => false);
   if (esAdmin !== true) return responde({ error: 'Esa cuenta no puede publicar.' }, 403);
 
+  /* El cuerpo se lee DESPUES de comprobar que quien llama es admin: volver
+     atras es tan destructivo como publicar y pasa por la misma puerta. */
+  let entrada: { restaurar?: unknown } = {};
+  try {
+    entrada = await req.json();
+  } catch {
+    /* cuerpo vacio o no-JSON: es una publicacion normal */
+  }
+  const restaurar = typeof entrada?.restaurar === 'string' ? entrada.restaurar.trim() : '';
+  if (restaurar && !UUID.test(restaurar)) {
+    return responde({ error: 'Ese identificador no tiene forma de identificador.' }, 400);
+  }
+
   /* repository_dispatch: el flujo .github/workflows/carta.yml escucha este
      evento. Devuelve 204 sin cuerpo cuando lo acepta. */
   const disparo = await fetch(`https://api.github.com/repos/${REPO}/dispatches`, {
@@ -72,7 +96,9 @@ Deno.serve(async (req: Request) => {
       'Content-Type': 'application/json',
       'User-Agent': 'okaeri-panel',
     },
-    body: JSON.stringify({ event_type: EVENTO }),
+    body: JSON.stringify(
+      restaurar ? { event_type: EVENTO, client_payload: { restaurar } } : { event_type: EVENTO },
+    ),
   });
 
   if (!disparo.ok) {
@@ -84,5 +110,5 @@ Deno.serve(async (req: Request) => {
     );
   }
 
-  return responde({ ok: true, lanzado: new Date().toISOString() });
+  return responde({ ok: true, restaurando: Boolean(restaurar), lanzado: new Date().toISOString() });
 });

@@ -294,14 +294,21 @@
     var platos = $$('.cplato');
     var secciones = $$('.carta-sec');
     var cajaQ = $('#q');
-    var selPic = $('#pic');
     var cuenta = $('#cuenta');
+    var anuncio = $('#anuncio');
     var vacio = $('#vacio');
     var limpiar = $('#limpiar');
     var abre = $('#abre-filtros');
-    var punto = $('.filtro-punto', forma);
+    var marca = $('#filtro-cuenta');
+    /* El numero ya viaja dentro del aria-label del boton, asi que como texto
+       sobra. Se marca desde aqui y no en el HTML porque el validador avisa de que
+       aria-hidden es redundante mientras el elemento nace con hidden. */
+    if (marca) marca.setAttribute('aria-hidden', 'true');
     var plantilla = cuenta ? cuenta.getAttribute('data-plantilla') || '' : '';
     var plantillaUno = cuenta ? cuenta.getAttribute('data-uno') || '' : '';
+    var nombreBoton = abre ? abre.getAttribute('data-nombre') || '' : '';
+    var puestosVarios = abre ? abre.getAttribute('data-puestos') || '' : '';
+    var puestosUno = abre ? abre.getAttribute('data-puesto') || '' : '';
 
     var pliega = function (s) {
       return String(s).normalize
@@ -313,11 +320,31 @@
       return $$('input[name="' + nombre + '"]:checked', forma).map(function (i) { return i.value; });
     };
 
+    /* El picante ya no es un <select> con emojis, son radios. La primera vale
+       '' y quiere decir "da igual", que es el estado de partida. */
+    var picElegido = function () {
+      var r = forma.querySelector('input[name="pic"]:checked');
+      return r && r.value !== '' ? parseInt(r.value, 10) : null;
+    };
+
+    /* La region viva espera a que se pare de escribir. Sin esta espera, un
+       lector de pantalla cantaria un recuento por cada tecla del buscador. */
+    var reloj = null;
+    function anuncia(texto) {
+      if (!anuncio) return;
+      if (reloj) clearTimeout(reloj);
+      reloj = setTimeout(function () { anuncio.textContent = texto; }, 350);
+    }
+
     function aplica() {
       var q = pliega(cajaQ ? cajaQ.value.trim() : '');
+      /* Se exigen TODAS las palabras y no la cadena entera. Antes era un
+         indexOf desnudo, asi que "gyozas pollo" no encontraba nada: en el
+         plato pone "Gyozas de pollo" y la subcadena literal no esta. */
+      var palabras = q ? q.split(/\s+/) : [];
       var dietas = marcadas('dieta');
       var sin = marcadas('sin');
-      var pic = selPic && selPic.value !== '' ? parseInt(selPic.value, 10) : null;
+      var pic = picElegido();
       var vistos = 0;
 
       platos.forEach(function (li) {
@@ -325,7 +352,10 @@
         var alg = (li.getAttribute('data-alg') || '').split(' ');
         var ok = true;
 
-        if (q && li.getAttribute('data-buscar').indexOf(q) === -1) ok = false;
+        if (palabras.length) {
+          var texto = li.getAttribute('data-buscar') || '';
+          ok = palabras.every(function (w) { return texto.indexOf(w) !== -1; });
+        }
 
         /* Las dietas suman: pedir vegano Y vegetariano deja solo lo que es las dos. */
         if (ok) {
@@ -336,7 +366,7 @@
           ok = !sin.some(function (a) { return alg.indexOf(a) !== -1; });
         }
         if (ok && pic !== null) {
-          ok = parseInt(li.getAttribute('data-picante') || '0', 10) <= pic;
+          ok = parseInt(li.getAttribute('data-e-picante') || '0', 10) <= pic;
         }
 
         li.hidden = !ok;
@@ -348,18 +378,29 @@
         sec.hidden = !$$('.cplato', sec).some(function (li) { return !li.hidden; });
       });
 
-      if (cuenta) {
-        cuenta.textContent = vistos === 1
-          ? plantillaUno
-          : plantilla.replace('{n}', String(vistos));
-      }
+      var resumen = vistos === 1
+        ? plantillaUno
+        : plantilla.replace('{n}', String(vistos));
+      if (cuenta) cuenta.textContent = resumen;
       if (vacio) vacio.hidden = vistos !== 0;
+      anuncia(vistos === 0 && vacio ? vacio.textContent : resumen);
 
       var activos = q || dietas.length || sin.length || pic !== null;
       if (limpiar) limpiar.hidden = !activos;
+
       /* Con el cajon plegado no se ve que hay filtros puestos, y la carta
-         recortada parecería rota. El punto lo dice. */
-      if (punto) punto.hidden = !(dietas.length || sin.length || pic !== null);
+         recortada parecería rota. Antes lo decía un punto de siete píxeles sin
+         texto: se veía y no decía nada a quien no ve. Ahora es un número, y el
+         nombre accesible del botón lo lleva dentro. */
+      var puestos = dietas.length + sin.length + (pic !== null ? 1 : 0);
+      if (marca) {
+        marca.textContent = String(puestos);
+        marca.hidden = puestos === 0;
+      }
+      if (abre && nombreBoton) {
+        abre.setAttribute('aria-label', puestos === 0 ? nombreBoton
+          : nombreBoton + ', ' + (puestos === 1 ? puestosUno : puestosVarios.replace('{n}', String(puestos))));
+      }
       guarda(q, dietas, sin, pic);
     }
 
@@ -390,8 +431,12 @@
           i.checked = v.indexOf(i.value) !== -1;
         });
       });
-      if (selPic && p.get('pic') !== null && p.get('pic') !== undefined) {
-        selPic.value = p.get('pic') || '';
+      var pic = p.get('pic');
+      /* Solo dígitos: ese valor viene del hash, o sea de fuera, y se usa para
+         componer un selector. */
+      if (pic !== null && /^\d+$/.test(pic)) {
+        var r = forma.querySelector('input[name="pic"][value="' + pic + '"]');
+        if (r) r.checked = true;
       }
     }
 
@@ -399,6 +444,7 @@
       abre.addEventListener('click', function () {
         var abierto = forma.classList.toggle('abierto');
         abre.setAttribute('aria-expanded', abierto ? 'true' : 'false');
+        mideBarra();
       });
     }
 
@@ -419,15 +465,28 @@
       });
     }
 
+    /* La barra es pegajosa y tapa el sitio al que salta un ancla de seccion.
+       Su alto no se puede escribir en el CSS —cambia con el ancho y con los
+       chips que quepan—, asi que se mide aqui y se publica. */
+    function mideBarra() {
+      var alto = Math.round(forma.getBoundingClientRect().height);
+      document.documentElement.style.setProperty('--alto-filtros', alto + 'px');
+    }
+    var relojBarra = null;
+    window.addEventListener('resize', function () {
+      if (relojBarra) clearTimeout(relojBarra);
+      relojBarra = setTimeout(mideBarra, 150);
+    });
+
     lee();
     forma.hidden = false;
     aplica();
+    mideBarra();
     /* Si la URL ya trae filtros —un enlace compartido—, el cajon nace abierto:
        si no, se llega a una carta recortada sin saber por que. */
-    if (punto && !punto.hidden && abre) {
+    if (marca && !marca.hidden && abre) {
       forma.classList.add('abierto');
       abre.setAttribute('aria-expanded', 'true');
     }
   }
-
 })();

@@ -27,6 +27,6 @@
 
   "escalas": [
     { "slug": "picante", "orden": 1, "maximo": 3, "icono": "chile", "nombre": { "es": "Picante", "en": "Spicy", "gl": "Picante" } },
-    { "slug": "caldo",   "orden": 2, "maximo": 3, "icono": "punto", "nombre": { "es": "Intensidad del caldo", "en": "Broth intensity", "gl": "Intensidade do caldo" } }
+    { "slug": "caldo",   "orden": 2, "maximo": 3, "icono": "caldo", "nombre": { "es": "Intensidad del caldo", "en": "Broth intensity", "gl": "Intensidade do caldo" } }
   ]
 }

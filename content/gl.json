@@ -42,7 +42,7 @@
     "antetitulo": "A cociña",
     "titulo": "O caldo tarda dez horas",
     "cuerpo": [
-      "Ponse a lume lento pola mañá e non se toca ata que está. De aí saen os nove ramen da carta, e de cada un escolles a intensidade do caldo, suave, media ou forte, e se o queres picante.",
+      "Ponse a lume lento pola mañá e non se toca ata que está. De aí saen os nove ramen da carta, e de cada un escolles a intensidade do caldo —baixo, medio ou alto— e se o queres picante.",
       "Arredor hai gyozas, baos, tempura, karaage e takoyaki para ir picando, arroces ao curry e sobremesas xaponesas."
     ],
     "platos": {
@@ -153,6 +153,10 @@
     "sin_uno": "Sen {a}",
     "picante_max": "Picante como moito",
     "picante_nada": "Nada",
+    "nivel": "{n} de {m}",
+    "picante_da_igual": "Tanto ten",
+    "filtros_puestos": "{n} postos",
+    "filtros_uno": "1 posto",
     "secciones": "Seccións",
     "todas": "Toda a carta",
     "resultados_uno": "1 prato",

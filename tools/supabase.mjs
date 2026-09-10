@@ -1,5 +1,5 @@
 /* =============================================================================
-   Cliente mínimo de PostgREST para los scripts de construcción.
+   Cliente mínimo de PostgREST y de Storage para los scripts de construcción.
    Sin dependencias: el repositorio no tiene package.json y no va a tenerlo.
 
    LAS CLAVES SE LEEN DEL ENTORNO Y NO SE ESCRIBEN EN NINGÚN SITIO.
@@ -93,3 +93,36 @@ export const rpc = (nombre, args = {}) =>
     headers: cabeceras(),
     body: JSON.stringify(args),
   });
+
+/* --- Storage --------------------------------------------------------------
+   Storage es otro servicio del mismo proyecto y con la misma clave, pero NO es
+   PostgREST: el cuerpo va en binario, así que no puede pasar por pide(), que
+   trata todas las respuestas como texto y todas las peticiones como JSON.
+   Se usa para el buzón del PDF de la carta — ver supabase/migraciones/0003. */
+export const almacen = {
+  async lista(cubo, prefijo = '') {
+    const res = await fetch(`${URL_BASE}/storage/v1/object/list/${cubo}`, {
+      method: 'POST',
+      headers: cabeceras(),
+      body: JSON.stringify({ prefix: prefijo, limit: 100 }),
+    });
+    if (!res.ok) throw new Error(`list ${cubo} → ${res.status} ${await res.text()}`);
+    return res.json();
+  },
+
+  async baja(cubo, ruta) {
+    const res = await fetch(`${URL_BASE}/storage/v1/object/${cubo}/${ruta}`, {
+      headers: { apikey: CLAVE, Authorization: `Bearer ${CLAVE}` },
+    });
+    if (!res.ok) throw new Error(`get ${cubo}/${ruta} → ${res.status}`);
+    return Buffer.from(await res.arrayBuffer());
+  },
+
+  async borra(cubo, ruta) {
+    const res = await fetch(`${URL_BASE}/storage/v1/object/${cubo}/${ruta}`, {
+      method: 'DELETE',
+      headers: cabeceras(),
+    });
+    if (!res.ok) throw new Error(`delete ${cubo}/${ruta} → ${res.status} ${await res.text()}`);
+  },
+};

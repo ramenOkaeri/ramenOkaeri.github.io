@@ -6,6 +6,10 @@
 --  Lo que solo vive dentro de un proyecto gratuito desaparece con el proyecto.
 --  Se aplica entero desde el editor de SQL de Supabase, o con el conector MCP.
 --
+--  YA NO ES EL UNICO. El historial de publicaciones vive en
+--  0002_publicaciones.sql y el buzon del PDF en 0003_buzon.sql. Se aplican en
+--  orden y cada uno es idempotente por su cuenta.
+--
 --  QUIEN LEE LA CARTA PUBLICA NO ENTRA AQUI.
 --  La web publica no habla con Supabase: tools/carta.mjs exporta al construir y
 --  el visitante recibe HTML estatico. Por eso el rol anonimo no tiene ni una
@@ -264,6 +268,58 @@ create table if not exists public.plato_escalas (
   primary key (plato_id, escala_id)
 );
 
+-- El check de arriba solo puede mirar la propia fila: un CHECK no admite
+-- subconsultas, asi que nada ata el valor al maximo de SU escala. Y el maximo
+-- es editable de 1 a 10 desde el panel. Sin este trigger caben dos destrozos
+-- silenciosos: guardar un 7 en una escala de 3 --build.mjs pintaria 3 puntos de
+-- 3 mientras el texto para lectores de pantalla diria "7 de 3"-- y bajar el
+-- maximo de una escala dejando huerfanos a los platos que ya tenian mas.
+create or replace function public.escala_dentro_de_rango()
+returns trigger
+language plpgsql
+as $$
+declare m smallint;
+begin
+  select maximo into m from public.escalas where id = new.escala_id;
+  if m is null then
+    raise exception 'Esa escala no existe.';
+  end if;
+  if new.valor > m then
+    raise exception 'El valor % se sale de la escala, que llega hasta %.', new.valor, m;
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists plato_escalas_rango on public.plato_escalas;
+create trigger plato_escalas_rango
+  before insert or update on public.plato_escalas
+  for each row execute function public.escala_dentro_de_rango();
+
+-- Y la otra direccion: bajar el maximo por debajo de lo que ya tiene algun
+-- plato. Se avisa en vez de recortar, porque recortar cambiaria un dato de la
+-- carta sin que nadie lo haya pedido.
+create or replace function public.escala_maximo_alcanza()
+returns trigger
+language plpgsql
+as $$
+declare n int;
+begin
+  select count(*) into n
+    from public.plato_escalas
+   where escala_id = new.id and valor > new.maximo;
+  if n > 0 then
+    raise exception 'Hay % plato(s) con un valor por encima de %. Bajales el nivel antes de acortar la escala.', n, new.maximo;
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists escalas_maximo_alcanza on public.escalas;
+create trigger escalas_maximo_alcanza
+  before update of maximo on public.escalas
+  for each row execute function public.escala_maximo_alcanza();
+
 create table if not exists public.plato_grupos (
   plato_id uuid not null references public.platos(id) on delete cascade,
   grupo_id uuid not null references public.grupos_opcion(id) on delete cascade,
@@ -351,7 +407,13 @@ as $$
       ) c
     ),
     'platos', (
-      select coalesce(jsonb_agg(p order by p.corden, p.orden), '[]'::jsonb) from (
+      -- Cuatro claves, y hacen falta las cuatro: pl.orden vuelve a empezar en 1
+      -- dentro de CADA subcategoria, asi que ordenar solo por (madre, plato)
+      -- interleaza gyoza 1, bao 1, frito 1, gyoza 2... Y ademas empata, con lo
+      -- que el orden dejaba de ser estable entre pasadas. El orden resultante
+      -- calca el de build.mjs: primero las hijas por su orden, y los platos que
+      -- cuelgan directamente de la madre al final.
+      select coalesce(jsonb_agg(p order by p.corden, p.sueltos, p.sorden, p.orden), '[]'::jsonb) from (
         select jsonb_build_object(
           'slug', pl.slug,
           'numero', pl.numero,
@@ -399,6 +461,8 @@ as $$
           )
         ) p,
         coalesce(mad.orden, cat.orden) corden,
+        (mad.id is null) sueltos,
+        cat.orden sorden,
         pl.orden
         from public.platos pl
         join public.categorias cat on cat.id = pl.categoria_id
@@ -451,6 +515,8 @@ revoke execute on function public.carta_json()      from public, anon;
 revoke execute on function public.alta_perfil()     from public, anon, authenticated;
 revoke execute on function public.toca_actualizado() from public, anon, authenticated;
 revoke execute on function public.categoria_dos_niveles() from public, anon, authenticated;
+revoke execute on function public.escala_dentro_de_rango() from public, anon, authenticated;
+revoke execute on function public.escala_maximo_alcanza() from public, anon, authenticated;
 
 -- es_admin conserva el EXECUTE de authenticated a proposito: las politicas de
 -- RLS se evaluan con los permisos de quien llama y sin el dejarian de resolver.

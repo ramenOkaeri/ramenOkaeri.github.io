@@ -189,7 +189,9 @@
         "en": "Noodles, chicken wing, minced meat, marinated egg, nori and vegetables (wood ear, spinach, spring onion and marinated bamboo).",
         "gl": "Fideos, á de polo, carne picada, ovo mariñado, nori e verduras (orella de xudas, espinacas, cebolino e bambú mariñado)." },
       "precios": [{ "precio": 13.95 }],
-      "alergenos": ["gluten", "huevos"], "grupos": ["intensidad-caldo", "sabor-ramen", "extras-ramen"] },
+      "alergenos": ["gluten", "huevos"],
+      "escalas": [{ "slug": "picante", "valor": 2 }],
+      "grupos": ["intensidad-caldo", "sabor-ramen", "extras-ramen"] },
 
     { "slug": "arroz-pollo-curry", "numero": "10", "categoria": "arroces", "orden": 1,
       "nombre": { "es": "Arroz con pollo al curry", "en": "Curry rice with fried chicken", "gl": "Arroz con polo ao curry" },
