@@ -475,7 +475,18 @@
         "gl": "Tonkotsu Ramen"
       },
       "numero": "1",
-      "escalas": [],
+      "escalas": [
+        {
+          "slug": "picante",
+          "valor": 0,
+          "maximo": 3
+        },
+        {
+          "slug": "caldo",
+          "valor": 2,
+          "maximo": 3
+        }
+      ],
       "precios": [
         {
           "precio": 12.95,
@@ -518,7 +529,18 @@
         "gl": "Gyukotsu Shio Ramen"
       },
       "numero": "2",
-      "escalas": [],
+      "escalas": [
+        {
+          "slug": "picante",
+          "valor": 0,
+          "maximo": 3
+        },
+        {
+          "slug": "caldo",
+          "valor": 1,
+          "maximo": 3
+        }
+      ],
       "precios": [
         {
           "precio": 13.95,
@@ -561,7 +583,18 @@
         "gl": "Ebi Supu Ramen"
       },
       "numero": "3",
-      "escalas": [],
+      "escalas": [
+        {
+          "slug": "picante",
+          "valor": 0,
+          "maximo": 3
+        },
+        {
+          "slug": "caldo",
+          "valor": 2,
+          "maximo": 3
+        }
+      ],
       "precios": [
         {
           "precio": 14.95,
@@ -608,7 +641,18 @@
         "gl": "Panna Miso Ramen"
       },
       "numero": "4",
-      "escalas": [],
+      "escalas": [
+        {
+          "slug": "picante",
+          "valor": 0,
+          "maximo": 3
+        },
+        {
+          "slug": "caldo",
+          "valor": 3,
+          "maximo": 3
+        }
+      ],
       "precios": [
         {
           "precio": 12.95,
@@ -655,7 +699,18 @@
         "gl": "Miso Ramen"
       },
       "numero": "5",
-      "escalas": [],
+      "escalas": [
+        {
+          "slug": "picante",
+          "valor": 0,
+          "maximo": 3
+        },
+        {
+          "slug": "caldo",
+          "valor": 3,
+          "maximo": 3
+        }
+      ],
       "precios": [
         {
           "precio": 12.95,
@@ -702,7 +757,18 @@
         "gl": "Red Gyukotsu Ramen"
       },
       "numero": "6",
-      "escalas": [],
+      "escalas": [
+        {
+          "slug": "picante",
+          "valor": 0,
+          "maximo": 3
+        },
+        {
+          "slug": "caldo",
+          "valor": 1,
+          "maximo": 3
+        }
+      ],
       "precios": [
         {
           "precio": 13.95,
@@ -749,6 +815,11 @@
         {
           "slug": "picante",
           "valor": 2,
+          "maximo": 3
+        },
+        {
+          "slug": "caldo",
+          "valor": 3,
           "maximo": 3
         }
       ],
@@ -797,7 +868,18 @@
         "gl": "Tonyu Vegan Ramen"
       },
       "numero": "8",
-      "escalas": [],
+      "escalas": [
+        {
+          "slug": "picante",
+          "valor": 0,
+          "maximo": 3
+        },
+        {
+          "slug": "caldo",
+          "valor": 2,
+          "maximo": 3
+        }
+      ],
       "precios": [
         {
           "precio": 11.95,
@@ -843,7 +925,18 @@
         "gl": "Tanso Ramen"
       },
       "numero": "9",
-      "escalas": [],
+      "escalas": [
+        {
+          "slug": "picante",
+          "valor": 2,
+          "maximo": 3
+        },
+        {
+          "slug": "caldo",
+          "valor": 3,
+          "maximo": 3
+        }
+      ],
       "precios": [
         {
           "precio": 13.95,
@@ -1151,6 +1244,105 @@
       "categoria_madre": "tapas"
     },
     {
+      "nota": {},
+      "slug": "gyozas-cerdo",
+      "icono": "tapa",
+      "grupos": [],
+      "imagen": null,
+      "nombre": {
+        "en": "Pork gyoza",
+        "es": "Gyozas de cerdo",
+        "gl": "Gyozas de porco"
+      },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 3.95,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [
+        {
+          "slug": "gluten",
+          "grado": "contiene"
+        }
+      ],
+      "categoria": "gyozas",
+      "destacado": false,
+      "etiquetas": [],
+      "descripcion": {},
+      "categoria_madre": "tapas"
+    },
+    {
+      "nota": {},
+      "slug": "gyozas-langostino",
+      "icono": "tapa",
+      "grupos": [],
+      "imagen": null,
+      "nombre": {
+        "en": "Prawn gyoza",
+        "es": "Gyozas de langostino",
+        "gl": "Gyozas de lagostino"
+      },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 4.95,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [
+        {
+          "slug": "gluten",
+          "grado": "contiene"
+        },
+        {
+          "slug": "crustaceos",
+          "grado": "contiene"
+        }
+      ],
+      "categoria": "gyozas",
+      "destacado": false,
+      "etiquetas": [],
+      "descripcion": {},
+      "categoria_madre": "tapas"
+    },
+    {
+      "nota": {},
+      "slug": "gyozas-vegetales",
+      "icono": "tapa",
+      "grupos": [],
+      "imagen": null,
+      "nombre": {
+        "en": "Vegetable gyoza",
+        "es": "Gyozas vegetales",
+        "gl": "Gyozas vexetais"
+      },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 3.95,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [
+        {
+          "slug": "gluten",
+          "grado": "contiene"
+        }
+      ],
+      "categoria": "gyozas",
+      "destacado": true,
+      "etiquetas": [
+        "vegetariano"
+      ],
+      "descripcion": {},
+      "categoria_madre": "tapas"
+    },
+    {
       "nota": {
         "en": "To be confirmed at the restaurant.",
         "es": "Por confirmar en el local.",
@@ -1170,6 +1362,130 @@
       "precios": [
         {
           "precio": 3.95,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [
+        {
+          "slug": "gluten",
+          "grado": "contiene"
+        }
+      ],
+      "categoria": "baos",
+      "destacado": false,
+      "etiquetas": [],
+      "descripcion": {},
+      "categoria_madre": "tapas"
+    },
+    {
+      "nota": {},
+      "slug": "bao-pato",
+      "icono": "tapa",
+      "grupos": [],
+      "imagen": null,
+      "nombre": {
+        "en": "Duck bao",
+        "es": "Bao de pato",
+        "gl": "Bao de pato"
+      },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 5.95,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [
+        {
+          "slug": "gluten",
+          "grado": "contiene"
+        }
+      ],
+      "categoria": "baos",
+      "destacado": false,
+      "etiquetas": [],
+      "descripcion": {},
+      "categoria_madre": "tapas"
+    },
+    {
+      "nota": {},
+      "slug": "bao-rabo-toro",
+      "icono": "tapa",
+      "grupos": [],
+      "imagen": null,
+      "nombre": {
+        "en": "Oxtail bao",
+        "es": "Bao de rabo de toro",
+        "gl": "Bao de rabo de touro"
+      },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 5.95,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [
+        {
+          "slug": "gluten",
+          "grado": "contiene"
+        }
+      ],
+      "categoria": "baos",
+      "destacado": false,
+      "etiquetas": [],
+      "descripcion": {},
+      "categoria_madre": "tapas"
+    },
+    {
+      "nota": {},
+      "slug": "bao-cerdo",
+      "icono": "tapa",
+      "grupos": [],
+      "imagen": null,
+      "nombre": {
+        "en": "Pork bao",
+        "es": "Bao de cerdo",
+        "gl": "Bao de porco"
+      },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 5.5,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [
+        {
+          "slug": "gluten",
+          "grado": "contiene"
+        }
+      ],
+      "categoria": "baos",
+      "destacado": false,
+      "etiquetas": [],
+      "descripcion": {},
+      "categoria_madre": "tapas"
+    },
+    {
+      "nota": {},
+      "slug": "bao-pollo",
+      "icono": "tapa",
+      "grupos": [],
+      "imagen": null,
+      "nombre": {
+        "en": "Chicken bao",
+        "es": "Bao de pollo",
+        "gl": "Bao de polo"
+      },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 5.95,
           "etiqueta": null
         }
       ],
@@ -1222,68 +1538,6 @@
     },
     {
       "nota": {},
-      "slug": "bao-pato",
-      "icono": "tapa",
-      "grupos": [],
-      "imagen": null,
-      "nombre": {
-        "en": "Duck bao",
-        "es": "Bao de pato",
-        "gl": "Bao de pato"
-      },
-      "numero": null,
-      "escalas": [],
-      "precios": [
-        {
-          "precio": 5.95,
-          "etiqueta": null
-        }
-      ],
-      "alergenos": [
-        {
-          "slug": "gluten",
-          "grado": "contiene"
-        }
-      ],
-      "categoria": "baos",
-      "destacado": false,
-      "etiquetas": [],
-      "descripcion": {},
-      "categoria_madre": "tapas"
-    },
-    {
-      "nota": {},
-      "slug": "gyozas-cerdo",
-      "icono": "tapa",
-      "grupos": [],
-      "imagen": null,
-      "nombre": {
-        "en": "Pork gyoza",
-        "es": "Gyozas de cerdo",
-        "gl": "Gyozas de porco"
-      },
-      "numero": null,
-      "escalas": [],
-      "precios": [
-        {
-          "precio": 3.95,
-          "etiqueta": null
-        }
-      ],
-      "alergenos": [
-        {
-          "slug": "gluten",
-          "grado": "contiene"
-        }
-      ],
-      "categoria": "gyozas",
-      "destacado": false,
-      "etiquetas": [],
-      "descripcion": {},
-      "categoria_madre": "tapas"
-    },
-    {
-      "nota": {},
       "slug": "pollo-karaage",
       "icono": "tapa",
       "grupos": [],
@@ -1312,72 +1566,6 @@
         }
       ],
       "categoria": "fritos",
-      "destacado": false,
-      "etiquetas": [],
-      "descripcion": {},
-      "categoria_madre": "tapas"
-    },
-    {
-      "nota": {},
-      "slug": "gyozas-langostino",
-      "icono": "tapa",
-      "grupos": [],
-      "imagen": null,
-      "nombre": {
-        "en": "Prawn gyoza",
-        "es": "Gyozas de langostino",
-        "gl": "Gyozas de lagostino"
-      },
-      "numero": null,
-      "escalas": [],
-      "precios": [
-        {
-          "precio": 4.95,
-          "etiqueta": null
-        }
-      ],
-      "alergenos": [
-        {
-          "slug": "gluten",
-          "grado": "contiene"
-        },
-        {
-          "slug": "crustaceos",
-          "grado": "contiene"
-        }
-      ],
-      "categoria": "gyozas",
-      "destacado": false,
-      "etiquetas": [],
-      "descripcion": {},
-      "categoria_madre": "tapas"
-    },
-    {
-      "nota": {},
-      "slug": "bao-rabo-toro",
-      "icono": "tapa",
-      "grupos": [],
-      "imagen": null,
-      "nombre": {
-        "en": "Oxtail bao",
-        "es": "Bao de rabo de toro",
-        "gl": "Bao de rabo de touro"
-      },
-      "numero": null,
-      "escalas": [],
-      "precios": [
-        {
-          "precio": 5.95,
-          "etiqueta": null
-        }
-      ],
-      "alergenos": [
-        {
-          "slug": "gluten",
-          "grado": "contiene"
-        }
-      ],
-      "categoria": "baos",
       "destacado": false,
       "etiquetas": [],
       "descripcion": {},
@@ -1457,101 +1645,6 @@
         "es": "4 unidades.",
         "gl": "4 unidades."
       },
-      "categoria_madre": "tapas"
-    },
-    {
-      "nota": {},
-      "slug": "gyozas-vegetales",
-      "icono": "tapa",
-      "grupos": [],
-      "imagen": null,
-      "nombre": {
-        "en": "Vegetable gyoza",
-        "es": "Gyozas vegetales",
-        "gl": "Gyozas vexetais"
-      },
-      "numero": null,
-      "escalas": [],
-      "precios": [
-        {
-          "precio": 3.95,
-          "etiqueta": null
-        }
-      ],
-      "alergenos": [
-        {
-          "slug": "gluten",
-          "grado": "contiene"
-        }
-      ],
-      "categoria": "gyozas",
-      "destacado": true,
-      "etiquetas": [
-        "vegetariano"
-      ],
-      "descripcion": {},
-      "categoria_madre": "tapas"
-    },
-    {
-      "nota": {},
-      "slug": "bao-cerdo",
-      "icono": "tapa",
-      "grupos": [],
-      "imagen": null,
-      "nombre": {
-        "en": "Pork bao",
-        "es": "Bao de cerdo",
-        "gl": "Bao de porco"
-      },
-      "numero": null,
-      "escalas": [],
-      "precios": [
-        {
-          "precio": 5.5,
-          "etiqueta": null
-        }
-      ],
-      "alergenos": [
-        {
-          "slug": "gluten",
-          "grado": "contiene"
-        }
-      ],
-      "categoria": "baos",
-      "destacado": false,
-      "etiquetas": [],
-      "descripcion": {},
-      "categoria_madre": "tapas"
-    },
-    {
-      "nota": {},
-      "slug": "bao-pollo",
-      "icono": "tapa",
-      "grupos": [],
-      "imagen": null,
-      "nombre": {
-        "en": "Chicken bao",
-        "es": "Bao de pollo",
-        "gl": "Bao de polo"
-      },
-      "numero": null,
-      "escalas": [],
-      "precios": [
-        {
-          "precio": 5.95,
-          "etiqueta": null
-        }
-      ],
-      "alergenos": [
-        {
-          "slug": "gluten",
-          "grado": "contiene"
-        }
-      ],
-      "categoria": "baos",
-      "destacado": false,
-      "etiquetas": [],
-      "descripcion": {},
       "categoria_madre": "tapas"
     },
     {
@@ -1850,6 +1943,58 @@
     },
     {
       "nota": {},
+      "slug": "agua-mineral",
+      "icono": "bebida",
+      "grupos": [],
+      "imagen": null,
+      "nombre": {
+        "en": "Still water",
+        "es": "Agua mineral",
+        "gl": "Auga mineral"
+      },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 2,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [],
+      "categoria": "refrescos",
+      "destacado": false,
+      "etiquetas": [],
+      "descripcion": {},
+      "categoria_madre": "bebidas"
+    },
+    {
+      "nota": {},
+      "slug": "agua-con-gas",
+      "icono": "bebida",
+      "grupos": [],
+      "imagen": null,
+      "nombre": {
+        "en": "Sparkling water",
+        "es": "Agua con gas",
+        "gl": "Auga con gas"
+      },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 2.2,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [],
+      "categoria": "refrescos",
+      "destacado": false,
+      "etiquetas": [],
+      "descripcion": {},
+      "categoria_madre": "bebidas"
+    },
+    {
+      "nota": {},
       "slug": "cerveza-asahi",
       "icono": "bebida",
       "grupos": [],
@@ -1870,6 +2015,142 @@
       "alergenos": [
         {
           "slug": "gluten",
+          "grado": "contiene"
+        }
+      ],
+      "categoria": "cervezas",
+      "destacado": false,
+      "etiquetas": [],
+      "descripcion": {},
+      "categoria_madre": "bebidas"
+    },
+    {
+      "nota": {},
+      "slug": "cerveza-estrella",
+      "icono": "bebida",
+      "grupos": [],
+      "imagen": null,
+      "nombre": {
+        "en": "Estrella",
+        "es": "Estrella",
+        "gl": "Estrella"
+      },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 2.9,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [
+        {
+          "slug": "gluten",
+          "grado": "contiene"
+        }
+      ],
+      "categoria": "cervezas",
+      "destacado": false,
+      "etiquetas": [],
+      "descripcion": {},
+      "categoria_madre": "bebidas"
+    },
+    {
+      "nota": {},
+      "slug": "cerveza-1906",
+      "icono": "bebida",
+      "grupos": [],
+      "imagen": null,
+      "nombre": {
+        "en": "1906",
+        "es": "1906",
+        "gl": "1906"
+      },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 3.2,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [
+        {
+          "slug": "gluten",
+          "grado": "contiene"
+        }
+      ],
+      "categoria": "cervezas",
+      "destacado": false,
+      "etiquetas": [],
+      "descripcion": {},
+      "categoria_madre": "bebidas"
+    },
+    {
+      "nota": {},
+      "slug": "cerveza-tirada",
+      "icono": "bebida",
+      "grupos": [],
+      "imagen": null,
+      "nombre": {
+        "en": "Draught beer",
+        "es": "Cerveza de barril",
+        "gl": "Cervexa de barril"
+      },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 2.5,
+          "etiqueta": {
+            "en": "Half pint",
+            "es": "Caña",
+            "gl": "Cunca"
+          }
+        },
+        {
+          "precio": 3.5,
+          "etiqueta": {
+            "en": "Pint",
+            "es": "Pinta",
+            "gl": "Pinta"
+          }
+        }
+      ],
+      "alergenos": [
+        {
+          "slug": "gluten",
+          "grado": "contiene"
+        }
+      ],
+      "categoria": "cervezas",
+      "destacado": false,
+      "etiquetas": [],
+      "descripcion": {},
+      "categoria_madre": "bebidas"
+    },
+    {
+      "nota": {},
+      "slug": "sidra",
+      "icono": "bebida",
+      "grupos": [],
+      "imagen": null,
+      "nombre": {
+        "en": "Cider",
+        "es": "Sidra",
+        "gl": "Sidra"
+      },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 2.9,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [
+        {
+          "slug": "sulfitos",
           "grado": "contiene"
         }
       ],
@@ -1928,181 +2209,6 @@
     },
     {
       "nota": {},
-      "slug": "wang-lao-ji",
-      "icono": "bebida",
-      "grupos": [],
-      "imagen": null,
-      "nombre": {
-        "en": "Wang Lao Ji",
-        "es": "Wang Lao Ji",
-        "gl": "Wang Lao Ji"
-      },
-      "numero": null,
-      "escalas": [],
-      "precios": [
-        {
-          "precio": 3,
-          "etiqueta": null
-        }
-      ],
-      "alergenos": [],
-      "categoria": "orientales",
-      "destacado": false,
-      "etiquetas": [],
-      "descripcion": {
-        "en": "Chinese iced tea.",
-        "es": "Té helado chino.",
-        "gl": "Té xeado chinés."
-      },
-      "categoria_madre": "bebidas"
-    },
-    {
-      "nota": {},
-      "slug": "cafe-expreso",
-      "icono": "bebida",
-      "grupos": [],
-      "imagen": null,
-      "nombre": {
-        "en": "Espresso, cortado or americano",
-        "es": "Expreso, cortado o americano",
-        "gl": "Expreso, cortado ou americano"
-      },
-      "numero": null,
-      "escalas": [],
-      "precios": [
-        {
-          "precio": 1.5,
-          "etiqueta": null
-        }
-      ],
-      "alergenos": [],
-      "categoria": "cafes",
-      "destacado": false,
-      "etiquetas": [],
-      "descripcion": {},
-      "categoria_madre": "bebidas"
-    },
-    {
-      "nota": {},
-      "slug": "cerveza-estrella",
-      "icono": "bebida",
-      "grupos": [],
-      "imagen": null,
-      "nombre": {
-        "en": "Estrella",
-        "es": "Estrella",
-        "gl": "Estrella"
-      },
-      "numero": null,
-      "escalas": [],
-      "precios": [
-        {
-          "precio": 2.9,
-          "etiqueta": null
-        }
-      ],
-      "alergenos": [
-        {
-          "slug": "gluten",
-          "grado": "contiene"
-        }
-      ],
-      "categoria": "cervezas",
-      "destacado": false,
-      "etiquetas": [],
-      "descripcion": {},
-      "categoria_madre": "bebidas"
-    },
-    {
-      "nota": {},
-      "slug": "leche-de-coco",
-      "icono": "bebida",
-      "grupos": [],
-      "imagen": null,
-      "nombre": {
-        "en": "Coconut milk",
-        "es": "Leche de coco",
-        "gl": "Leite de coco"
-      },
-      "numero": null,
-      "escalas": [],
-      "precios": [
-        {
-          "precio": 3,
-          "etiqueta": null
-        }
-      ],
-      "alergenos": [],
-      "categoria": "orientales",
-      "destacado": false,
-      "etiquetas": [
-        "vegano",
-        "vegetariano"
-      ],
-      "descripcion": {},
-      "categoria_madre": "bebidas"
-    },
-    {
-      "nota": {},
-      "slug": "agua-mineral",
-      "icono": "bebida",
-      "grupos": [],
-      "imagen": null,
-      "nombre": {
-        "en": "Still water",
-        "es": "Agua mineral",
-        "gl": "Auga mineral"
-      },
-      "numero": null,
-      "escalas": [],
-      "precios": [
-        {
-          "precio": 2,
-          "etiqueta": null
-        }
-      ],
-      "alergenos": [],
-      "categoria": "refrescos",
-      "destacado": false,
-      "etiquetas": [],
-      "descripcion": {},
-      "categoria_madre": "bebidas"
-    },
-    {
-      "nota": {},
-      "slug": "cafe-latte",
-      "icono": "bebida",
-      "grupos": [],
-      "imagen": null,
-      "nombre": {
-        "en": "Latte",
-        "es": "Café latte",
-        "gl": "Café latte"
-      },
-      "numero": null,
-      "escalas": [],
-      "precios": [
-        {
-          "precio": 1.8,
-          "etiqueta": null
-        }
-      ],
-      "alergenos": [
-        {
-          "slug": "leche",
-          "grado": "contiene"
-        }
-      ],
-      "categoria": "cafes",
-      "destacado": false,
-      "etiquetas": [
-        "vegetariano"
-      ],
-      "descripcion": {},
-      "categoria_madre": "bebidas"
-    },
-    {
-      "nota": {},
       "slug": "vino-albarino-gran-bazan",
       "icono": "bebida",
       "grupos": [],
@@ -2150,32 +2256,6 @@
     },
     {
       "nota": {},
-      "slug": "cafe-solo-doble",
-      "icono": "bebida",
-      "grupos": [],
-      "imagen": null,
-      "nombre": {
-        "en": "Double espresso",
-        "es": "Solo doble",
-        "gl": "Só dobre"
-      },
-      "numero": null,
-      "escalas": [],
-      "precios": [
-        {
-          "precio": 1.8,
-          "etiqueta": null
-        }
-      ],
-      "alergenos": [],
-      "categoria": "cafes",
-      "destacado": false,
-      "etiquetas": [],
-      "descripcion": {},
-      "categoria_madre": "bebidas"
-    },
-    {
-      "nota": {},
       "slug": "vino-ponte-da-boga-mencia",
       "icono": "bebida",
       "grupos": [],
@@ -2219,6 +2299,175 @@
         "es": "Tinto.",
         "gl": "Tinto."
       },
+      "categoria_madre": "bebidas"
+    },
+    {
+      "nota": {},
+      "slug": "vino-rio-vallobera-crianza",
+      "icono": "bebida",
+      "grupos": [],
+      "imagen": null,
+      "nombre": {
+        "en": "Río Vallobera Crianza",
+        "es": "Río Vallobera Crianza",
+        "gl": "Río Vallobera Crianza"
+      },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 3,
+          "etiqueta": {
+            "en": "Glass",
+            "es": "Copa",
+            "gl": "Copa"
+          }
+        },
+        {
+          "precio": 16,
+          "etiqueta": {
+            "en": "Bottle",
+            "es": "Botella",
+            "gl": "Botella"
+          }
+        }
+      ],
+      "alergenos": [
+        {
+          "slug": "sulfitos",
+          "grado": "contiene"
+        }
+      ],
+      "categoria": "vinos",
+      "destacado": false,
+      "etiquetas": [],
+      "descripcion": {
+        "en": "Red.",
+        "es": "Tinto.",
+        "gl": "Tinto."
+      },
+      "categoria_madre": "bebidas"
+    },
+    {
+      "nota": {},
+      "slug": "tinto-de-verano",
+      "icono": "bebida",
+      "grupos": [],
+      "imagen": null,
+      "nombre": {
+        "en": "Tinto de verano",
+        "es": "Tinto de verano",
+        "gl": "Tinto de verán"
+      },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 4.5,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [
+        {
+          "slug": "sulfitos",
+          "grado": "contiene"
+        }
+      ],
+      "categoria": "vinos",
+      "destacado": false,
+      "etiquetas": [],
+      "descripcion": {},
+      "categoria_madre": "bebidas"
+    },
+    {
+      "nota": {},
+      "slug": "combinados",
+      "icono": "bebida",
+      "grupos": [
+        "combinados-licor"
+      ],
+      "imagen": null,
+      "nombre": {
+        "en": "Mixed drinks",
+        "es": "Combinados",
+        "gl": "Combinados"
+      },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 7,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [],
+      "categoria": "vinos",
+      "destacado": false,
+      "etiquetas": [],
+      "descripcion": {
+        "en": "Rum, gin, vodka or whisky.",
+        "es": "Ron, ginebra, vodka o whisky.",
+        "gl": "Ron, xenebra, vodka ou whisky."
+      },
+      "categoria_madre": "bebidas"
+    },
+    {
+      "nota": {},
+      "slug": "wang-lao-ji",
+      "icono": "bebida",
+      "grupos": [],
+      "imagen": null,
+      "nombre": {
+        "en": "Wang Lao Ji",
+        "es": "Wang Lao Ji",
+        "gl": "Wang Lao Ji"
+      },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 3,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [],
+      "categoria": "orientales",
+      "destacado": false,
+      "etiquetas": [],
+      "descripcion": {
+        "en": "Chinese iced tea.",
+        "es": "Té helado chino.",
+        "gl": "Té xeado chinés."
+      },
+      "categoria_madre": "bebidas"
+    },
+    {
+      "nota": {},
+      "slug": "leche-de-coco",
+      "icono": "bebida",
+      "grupos": [],
+      "imagen": null,
+      "nombre": {
+        "en": "Coconut milk",
+        "es": "Leche de coco",
+        "gl": "Leite de coco"
+      },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 3,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [],
+      "categoria": "orientales",
+      "destacado": false,
+      "etiquetas": [
+        "vegano",
+        "vegetariano"
+      ],
+      "descripcion": {},
       "categoria_madre": "bebidas"
     },
     {
@@ -2275,143 +2524,6 @@
     },
     {
       "nota": {},
-      "slug": "cerveza-1906",
-      "icono": "bebida",
-      "grupos": [],
-      "imagen": null,
-      "nombre": {
-        "en": "1906",
-        "es": "1906",
-        "gl": "1906"
-      },
-      "numero": null,
-      "escalas": [],
-      "precios": [
-        {
-          "precio": 3.2,
-          "etiqueta": null
-        }
-      ],
-      "alergenos": [
-        {
-          "slug": "gluten",
-          "grado": "contiene"
-        }
-      ],
-      "categoria": "cervezas",
-      "destacado": false,
-      "etiquetas": [],
-      "descripcion": {},
-      "categoria_madre": "bebidas"
-    },
-    {
-      "nota": {},
-      "slug": "agua-con-gas",
-      "icono": "bebida",
-      "grupos": [],
-      "imagen": null,
-      "nombre": {
-        "en": "Sparkling water",
-        "es": "Agua con gas",
-        "gl": "Auga con gas"
-      },
-      "numero": null,
-      "escalas": [],
-      "precios": [
-        {
-          "precio": 2.2,
-          "etiqueta": null
-        }
-      ],
-      "alergenos": [],
-      "categoria": "refrescos",
-      "destacado": false,
-      "etiquetas": [],
-      "descripcion": {},
-      "categoria_madre": "bebidas"
-    },
-    {
-      "nota": {},
-      "slug": "capuchino",
-      "icono": "bebida",
-      "grupos": [],
-      "imagen": null,
-      "nombre": {
-        "en": "Cappuccino",
-        "es": "Capuchino",
-        "gl": "Capuchino"
-      },
-      "numero": null,
-      "escalas": [],
-      "precios": [
-        {
-          "precio": 2,
-          "etiqueta": null
-        }
-      ],
-      "alergenos": [
-        {
-          "slug": "leche",
-          "grado": "contiene"
-        }
-      ],
-      "categoria": "cafes",
-      "destacado": false,
-      "etiquetas": [
-        "vegetariano"
-      ],
-      "descripcion": {},
-      "categoria_madre": "bebidas"
-    },
-    {
-      "nota": {},
-      "slug": "vino-rio-vallobera-crianza",
-      "icono": "bebida",
-      "grupos": [],
-      "imagen": null,
-      "nombre": {
-        "en": "Río Vallobera Crianza",
-        "es": "Río Vallobera Crianza",
-        "gl": "Río Vallobera Crianza"
-      },
-      "numero": null,
-      "escalas": [],
-      "precios": [
-        {
-          "precio": 3,
-          "etiqueta": {
-            "en": "Glass",
-            "es": "Copa",
-            "gl": "Copa"
-          }
-        },
-        {
-          "precio": 16,
-          "etiqueta": {
-            "en": "Bottle",
-            "es": "Botella",
-            "gl": "Botella"
-          }
-        }
-      ],
-      "alergenos": [
-        {
-          "slug": "sulfitos",
-          "grado": "contiene"
-        }
-      ],
-      "categoria": "vinos",
-      "destacado": false,
-      "etiquetas": [],
-      "descripcion": {
-        "en": "Red.",
-        "es": "Tinto.",
-        "gl": "Tinto."
-      },
-      "categoria_madre": "bebidas"
-    },
-    {
-      "nota": {},
       "slug": "ramune",
       "icono": "bebida",
       "grupos": [
@@ -2440,80 +2552,6 @@
         "es": "Japonés. Original, fresa, lichi, pomelo o arándano.",
         "gl": "Xaponés. Orixinal, amorodo, lichi, pomelo ou arando."
       },
-      "categoria_madre": "bebidas"
-    },
-    {
-      "nota": {},
-      "slug": "cerveza-tirada",
-      "icono": "bebida",
-      "grupos": [],
-      "imagen": null,
-      "nombre": {
-        "en": "Draught beer",
-        "es": "Cerveza de barril",
-        "gl": "Cervexa de barril"
-      },
-      "numero": null,
-      "escalas": [],
-      "precios": [
-        {
-          "precio": 2.5,
-          "etiqueta": {
-            "en": "Half pint",
-            "es": "Caña",
-            "gl": "Cunca"
-          }
-        },
-        {
-          "precio": 3.5,
-          "etiqueta": {
-            "en": "Pint",
-            "es": "Pinta",
-            "gl": "Pinta"
-          }
-        }
-      ],
-      "alergenos": [
-        {
-          "slug": "gluten",
-          "grado": "contiene"
-        }
-      ],
-      "categoria": "cervezas",
-      "destacado": false,
-      "etiquetas": [],
-      "descripcion": {},
-      "categoria_madre": "bebidas"
-    },
-    {
-      "nota": {},
-      "slug": "tinto-de-verano",
-      "icono": "bebida",
-      "grupos": [],
-      "imagen": null,
-      "nombre": {
-        "en": "Tinto de verano",
-        "es": "Tinto de verano",
-        "gl": "Tinto de verán"
-      },
-      "numero": null,
-      "escalas": [],
-      "precios": [
-        {
-          "precio": 4.5,
-          "etiqueta": null
-        }
-      ],
-      "alergenos": [
-        {
-          "slug": "sulfitos",
-          "grado": "contiene"
-        }
-      ],
-      "categoria": "vinos",
-      "destacado": false,
-      "etiquetas": [],
-      "descripcion": {},
       "categoria_madre": "bebidas"
     },
     {
@@ -2564,32 +2602,119 @@
     },
     {
       "nota": {},
-      "slug": "sidra",
+      "slug": "cafe-expreso",
       "icono": "bebida",
       "grupos": [],
       "imagen": null,
       "nombre": {
-        "en": "Cider",
-        "es": "Sidra",
-        "gl": "Sidra"
+        "en": "Espresso, cortado or americano",
+        "es": "Expreso, cortado o americano",
+        "gl": "Expreso, cortado ou americano"
       },
       "numero": null,
       "escalas": [],
       "precios": [
         {
-          "precio": 2.9,
+          "precio": 1.5,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [],
+      "categoria": "cafes",
+      "destacado": false,
+      "etiquetas": [],
+      "descripcion": {},
+      "categoria_madre": "bebidas"
+    },
+    {
+      "nota": {},
+      "slug": "cafe-latte",
+      "icono": "bebida",
+      "grupos": [],
+      "imagen": null,
+      "nombre": {
+        "en": "Latte",
+        "es": "Café latte",
+        "gl": "Café latte"
+      },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 1.8,
           "etiqueta": null
         }
       ],
       "alergenos": [
         {
-          "slug": "sulfitos",
+          "slug": "leche",
           "grado": "contiene"
         }
       ],
-      "categoria": "cervezas",
+      "categoria": "cafes",
+      "destacado": false,
+      "etiquetas": [
+        "vegetariano"
+      ],
+      "descripcion": {},
+      "categoria_madre": "bebidas"
+    },
+    {
+      "nota": {},
+      "slug": "cafe-solo-doble",
+      "icono": "bebida",
+      "grupos": [],
+      "imagen": null,
+      "nombre": {
+        "en": "Double espresso",
+        "es": "Solo doble",
+        "gl": "Só dobre"
+      },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 1.8,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [],
+      "categoria": "cafes",
       "destacado": false,
       "etiquetas": [],
+      "descripcion": {},
+      "categoria_madre": "bebidas"
+    },
+    {
+      "nota": {},
+      "slug": "capuchino",
+      "icono": "bebida",
+      "grupos": [],
+      "imagen": null,
+      "nombre": {
+        "en": "Cappuccino",
+        "es": "Capuchino",
+        "gl": "Capuchino"
+      },
+      "numero": null,
+      "escalas": [],
+      "precios": [
+        {
+          "precio": 2,
+          "etiqueta": null
+        }
+      ],
+      "alergenos": [
+        {
+          "slug": "leche",
+          "grado": "contiene"
+        }
+      ],
+      "categoria": "cafes",
+      "destacado": false,
+      "etiquetas": [
+        "vegetariano"
+      ],
       "descripcion": {},
       "categoria_madre": "bebidas"
     },
@@ -2657,38 +2782,6 @@
         "vegetariano"
       ],
       "descripcion": {},
-      "categoria_madre": "bebidas"
-    },
-    {
-      "nota": {},
-      "slug": "combinados",
-      "icono": "bebida",
-      "grupos": [
-        "combinados-licor"
-      ],
-      "imagen": null,
-      "nombre": {
-        "en": "Mixed drinks",
-        "es": "Combinados",
-        "gl": "Combinados"
-      },
-      "numero": null,
-      "escalas": [],
-      "precios": [
-        {
-          "precio": 7,
-          "etiqueta": null
-        }
-      ],
-      "alergenos": [],
-      "categoria": "vinos",
-      "destacado": false,
-      "etiquetas": [],
-      "descripcion": {
-        "en": "Rum, gin, vodka or whisky.",
-        "es": "Ron, ginebra, vodka o whisky.",
-        "gl": "Ron, xenebra, vodka ou whisky."
-      },
       "categoria_madre": "bebidas"
     },
     {
@@ -3107,7 +3200,7 @@
       }
     }
   ],
-  "generado": "2026-09-10T08:37:13Z",
+  "generado": "2026-09-10T17:14:27Z",
   "alergenos": [
     {
       "slug": "gluten",
@@ -3396,5 +3489,5 @@
       "descripcion": {}
     }
   ],
-  "actualizado": "2026-09-10T08:28:08Z"
+  "actualizado": "2026-09-10T17:02:54Z"
 }
