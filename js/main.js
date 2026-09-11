@@ -342,6 +342,7 @@
          indexOf desnudo, asi que "gyozas pollo" no encontraba nada: en el
          plato pone "Gyozas de pollo" y la subcadena literal no esta. */
       var palabras = q ? q.split(/\s+/) : [];
+      var cats = marcadas('cat');
       var dietas = marcadas('dieta');
       var sin = marcadas('sin');
       var pic = picElegido();
@@ -357,6 +358,12 @@
           ok = palabras.every(function (w) { return texto.indexOf(w) !== -1; });
         }
 
+        /* Las categorias van al reves que las dietas: marcar Ramen y Bebidas deja
+           los dos grupos, porque un plato solo esta en una categoria y exigirlas
+           todas devolveria siempre cero. Basta la madre: la hija cae dentro. */
+        if (ok && cats.length) {
+          ok = cats.indexOf(li.getAttribute('data-madre') || '') !== -1;
+        }
         /* Las dietas suman: pedir vegano Y vegetariano deja solo lo que es las dos. */
         if (ok) {
           ok = dietas.every(function (d) { return etq.indexOf(d) !== -1; });
@@ -365,8 +372,10 @@
         if (ok) {
           ok = !sin.some(function (a) { return alg.indexOf(a) !== -1; });
         }
+        /* Nivel EXACTO y no "como mucho": pedir dos chiles devuelve los que pican
+           dos, no tambien los que no pican. */
         if (ok && pic !== null) {
-          ok = parseInt(li.getAttribute('data-e-picante') || '0', 10) <= pic;
+          ok = parseInt(li.getAttribute('data-e-picante') || '0', 10) === pic;
         }
 
         li.hidden = !ok;
@@ -385,14 +394,14 @@
       if (vacio) vacio.hidden = vistos !== 0;
       anuncia(vistos === 0 && vacio ? vacio.textContent : resumen);
 
-      var activos = q || dietas.length || sin.length || pic !== null;
+      var activos = q || cats.length || dietas.length || sin.length || pic !== null;
       if (limpiar) limpiar.hidden = !activos;
 
       /* Con el cajon plegado no se ve que hay filtros puestos, y la carta
          recortada parecería rota. Antes lo decía un punto de siete píxeles sin
          texto: se veía y no decía nada a quien no ve. Ahora es un número, y el
          nombre accesible del botón lo lleva dentro. */
-      var puestos = dietas.length + sin.length + (pic !== null ? 1 : 0);
+      var puestos = cats.length + dietas.length + sin.length + (pic !== null ? 1 : 0);
       if (marca) {
         marca.textContent = String(puestos);
         marca.hidden = puestos === 0;
@@ -401,13 +410,14 @@
         abre.setAttribute('aria-label', puestos === 0 ? nombreBoton
           : nombreBoton + ', ' + (puestos === 1 ? puestosUno : puestosVarios.replace('{n}', String(puestos))));
       }
-      guarda(q, dietas, sin, pic);
+      guarda(q, cats, dietas, sin, pic);
     }
 
     /* --- el estado, en la URL ---------------------------------------- */
-    function guarda(q, dietas, sin, pic) {
+    function guarda(q, cats, dietas, sin, pic) {
       var p = new URLSearchParams();
       if (q) p.set('q', cajaQ.value.trim());
+      if (cats.length) p.set('cat', cats.join(','));
       if (dietas.length) p.set('dieta', dietas.join(','));
       if (sin.length) p.set('sin', sin.join(','));
       if (pic !== null) p.set('pic', String(pic));
@@ -425,7 +435,7 @@
       if (!h || h.indexOf('=') === -1) return;
       var p = new URLSearchParams(h);
       if (cajaQ && p.get('q')) cajaQ.value = p.get('q');
-      ['dieta', 'sin'].forEach(function (n) {
+      ['cat', 'dieta', 'sin'].forEach(function (n) {
         var v = (p.get(n) || '').split(',');
         $$('input[name="' + n + '"]', forma).forEach(function (i) {
           i.checked = v.indexOf(i.value) !== -1;

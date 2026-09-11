@@ -604,8 +604,10 @@ h3{font-size:clamp(1.1rem,3.6vw,1.35rem);line-height:1.3;letter-spacing:-.01em}
   border-radius:999px;-webkit-appearance:none;appearance:none}
 .filtro-buscar input::placeholder{color:var(--washi-ten)}
 .filtro-buscar input:focus-visible{outline:2px solid var(--bengara-txt);outline-offset:2px}
-/* En movil los filtros se pliegan detras de un boton: desplegados de continuo,
-   la barra pegajosa medía 489 px de una pantalla de 844. */
+/* Los filtros se pliegan detras de un boton en TODOS los anchos: desplegados de
+   continuo, la barra pegajosa medía 489 px de una pantalla de 844, y en
+   escritorio se comian media primera pantalla de la carta. El boton va a la
+   izquierda del campo y ese orden lo pone el HTML, no la hoja. */
 .filtro-abre{flex:0 0 auto;display:flex;align-items:center;gap:7px;min-height:48px;
   padding:0 18px;border:1px solid var(--sumi-borde);border-radius:999px;
   background:var(--sumi-sup);color:var(--washi-ten);font:inherit;font-size:.9rem;cursor:pointer}
@@ -764,11 +766,11 @@ img.plato-ico{object-fit:cover;padding:0}
 }
 @media (min-width:900px){
   .carta-filtros{top:72px}
-  /* En escritorio caben todos a la vista y el boton sobra. */
-  .filtro-abre{display:none}
-  /* Mismo selector que la regla de movil: :not(.abierto) suma especificidad,
-     asi que .carta-filtros .filtro-cajon (0,2,0) perdia contra (0,3,0). */
-  .carta-filtros:not(.abierto) .filtro-cajon{display:grid;max-height:none;overflow:visible}
+  /* El cajon nace plegado tambien aqui; el boton se ve en todos los anchos. Con
+     cuatro grupos dentro, 38 vh se queda corto en una pantalla ancha, pero el
+     tope no se quita: la barra es pegajosa y no puede comerse la carta que esta
+     filtrando. Se desplaza por dentro. */
+  .filtro-cajon{max-height:50vh}
   .plato-desc{grid-column:2;grid-row:2}
   .plato-chips{grid-column:2;grid-row:3}
 }

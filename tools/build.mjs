@@ -929,16 +929,28 @@ function menuCarta(l) {
     .map((m) => `<a href="#sec-${esc(m.slug)}">${esc(txt(m.nombre, l))}</a>`)
     .join('');
 
+  /* Solo las categorias madre: son las mismas seis de la fila de anclas, asi que
+     el filtro y la navegacion dicen lo mismo. Una hija no hace falta, porque el
+     plato ya cae dentro de su madre. Varias marcadas SUMAN -es una o la otra-, al
+     reves que las dietas: un plato solo esta en una categoria, asi que exigirlas
+     todas devolveria siempre cero. */
+  const cats = C.categorias
+    .filter((m) => C.platos.some((p) => p.categoria_madre === m.slug))
+    .map((m) =>
+      `<label class="chip-btn"><input type="checkbox" name="cat" value="${esc(m.slug)}">` +
+      `<span>${esc(txt(m.nombre, l))}</span></label>`
+    ).join('');
+
   /* Solo se ofrece filtrar por los alergenos que algun plato declara: una
      casilla de "sin apio" que no quita nada solo estorba. */
   const usados = new Set(C.platos.flatMap((p) => p.alergenos.map((a) => a.slug)));
   const casillas = C.alergenos.filter((a) => usados.has(a.slug)).map((a) =>
-    `<label class="chip chip-btn chip-sin"><input type="checkbox" name="sin" value="${esc(a.slug)}">` +
+    `<label class="chip-btn chip-sin"><input type="checkbox" name="sin" value="${esc(a.slug)}">` +
     `<span>${marcaAlg(a.slug, true)}${esc(rell(t.carta.sin_uno, { a: minusc(txt(a.nombre, l), l) }))}</span></label>`
   ).join('');
 
   const dietas = C.etiquetas.map((e) =>
-    `<label class="chip chip-btn"><input type="checkbox" name="dieta" value="${esc(e.slug)}">` +
+    `<label class="chip-btn"><input type="checkbox" name="dieta" value="${esc(e.slug)}">` +
     `<span>${marcaEtq(e.icono)}${esc(txt(e.nombre, l))}</span></label>`
   ).join('');
 
@@ -947,10 +959,12 @@ function menuCarta(l) {
      un lector de pantalla lee "pimiento picante, pimiento picante, pimiento
      picante". Ahora son radios con la misma pastilla que el resto de la barra y
      los mismos puntos que la ficha del plato, asi que el filtro y el plato se
-     leen igual. La primera opcion es "da igual", que es el estado de partida. */
+     leen igual. La primera opcion es "da igual", que es el estado de partida.
+     Y filtra el nivel EXACTO, no "como mucho": pedir dos chiles devuelve los que
+     pican dos, no tambien los que no pican. */
   const escPic = C.escalas.find((e) => e.slug === 'picante');
   const pastillaPic = (valor, dentro, marcado) =>
-    `<label class="chip chip-btn chip-pic"><input type="radio" name="pic" value="${valor}"${marcado ? ' checked' : ''}>` +
+    `<label class="chip-btn chip-pic"><input type="radio" name="pic" value="${valor}"${marcado ? ' checked' : ''}>` +
     `<span>${dentro}</span></label>`;
   const nivelesPic = escPic
     ? [pastillaPic('', esc(t.carta.picante_da_igual), true),
@@ -988,17 +1002,23 @@ ${MARCADORES}
  <form class="carta-filtros" id="filtros" hidden aria-label="${esc(t.carta.filtros)}">
   <div class="env">
    <div class="filtro-buscar">
-    <label for="q" class="oculto">${esc(t.carta.buscar)}</label>
-    <input type="search" id="q" name="q" placeholder="${esc(t.carta.buscar_ph)}" autocomplete="off" enterkeyhint="search">
-    <!-- El aviso de "hay filtros puestos" era un <i> vacio: se veia y no decia
+    <!-- El boton va DELANTE del campo. Es un flex en fila, asi que el orden del
+         DOM es el orden en pantalla y no hace falta ningun order en la hoja.
+         El aviso de "hay filtros puestos" era un <i> vacio: se veia y no decia
          nada. Ahora es un numero, y el nombre accesible del boton se recompone
          para que quien no ve tampoco se quede sin saberlo. -->
     <button type="button" class="filtro-abre" id="abre-filtros" aria-expanded="false" aria-controls="filtro-cajon"
      data-nombre="${esc(t.carta.filtros)}" data-puestos="${esc(t.carta.filtros_puestos)}" data-puesto="${esc(t.carta.filtros_uno)}">
      <span>${esc(t.carta.filtros)}</span><span class="filtro-cuenta" id="filtro-cuenta" hidden></span>
     </button>
+    <label for="q" class="oculto">${esc(t.carta.buscar)}</label>
+    <input type="search" id="q" name="q" placeholder="${esc(t.carta.buscar_ph)}" autocomplete="off" enterkeyhint="search">
    </div>
    <div class="filtro-cajon" id="filtro-cajon">
+   <fieldset class="filtro-grupo">
+    <legend>${esc(t.carta.categoria)}</legend>
+    ${cats}
+   </fieldset>
    <fieldset class="filtro-grupo">
     <legend>${esc(t.carta.dieta)}</legend>
     ${dietas}
@@ -1008,7 +1028,7 @@ ${MARCADORES}
     ${casillas}
    </fieldset>
    ${escPic ? `<fieldset class="filtro-grupo">
-    <legend>${esc(t.carta.picante_max)}</legend>
+    <legend>${esc(t.carta.picante)}</legend>
     ${nivelesPic}
    </fieldset>` : ''}
    </div>
