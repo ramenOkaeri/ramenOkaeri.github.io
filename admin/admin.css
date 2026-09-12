@@ -112,6 +112,16 @@ label{display:block;font-size:.86rem;color:var(--washi-ten);margin-bottom:6px}
 .precio-fila{display:flex;gap:8px;align-items:center}
 .precio-fila input[type=number]{flex:0 0 120px}
 
+/* La foto se enseña a 96 px y no a los 56 a los que sale en la carta: el cuadro
+   pequeño no deja ver si el recorte ha cogido el plato o la mesa. Mismo radio
+   redondeado que .plato-ico del sitio, para que se juzgue lo que se va a ver. */
+.foto-caja{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.foto-vista{flex:0 0 auto;width:96px;height:96px;border-radius:12px;overflow:hidden;
+  display:grid;place-items:center;background:var(--sumi-sup);border:1px solid var(--sumi-borde)}
+.foto-prev{width:100%;height:100%;object-fit:cover;display:block}
+.foto-no{font-size:.78rem;color:var(--washi-ten);text-align:center;padding:0 6px}
+.foto-acc{display:flex;flex-wrap:wrap;align-items:center;gap:4px}
+
 .rejilla{display:grid;gap:8px}
 @media (min-width:560px){.rejilla{grid-template-columns:1fr 1fr}}
 .rej-item{display:flex;align-items:center;gap:10px;justify-content:space-between;

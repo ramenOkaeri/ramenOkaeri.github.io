@@ -23,6 +23,9 @@
 #   · si el aviso trae client_payload.restaurar, primero devuelve la base a esa
 #     publicacion guardada y recupera de git el PDF de aquel dia
 #   · recoge el PDF que el panel haya dejado en el buzon de Supabase Storage
+#   · recoge las fotos de plato que el panel haya dejado en el buzon `fotos` y
+#     las escribe en assets/img/platos/. La carta publica no sirve imagenes
+#     desde Supabase: solo pasan por ahi de camino al repositorio
 #   · guarda una copia completa del estado en la tabla publicaciones, en dos
 #     fases: se abre cuando la carta ya ha pasado las comprobaciones y se cierra
 #     cuando el push ha salido bien. Si no hubo nada que publicar, se descarta.
@@ -136,6 +139,21 @@ jobs:
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: node tools/pdf-buzon.mjs --recoge
 
+      # Mismo sitio y mismo motivo que el PDF: despues de validar la carta y
+      # ANTES de build.mjs, para que el aviso de "este plato apunta a una foto
+      # que no esta" se mida contra el arbol definitivo.
+      # En una vuelta atras se salta, igual que el PDF: restaura.mjs devuelve la
+      # carta de aquel dia y sus fotos siguen en el arbol —no se barren nunca—,
+      # asi que no hay nada que recoger. Y arrastrar aqui una foto que espera a
+      # la proxima publicacion seria colar contenido nuevo en una vuelta atras.
+      - name: Recoger las fotos de los platos
+        id: fotos
+        if: github.event.client_payload.restaurar == ''
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: node tools/fotos-buzon.mjs --recoge
+
       - name: Reconstruir el HTML
         run: node tools/build.mjs
 
@@ -234,6 +252,20 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: node tools/pdf-buzon.mjs --vacia
+
+      # Sin condicion sobre `cambios`, al reves que el PDF, porque --vacia no se
+      # fia de nadie: borra SOLO las fotos que ya estan en assets/img/platos/, y
+      # como el nombre lleva la huella del contenido, que el archivo exista es
+      # que esa foto exacta llego a la web. Cubre igual el caso de "no habia
+      # nada que publicar porque ya estaba" que el de "se acaba de subir".
+      # Si el push se hubiera caido, este paso no llega a correr y la foto se
+      # queda en el buzon esperando a la proxima.
+      - name: Vaciar el buzón de fotos
+        if: steps.fotos.outputs.recogido == 'si'
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: node tools/fotos-buzon.mjs --vacia
 
       - name: Pedirle a Pages que reconstruya
         # Este repositorio publica desde la rama main (build_type legacy). Un push

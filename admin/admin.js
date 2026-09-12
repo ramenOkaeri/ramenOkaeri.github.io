@@ -436,6 +436,238 @@
     return caja;
   }
 
+  /* --- la foto del plato ---
+     UN SOLO <input type="file" accept="image/*"> HACE LAS DOS COSAS. En Android
+     abre el selector con Galería / Cámara / Archivos, en iPhone con Fototeca /
+     Hacer foto / Examinar, y en un ordenador el explorador de archivos filtrado
+     a imágenes. No hay que detectar el aparato ni hacen falta dos botones.
+
+     Y NO LLEVA `capture`, a propósito: ese atributo NO es una pista, es una
+     orden. Con él, el móvil abre la cámara directamente y la galería deja de
+     ser alcanzable, que es justo lo contrario de lo que se quiere aquí.
+
+     La foto se sube al elegirla, no al guardar el plato: así la barra de
+     "Subiendo…" está donde el dedo acaba de tocar, y guardar sigue siendo
+     instantáneo. Lo que se guarda en la columna `imagen` es la ruta final del
+     repositorio; la foto sale a la web en la próxima publicación, igual que el
+     PDF y que todo lo demás del panel.
+
+     Si se sube una foto y luego se cierra la ficha sin guardar, ese archivo se
+     queda en el buzón y la próxima publicación lo commitea sin que lo use nadie.
+     Son 15 KB y no se barre por lo mismo que no se barren las demás: volver
+     atrás desde el Historial necesita que las fotos viejas sigan ahí. */
+  var LADO_FOTO = 192;           /* se pinta a 56 px, 64 en pantalla ancha: ×3 de densidad */
+  var CARPETA_FOTOS = '/assets/img/platos/';
+  var TOPE_ORIGEN = 25 * 1024 * 1024;
+  var PENDIENTE = 'Subida. Sale a la web en cuanto publiques.';
+
+  /* El sensor de un móvil casi nunca rota los píxeles: guarda el giro en el EXIF
+     y deja que lo aplique quien la pinte. Sin `from-image`, media carta acaba
+     tumbada. */
+  function decodifica(archivo) {
+    if (window.createImageBitmap) {
+      return createImageBitmap(archivo, { imageOrientation: 'from-image' })
+        .catch(function () { return porEtiqueta(archivo); });
+    }
+    return porEtiqueta(archivo);
+  }
+
+  function porEtiqueta(archivo) {
+    return new Promise(function (resolver, rechazar) {
+      var url = URL.createObjectURL(archivo);
+      var img = new Image();
+      img.onload = function () { URL.revokeObjectURL(url); resolver(img); };
+      img.onerror = function () {
+        URL.revokeObjectURL(url);
+        rechazar(new Error('Este navegador no sabe abrir esa foto. Si viene de un iPhone y ' +
+          'termina en .HEIC, ábrela en Fotos y compártela como JPG.'));
+      };
+      img.src = url;
+    });
+  }
+
+  /* Recorta el cuadrado del centro y lo baja a 192 px. Se hace aquí y no en el
+     servidor porque el navegador ya trae decodificador: así se suben 15 KB en
+     vez de los 4 MB del original, el HEIC del iPhone ya viene convertido y el
+     repositorio sigue sin package.json. */
+  function encuadra(archivo) {
+    if (archivo.type && archivo.type.slice(0, 6) !== 'image/') {
+      return Promise.reject(new Error('Eso no es una imagen.'));
+    }
+    if (archivo.size > TOPE_ORIGEN) {
+      return Promise.reject(new Error('Esa foto pesa ' + (archivo.size / 1048576).toFixed(1) +
+        ' MB y el tope son 25. Elige otra.'));
+    }
+    return decodifica(archivo).then(function (bm) {
+      var lado = Math.min(bm.width, bm.height);
+      var lienzo = document.createElement('canvas');
+      lienzo.width = LADO_FOTO; lienzo.height = LADO_FOTO;
+      var ctx = lienzo.getContext('2d');
+      ctx.imageSmoothingQuality = 'high';
+      /* Un JPEG no tiene transparencia: sin este relleno, un PNG con alfa sale
+         con el fondo en negro. */
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, LADO_FOTO, LADO_FOTO);
+      ctx.drawImage(bm, (bm.width - lado) / 2, (bm.height - lado) / 2, lado, lado,
+        0, 0, LADO_FOTO, LADO_FOTO);
+      if (bm.close) bm.close();
+      return new Promise(function (resolver, rechazar) {
+        lienzo.toBlob(function (b) {
+          if (b) resolver(b); else rechazar(new Error('No se ha podido comprimir la foto.'));
+        }, 'image/jpeg', 0.82);
+      });
+    });
+  }
+
+  /* Ocho caracteres de sha1, la misma huella que usa build.mjs para el CSS y el
+     PDF. Va en el nombre del archivo, así que cambiar la foto de un plato cambia
+     la ruta: Cloudflare no puede servir la vieja ni queriendo. */
+  function huella(buf) {
+    if (window.crypto && crypto.subtle && crypto.subtle.digest) {
+      return crypto.subtle.digest('SHA-1', buf).then(function (h) {
+        return Array.prototype.map.call(new Uint8Array(h), function (b) {
+          return ('0' + b.toString(16)).slice(-2);
+        }).join('').slice(0, 8);
+      });
+    }
+    /* Respaldo para un navegador sin WebCrypto. Aquí la huella no protege nada,
+       solo tiene que ser distinta cuando los bytes son distintos. */
+    var b = new Uint8Array(buf), h = 0x811c9dc5;
+    for (var i = 0; i < b.length; i++) {
+      h ^= b[i];
+      h = (h + (h << 1) + (h << 4) + (h << 7) + (h << 8) + (h << 24)) >>> 0;
+    }
+    return Promise.resolve(('0000000' + h.toString(16)).slice(-8));
+  }
+
+  /* Mismo cable que subePdf(): api() fuerza Content-Type JSON y aquí el cuerpo va
+     en binario. El x-upsert evita el 409 al volver a subir el mismo nombre. */
+  function subeFoto(blob, nombre) {
+    return fetch(cfg.url + '/storage/v1/object/fotos/' + nombre, {
+      method: 'POST',
+      headers: {
+        apikey: cfg.anon,
+        Authorization: 'Bearer ' + sesion.access_token,
+        'Content-Type': 'image/jpeg',
+        'x-upsert': 'true'
+      },
+      body: blob
+    }).then(function (r) {
+      return cuerpo(r).then(function (d) {
+        if (r.status === 401 && sesion) {
+          return refresca().then(function () { return subeFoto(blob, nombre); });
+        }
+        if (r.status === 413) throw new Error('El servidor dice que esa foto es demasiado grande.');
+        if (!r.ok) throw new Error((d && (d.message || d.error)) || ('El almacén ha dicho ' + r.status + '.'));
+        return d;
+      });
+    });
+  }
+
+  /* El bucket es privado, así que la foto que todavía no se ha publicado solo se
+     puede mirar con la sesión de quien está dentro del panel. */
+  function bajaFoto(nombre) {
+    return fetch(cfg.url + '/storage/v1/object/fotos/' + encodeURIComponent(nombre), {
+      headers: { apikey: cfg.anon, Authorization: 'Bearer ' + sesion.access_token }
+    }).then(function (r) {
+      if (!r.ok) throw new Error('no está en el buzón');
+      return r.blob();
+    });
+  }
+
+  function campoFoto(f) {
+    var entrada = el('input', { type: 'file', accept: 'image/*', hidden: 'hidden' });
+    var vista = el('div', { clase: 'foto-vista' });
+    var estado = el('p', { clase: 'pista' });
+    var elegir = el('button', { type: 'button', clase: 'btn btn-s',
+      onclick: function () { entrada.click(); } });
+    var quitar = el('button', { type: 'button', clase: 'btn-t', texto: 'Quitar la foto',
+      onclick: function () { f.imagen = null; pinta(); } });
+    var url = null;
+
+    function suelta() { if (url) { URL.revokeObjectURL(url); url = null; } }
+
+    function pinta(local) {
+      suelta();
+      vista.textContent = '';
+      quitar.hidden = !f.imagen;
+      elegir.textContent = f.imagen ? 'Cambiar la foto' : 'Elegir una foto';
+
+      if (!f.imagen) {
+        vista.appendChild(el('span', { clase: 'foto-no', texto: 'Sin foto' }));
+        estado.textContent = 'Se pinta el marcador de su categoría. Desde el móvil puedes ' +
+          'cogerla de la galería o hacerla en el momento.';
+        return;
+      }
+
+      var img = el('img', { clase: 'foto-prev', alt: '', width: LADO_FOTO, height: LADO_FOTO });
+      vista.appendChild(img);
+
+      if (local) {
+        url = local;
+        img.src = local;
+        estado.textContent = PENDIENTE;
+        return;
+      }
+
+      /* Se prueba primero la ruta pública. Si da 404, la foto está subida pero
+         todavía no publicada, y entonces se enseña la del buzón: así se ve lo
+         que de verdad hay guardado en vez de un cuadro roto. El reintento se
+         hace una sola vez, que si no un blob que no decodifica da vueltas. */
+      var reintentado = false;
+      img.addEventListener('error', function () {
+        if (reintentado) return;
+        reintentado = true;
+        bajaFoto((f.imagen || '').split('/').pop()).then(function (blob) {
+          suelta();
+          url = URL.createObjectURL(blob);
+          img.src = url;
+          estado.textContent = PENDIENTE;
+        }).catch(function () {
+          vista.textContent = '';
+          vista.appendChild(el('span', { clase: 'foto-no', texto: 'No está' }));
+          estado.textContent = 'La foto de este plato ya no está. Sube otra.';
+        });
+      });
+      estado.textContent = 'Ya está en la web.';
+      img.src = f.imagen;
+    }
+
+    entrada.addEventListener('change', function () {
+      var archivo = this.files && this.files[0];
+      /* Se limpia ya: si no, elegir el mismo archivo dos veces seguidas no
+         dispara el change y parece que el botón se ha quedado colgado. */
+      entrada.value = '';
+      if (!archivo) return;
+
+      elegir.disabled = true; elegir.textContent = 'Preparando…';
+      encuadra(archivo).then(function (blob) {
+        elegir.textContent = 'Subiendo…';
+        return blob.arrayBuffer().then(huella).then(function (h) {
+          var base = f.slug || (f.nombre.es ? slugifica(f.nombre.es) : '');
+          var nombre = (base ? base + '-' : 'foto-') + h + '.jpg';
+          return subeFoto(blob, nombre).then(function () {
+            f.imagen = CARPETA_FOTOS + nombre;
+            pinta(URL.createObjectURL(blob));
+            aviso('Foto subida. Acuérdate de guardar el plato y de publicar.');
+          });
+        });
+      }).catch(function (x) {
+        aviso(x.message, 'error');
+      }).then(function () {
+        elegir.disabled = false;
+        elegir.textContent = f.imagen ? 'Cambiar la foto' : 'Elegir una foto';
+      });
+    });
+
+    pinta();
+    return el('div', { clase: 'campo' }, [
+      el('label', { texto: 'Foto del plato (opcional)' }),
+      el('div', { clase: 'foto-caja' }, [vista, el('div', { clase: 'foto-acc' }, [elegir, quitar, entrada])]),
+      estado
+    ]);
+  }
+
   function pintaFicha(c) {
     var f = editando;
 
@@ -521,8 +753,9 @@
 
     var numero = el('input', { type: 'text', id: 'f-num', value: f.numero || '', placeholder: '1, 13P…' });
     var orden = el('input', { type: 'number', id: 'f-ord', value: f.orden || 0 });
-    var imagen = el('input', { type: 'text', id: 'f-img', value: f.imagen || '',
-      placeholder: '/assets/img/platos/tonkotsu.jpg' });
+    /* campoFoto escribe f.imagen por su cuenta, al subir o al quitar la foto, así
+       que no hay nada que leer de aquí al guardar: f.imagen ya es la verdad. */
+    var foto = campoFoto(f);
     var destacado = el('input', { type: 'checkbox', id: 'f-dest' });
     destacado.checked = !!f.destacado;
     var disponible = el('input', { type: 'checkbox', id: 'f-disp' });
@@ -535,7 +768,6 @@
       f.categoria_id = selCat.value;
       f.numero = numero.value.trim() || null;
       f.orden = parseInt(orden.value, 10) || 0;
-      f.imagen = imagen.value.trim() || null;
       f.destacado = destacado.checked;
       f.disponible = disponible.checked;
       if (!f.nombre.es) { aviso('El nombre en español es obligatorio.', 'error'); return; }
@@ -584,8 +816,7 @@
       ]),
       campoIdioma('Nota (opcional)', f.nota, false),
       el('div', { clase: 'dos' }, [
-        el('div', { clase: 'campo' }, [el('label', { for: 'f-img', texto: 'Imagen (opcional)' }), imagen,
-          el('p', { clase: 'pista', texto: 'Sin imagen se pinta el marcador de su categoría.' })]),
+        foto,
         el('div', { clase: 'campo' }, [el('label', { for: 'f-ord', texto: 'Orden' }), orden])
       ]),
       el('div', { clase: 'interruptores' }, [
