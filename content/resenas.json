@@ -5,7 +5,7 @@
   "enlace": "https://maps.google.com/?cid=18320615065955389420",
   "nota": 4.8,
   "total": 1066,
-  "actualizado": "2026-09-10",
+  "actualizado": "2026-09-13",
   "idiomas": {
     "es": [
       {
@@ -16,15 +16,6 @@
         "lang": "es",
         "publicada": "2026-07-06",
         "avatar": "jairo-kun-otero-9bde8c"
-      },
-      {
-        "autor": "MÓNICA MORENO VILA",
-        "estrellas": 5,
-        "fecha": "mayo de 2026",
-        "texto": "Hay muchas cosas que me llevo de Santiago y una de ellas es la experiencia que me ha aportado el ramen picante de tofu que me hizo sonreír y e intentar grabar lo que estaba pasando y era estar comiendo algo mágico.\n\nMágico, divino, exquisito como pocas cosas he probado.",
-        "lang": "es",
-        "publicada": "2026-05-09",
-        "avatar": "monica-moreno-vila-ffeaae"
       },
       {
         "autor": "Victoria Huesca Briceño",
@@ -52,6 +43,15 @@
         "lang": "es",
         "publicada": "2026-06-23",
         "avatar": "xiang-jung-ye-pan-60995a"
+      },
+      {
+        "autor": "MÓNICA MORENO VILA",
+        "estrellas": 5,
+        "fecha": "mayo de 2026",
+        "texto": "Hay muchas cosas que me llevo de Santiago y una de ellas es la experiencia que me ha aportado el ramen picante de tofu que me hizo sonreír y e intentar grabar lo que estaba pasando y era estar comiendo algo mágico.\n\nMágico, divino, exquisito como pocas cosas he probado.",
+        "lang": "es",
+        "publicada": "2026-05-09",
+        "avatar": "monica-moreno-vila-ffeaae"
       }
     ],
     "en": [
@@ -130,13 +130,13 @@
         "avatar": "clara-veiga-6ccbf8"
       },
       {
-        "autor": "Lefvaid arts",
+        "autor": "Pedro Varela",
         "estrellas": 5,
-        "fecha": "maio de 2025",
-        "texto": "Fumos 7, atendéronnos coma na casa, comimos de luxo e a fartar, e invitáronnos a chupito. O ramen está que cura problemas que non sabías que tiñas. Recomendable especialmente se chove.",
+        "fecha": "agosto de 2026",
+        "texto": "A atención excelente e a comida moi saborosa. Moi recomendable!!!",
         "lang": "gl",
-        "publicada": "2025-05-09",
-        "avatar": "lefvaid-arts-6eb4d0"
+        "publicada": "2026-08-29",
+        "avatar": "pedro-varela-af6f32"
       }
     ]
   }
