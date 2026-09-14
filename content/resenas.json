@@ -5,7 +5,7 @@
   "enlace": "https://maps.google.com/?cid=18320615065955389420",
   "nota": 4.8,
   "total": 1066,
-  "actualizado": "2026-09-13",
+  "actualizado": "2026-09-14",
   "idiomas": {
     "es": [
       {
@@ -56,15 +56,6 @@
     ],
     "en": [
       {
-        "autor": "Sudip Ray",
-        "estrellas": 5,
-        "fecha": "March 2026",
-        "texto": "We had a very good experience of having lunch in this amazing place. Very colourful decorative interior and cozy ambience welcome us first and then those tasty foods truly made our day. Love everything about the place actually.\nServices were excellent, specially it was really commendable for only two guys to manage full house costomers during pick Semana Santa Sunday. Even they made extra effort to get some currys when asked.\nNothing much to add about the taste of those delicious foods. Really really loved it.\nLoved the little gesture of giving some nice anime stickers and toffee to take away home with the bill.\nHighly recommended and would love to come here again.",
-        "lang": "en",
-        "publicada": "2026-03-29",
-        "avatar": "sudip-ray-9dbe94"
-      },
-      {
         "autor": "sebastian chen",
         "estrellas": 5,
         "fecha": "May 2026",
@@ -72,6 +63,15 @@
         "lang": "en",
         "publicada": "2026-05-31",
         "avatar": "sebastian-chen-6752a2"
+      },
+      {
+        "autor": "Sudip Ray",
+        "estrellas": 5,
+        "fecha": "March 2026",
+        "texto": "We had a very good experience of having lunch in this amazing place. Very colourful decorative interior and cozy ambience welcome us first and then those tasty foods truly made our day. Love everything about the place actually.\nServices were excellent, specially it was really commendable for only two guys to manage full house costomers during pick Semana Santa Sunday. Even they made extra effort to get some currys when asked.\nNothing much to add about the taste of those delicious foods. Really really loved it.\nLoved the little gesture of giving some nice anime stickers and toffee to take away home with the bill.\nHighly recommended and would love to come here again.",
+        "lang": "en",
+        "publicada": "2026-03-29",
+        "avatar": "sudip-ray-9dbe94"
       },
       {
         "autor": "Andrea Schwartz",
