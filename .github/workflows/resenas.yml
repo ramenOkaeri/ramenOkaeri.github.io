@@ -99,6 +99,12 @@ jobs:
       - name: ¿Ha cambiado algo?
         id: cambios
         run: |
+          # assets/version.json NO es de este flujo. build.mjs le pone la hora de
+          # cada construccion, asi que cambia siempre: hasta el 17 de septiembre
+          # de 2026 este cron commiteaba todos los dias aunque Google devolviera
+          # lo mismo, y movia el sello de "publicado" que leia el panel. Solo lo
+          # actualiza la publicacion de la carta (carta.yml).
+          git checkout -- assets/version.json || true
           if [ -z "$(git status --porcelain)" ]; then
             echo "hay=no" >> "$GITHUB_OUTPUT"
             echo "Google devuelve lo mismo que ayer. No se toca nada."

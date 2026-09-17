@@ -62,6 +62,7 @@
         "desc": "To pick at while the ramen comes."
       }
     },
+    "desde": "from {precio}",
     "alergenos": "The allergen table is on the last page of the menu.",
     "cta": "See the full menu"
   },

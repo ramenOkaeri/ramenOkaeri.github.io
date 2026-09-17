@@ -59,12 +59,12 @@
     "_fuente": "Facilitados por el titular el 8 de septiembre de 2026."
   },
 
-  "_destacados_fuente": "Contrastados con la carta en PDF el 8 de septiembre de 2026: tonkotsu 12,95, tonyu vegan 11,95 y gyozas 3,95 salen del propio documento. La tempura de langostino es la unica que conviene mirar a ojo en el local.",
+  "_destacados_fuente": "Desde el 17 de septiembre de 2026 el precio NO se escribe aqui: build.mjs lo saca de content/carta.json por los slugs de cada destacado, asi que un cambio de precio desde el panel llega tambien a la portada. Con varios platos de precios distintos sale 'desde' el mas barato (las gyozas de langostino cuestan 4,95 y las otras tres 3,95). El nombre y la frase de cada destacado siguen en es/en/gl.json, cocina.platos.",
   "destacados": [
-    { "id": "tonkotsu", "precio": "12,95 €", "foto": "ramen" },
-    { "id": "tonyu",    "precio": "11,95 €", "foto": null },
-    { "id": "gyozas",   "precio": "3,95 €",  "foto": null },
-    { "id": "tempura",  "precio": "5,95 €",  "foto": null }
+    { "id": "tonkotsu", "slugs": ["tonkotsu-ramen"], "foto": "ramen" },
+    { "id": "tonyu",    "slugs": ["tonyu-vegan-ramen"], "foto": null },
+    { "id": "gyozas",   "slugs": ["gyozas-pollo", "gyozas-cerdo", "gyozas-langostino", "gyozas-vegetales"], "foto": null },
+    { "id": "tempura",  "slugs": ["tempura-langostino"], "foto": null }
   ],
 
   "galeria": ["neon-okaeri","barra","vitrina","mesa","banderines","sala-noche","neon-flechas","sala"]

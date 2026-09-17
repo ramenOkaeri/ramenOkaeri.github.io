@@ -336,17 +336,49 @@ function estrellas(nota, etiqueta) {
 /* --------------------------------------------------------------------------- */
 /* la portada                                                                    */
 /* --------------------------------------------------------------------------- */
+/* El precio de un destacado de la portada SALE DE LA CARTA, no de datos.json.
+   Hasta el 17 de septiembre de 2026 era un texto escrito a mano ("12,95 €"): si
+   el restaurante cambiaba un precio desde el panel, la carta se actualizaba y la
+   portada no. Y ya habia un desajuste publicado: las gyozas salian a 3,95 € y
+   las de langostino cuestan 4,95.
+   Cada destacado apunta a uno o varios platos por slug. Con precios distintos
+   sale "desde" el mas barato. Un slug que ya no esta en la carta (oculto o
+   borrado) se ignora; si no queda ninguno, el destacado no se pinta y el flujo
+   lo avisa, pero la portada no tumba la publicacion de la carta. */
+const destacadosAvisados = new Set();
+function precioDestacado(d, l) {
+  const importes = (d.slugs || [])
+    .map((s) => C.platos.find((p) => p.slug === s))
+    .filter(Boolean)
+    .flatMap((p) => p.precios.map((x) => x.precio))
+    .filter((v) => v != null)
+    .map(Number);
+  if (!importes.length) {
+    if (!destacadosAvisados.has(d.id)) {
+      destacadosAvisados.add(d.id);
+      console.log(`::warning::El destacado "${d.id}" de la portada no casa con ningun plato con precio de la carta (${(d.slugs || []).join(', ')}). No se pinta.`);
+    }
+    return null;
+  }
+  const minimo = Math.min(...importes);
+  return importes.some((v) => v !== minimo)
+    ? rell(T[l].cocina.desde, { precio: precio(minimo, l) })
+    : precio(minimo, l);
+}
+
 function portada(l) {
   const t = T[l], b = BASE[l];
   const ruta = (b || '') + '/';
 
   const platos = D.destacados.map((p) => {
     const x = t.cocina.platos[p.id];
+    const importe = precioDestacado(p, l);
+    if (importe == null) return '';
     return `<li class="plato">
     <div class="plato-txt"><h3>${esc(x.nombre)}</h3><p>${esc(x.desc)}</p></div>
-    <span class="precio">${esc(p.precio)}</span>
+    <span class="precio">${esc(importe)}</span>
    </li>`;
-  }).join('\n   ');
+  }).filter(Boolean).join('\n   ');
 
   /* sin pie de foto: repetía el texto alternativo y ensuciaba la tira.
      La descripción sigue en el alt, que es donde de verdad sirve. */
@@ -1066,7 +1098,11 @@ ${pie(l)}
 /* el panel                                                                     */
 /* --------------------------------------------------------------------------- */
 /* Sin cabecera ni pie del sitio y con noindex: no es una pagina del
-   restaurante, es la herramienta con la que se mantiene la carta. */
+   restaurante, es la herramienta con la que se mantiene la carta.
+   Lleva incrustados los mismos MARCADORES que la carta (platos, alergenos y
+   escalas): el panel pinta los iconos que se van a ver en la web sin pedir ni
+   un archivo mas. Los avisos van en #avisos, y #anuncio es la region viva por
+   la que se leen los mensajes normales; los errores llevan role="alert" propio. */
 function panel() {
   return `<!doctype html>
 <html lang="es">
@@ -1081,8 +1117,10 @@ function panel() {
 <link rel="stylesheet" href="${ADMIN_CSS}">
 </head>
 <body>
+${MARCADORES}
 <div id="app"><p class="cargando">Cargando…</p></div>
-<p class="aviso" id="aviso" hidden></p>
+<div id="avisos" class="avisos"></div>
+<div id="anuncio" class="oculto" aria-live="polite" aria-atomic="true"></div>
 <script src="${ADMIN_JS}" defer></script>
 </body>
 </html>`;

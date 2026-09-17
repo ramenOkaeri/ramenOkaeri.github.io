@@ -62,6 +62,7 @@
         "desc": "Para ir picando mientras llega el ramen."
       }
     },
+    "desde": "desde {precio}",
     "alergenos": "La carta lleva la tabla de alérgenos en la última página.",
     "cta": "Ver la carta entera"
   },
