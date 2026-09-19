@@ -4,8 +4,8 @@
   "fuente": "Google",
   "enlace": "https://maps.google.com/?cid=18320615065955389420",
   "nota": 4.8,
-  "total": 1065,
-  "actualizado": "2026-09-17",
+  "total": 1066,
+  "actualizado": "2026-09-19",
   "idiomas": {
     "es": [
       {
@@ -56,15 +56,6 @@
     ],
     "en": [
       {
-        "autor": "Arsa Longa",
-        "estrellas": 5,
-        "fecha": "August 2026",
-        "texto": "It’s our favorite ramen restaurant in Europe, and without exaggeration, every pilgrimage to Santiago ends here—with a bowl of hot, delicious ramen.\n\nLast year we came with a group of friends; this year we returned with my husband. No matter who I’m with, it’s always a highlight of the trip. Their vegan ramen is incredibly flavorful, packed with fresh vegetables, and simply comforting after a long walk.\n\nThe staff are always so kind and welcoming, and this time they even gave us stickers for our pilgrim credentials as a gift. Such a thoughtful touch that made the experience even more special. We’ll definitely be back on our next pilgrimage!",
-        "lang": "en",
-        "publicada": "2026-08-02",
-        "avatar": "arsa-longa-c467d1"
-      },
-      {
         "autor": "sebastian chen",
         "estrellas": 5,
         "fecha": "May 2026",
@@ -99,6 +90,15 @@
         "lang": "en",
         "publicada": "2026-03-28",
         "avatar": "andrea-schwartz-ff08d0"
+      },
+      {
+        "autor": "Murat K",
+        "estrellas": 5,
+        "fecha": "May 2026",
+        "texto": "Very nice staff, the food was very good as well and as a little extra you get to choose a Little Sticker of an Anime Charakter after you are done eating. All in all a nice experience. Didn’t take a picture of the actual food because it looked to good to leave it standing.",
+        "lang": "en",
+        "publicada": "2026-05-29",
+        "avatar": "murat-k-889e66"
       }
     ],
     "gl": [
