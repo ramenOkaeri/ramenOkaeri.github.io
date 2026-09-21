@@ -26,6 +26,9 @@ const huella = (rel) =>
   `/${rel}?v=${createHash('sha1').update(readFileSync(join(RAIZ, rel))).digest('hex').slice(0, 8)}`;
 const CSS = huella('css/style.css');
 const JS = huella('js/main.js');
+/* El asistente de pedido solo se carga en las tres /menu/: la portada y el
+   aviso legal no pesan ni un byte mas por tenerlo. */
+const JS_PEDIDO = huella('js/pedido.js');
 /* El panel tiene su propia hoja y su propio script: el visitante no los
    descarga nunca, asi que la web publica no engorda ni un byte por tener
    panel. Llevan huella por lo mismo que la del sitio. */
@@ -828,6 +831,9 @@ function filaPlato(p, l, t) {
   /* Todo lo que filtra viaja en atributos del propio <li>. Asi la pagina no
      lleva ni un JSON duplicado: el HTML es el dato. */
   const datos = [
+    /* El slug casa la fila con el catalogo del asistente de pedido. Es una
+       clave estable: el panel lo genera una sola vez, al crear el plato. */
+    `data-plato="${esc(p.slug)}"`,
     `data-cat="${esc(p.categoria)}"`,
     `data-madre="${esc(p.categoria_madre)}"`,
     p.etiquetas.length ? `data-etq="${esc(p.etiquetas.join(' '))}"` : '',
@@ -923,6 +929,55 @@ function filaPlato(p, l, t) {
     return `<li class="cplato" ${datos}><div class="plato-fila">${cabezaFila}</div></li>`;
   }
   return `<li class="cplato" ${datos}><details><summary>${cabezaFila}<span class="plato-abre" aria-hidden="true"></span></summary><div class="plato-mas">${cuerpo}</div></details></li>`;
+}
+
+/* El catalogo del asistente de pedido, como isla JSON dentro de /menu/.
+   Los filtros leen atributos del <li>, pero el configurador necesita datos
+   anidados (variantes, grupos, opciones con su incremento) y, para la pantalla
+   del camarero, los nombres en espanol. Sacarlos del HTML ataria el JS al
+   marcado. Los importes van en centimos enteros y redondeados: en coma
+   flotante, 8,95 * 100 da 894,9999999999999 (medido sobre los 35 importes de
+   la carta, fallan dos). El < se escapa para que un nombre no pueda cerrar el
+   <script>. */
+function datosPedido(l) {
+  const t = T[l];
+  const cent = (v) => (v == null ? null : Math.round(Number(v) * 100));
+  const existe = new Set(C.grupos.map((g) => g.slug));
+  const usados = new Set(C.platos.flatMap((p) => p.grupos));
+  const d = {
+    idioma: l,
+    /* Lo que lee el camarero va siempre en espanol. */
+    comanda: T.es.pedido.comanda,
+    totalEs: T.es.pedido.total,
+    consultarEs: T.es.carta.consultar,
+    textos: { ...t.pedido, consultar: t.carta.consultar, elige_varios: t.carta.elige_varios },
+    categorias: C.categorias
+      .filter((m) => C.platos.some((p) => p.categoria_madre === m.slug))
+      .map((m) => ({ slug: m.slug, nombre: txt(m.nombre, l), nombreEs: txt(m.nombre, 'es') })),
+    grupos: Object.fromEntries(C.grupos.filter((g) => usados.has(g.slug)).map((g) => [g.slug, {
+      tipo: g.tipo,
+      obligatorio: Boolean(g.obligatorio),
+      nombre: txt(g.nombre, l),
+      nombreEs: txt(g.nombre, 'es'),
+      opciones: g.opciones.map((o) => ({
+        slug: o.slug, nombre: txt(o.nombre, l), nombreEs: txt(o.nombre, 'es'), centimos: cent(o.incremento),
+      })),
+    }])),
+    platos: C.platos.map((p) => ({
+      slug: p.slug,
+      numero: p.numero || null,
+      madre: p.categoria_madre,
+      nombre: txt(p.nombre, l),
+      nombreEs: txt(p.nombre, 'es'),
+      precios: p.precios.map((x) => ({
+        centimos: cent(x.precio),
+        etiqueta: x.etiqueta ? txt(x.etiqueta, l) : null,
+        etiquetaEs: x.etiqueta ? txt(x.etiqueta, 'es') : null,
+      })),
+      grupos: p.grupos.filter((g) => existe.has(g)),
+    })),
+  };
+  return `<script type="application/json" id="pedido-datos">${JSON.stringify(d).replace(/</g, '\\u003c')}</script>`;
 }
 
 function menuCarta(l) {
@@ -1089,7 +1144,9 @@ ${secciones}
  </div>
 </main>
 ${pie(l)}
+${datosPedido(l)}
 <script src="${JS}" defer></script>
+<script src="${JS_PEDIDO}" defer></script>
 </body>
 </html>`;
 }

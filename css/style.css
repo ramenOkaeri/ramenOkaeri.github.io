@@ -46,6 +46,7 @@
 
   --sal:cubic-bezier(.23,1,.32,1);
   --ent-sal:cubic-bezier(.77,0,.175,1);
+  --cajon:cubic-bezier(.32,.72,0,1);    /* cajones y hojas: la curva de iOS */
 
   --serif:'Shippori Mincho B1',"Hiragino Mincho ProN","Yu Mincho",Georgia,'Times New Roman',serif;
   --sans:'Zen Kaku Gothic New',"Hiragino Sans","Helvetica Neue",Arial,sans-serif;
@@ -781,4 +782,321 @@ img.plato-ico{object-fit:cover;padding:0}
 @media print{
   .carta-filtros,.carta-anclas{display:none!important}
   .plato-mas{display:block}
+}
+
+/* ===========================================================================
+   EL ASISTENTE DE PEDIDO  ·  /menu/
+   Todo esto lo pinta js/pedido.js, que solo se carga en la carta: sin
+   JavaScript no existe. Clases propias ped-*, sin reutilizar .chip-btn,
+   .plato, .precio ni .tira: una clase compartida hereda el bloque entero
+   (lecciones del 8 y del 11 de septiembre de 2026).
+   Movimiento: el de las hojas lo lleva un muelle en JS, porque tiene que
+   poder agarrarse al vuelo; aquí solo va lo que no se arrastra.
+   =========================================================================== */
+.ped-ico{width:18px;height:18px;flex:0 0 auto;fill:none;stroke:currentColor;stroke-width:2;
+  stroke-linecap:round;stroke-linejoin:round}
+
+/* --- el globo del icono -------------------------------------------------- */
+/* Hermano del <details>, no dentro del <summary>: un botón dentro de otro no
+   es accesible. Se ancla a la esquina inferior derecha del icono, que está a
+   18 px del borde de la fila y mide 56 (20 y 64 a partir de 600). El área
+   táctil es de 44 y cabe en el hueco entre columnas sin tapar el texto. */
+.ped-activo .cplato{position:relative}
+/* El centro cae 6 px por dentro de la esquina: (50, 68) con icono de 56, y
+   (58, 78) con el de 64. Menos 22, que es medio botón. */
+.ped-globo{position:absolute;z-index:2;left:28px;top:46px;width:44px;height:44px;
+  display:grid;place-items:center;border-radius:50%}
+@media (min-width:600px){.ped-globo{left:36px;top:56px}}
+/* el aro del color del fondo lo separa del icono, como un globo de iOS */
+.ped-globo-c{min-width:26px;height:26px;padding:0 5px;border-radius:999px;
+  display:inline-flex;align-items:center;justify-content:center;
+  background:var(--sumi-sup);border:1px solid var(--washi-ten);color:var(--washi);
+  box-shadow:0 0 0 3px var(--sumi);
+  font-size:.78rem;font-weight:700;line-height:1;font-variant-numeric:tabular-nums;
+  transition:background-color .2s var(--sal),border-color .2s var(--sal),color .2s var(--sal),transform .14s var(--sal)}
+.ped-globo .ped-ico{width:14px;height:14px;stroke-width:2.4}
+.ped-globo-n{display:none}
+.ped-globo.lleno .ped-globo-n{display:inline}
+.ped-globo.lleno .ped-ico{display:none}
+.ped-globo.lleno .ped-globo-c{background:var(--bengara);border-color:var(--bengara);color:var(--blanco)}
+.ped-globo:active .ped-globo-c{transform:scale(.9)}
+.ped-globo:focus-visible{outline:none}
+.ped-globo:focus-visible .ped-globo-c{outline:2px solid var(--bengara-txt);outline-offset:3px}
+@media (hover:hover) and (pointer:fine){
+  .ped-globo:hover .ped-globo-c{border-color:var(--washi)}
+  .ped-globo.lleno:hover .ped-globo-c{background:var(--bengara-viva);border-color:var(--bengara-viva)}
+}
+
+/* --- la pastilla del pedido ---------------------------------------------- */
+/* Es un botón, así que va en bengala con texto blanco. Entra subiendo con la
+   curva de cajón y se va igual; visibility la saca del tabulador al final. */
+.ped-pastilla{position:fixed;z-index:98;left:0;right:0;margin-inline:auto;
+  bottom:calc(14px + var(--seg-b));width:min(calc(100% - var(--seg-l) - var(--seg-r)),440px);
+  min-height:56px;display:flex;align-items:center;gap:12px;padding:8px 16px 8px 8px;
+  border-radius:999px;background:var(--bengara);color:var(--blanco);font-weight:700;text-align:left;
+  box-shadow:0 12px 32px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.14);
+  opacity:0;visibility:hidden;transform:translateY(calc(100% + 24px));
+  transition:transform .44s var(--cajon),opacity .3s var(--sal),background-color .2s var(--sal),visibility 0s linear .44s}
+.ped-pastilla.visible{opacity:1;visibility:visible;transform:none;
+  transition:transform .44s var(--cajon),opacity .3s var(--sal),background-color .2s var(--sal),visibility 0s}
+.ped-pastilla.visible:active{transform:scale(.97);transition-duration:.12s}
+.ped-pastilla-n{flex:0 0 auto;min-width:40px;height:40px;padding:0 8px;border-radius:999px;
+  display:grid;place-items:center;background:var(--blanco);color:var(--bengara);
+  font-variant-numeric:tabular-nums}
+.ped-pastilla-t{flex:1 1 auto;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ped-pastilla-e{flex:0 0 auto;font-family:var(--serif);font-size:1.05rem;
+  font-variant-numeric:tabular-nums;white-space:nowrap}
+.ped-pastilla:focus-visible{outline:2px solid var(--washi);outline-offset:3px}
+@media (hover:hover) and (pointer:fine){.ped-pastilla:hover{background:var(--bengara-viva)}}
+/* en escritorio no hay barra de abajo y el pie no deja sitio: se le hace */
+@media (min-width:900px){.ped-con-lista .pie{padding-bottom:calc(clamp(48px,8vw,80px) + 84px)}}
+
+/* --- el aviso con «Deshacer» --------------------------------------------- */
+/* Claro sobre oscuro para que se vea encima de todo. Con una hoja abierta
+   vive dentro de ella (fuera sería inert) y sale arriba, lejos de su pie. */
+.ped-aviso{position:fixed;z-index:99;left:0;right:0;margin-inline:auto;
+  bottom:calc(14px + var(--seg-b));width:max-content;max-width:calc(100% - 32px);
+  display:flex;align-items:center;gap:4px;min-height:48px;padding:2px 4px 2px 18px;
+  border-radius:999px;background:var(--washi);color:var(--sumi);font-size:.92rem;line-height:1.3;
+  box-shadow:0 12px 32px rgba(0,0,0,.45);
+  opacity:0;visibility:hidden;transform:translateY(10px);
+  transition:opacity .18s var(--sal),transform .18s var(--sal),visibility 0s linear .18s}
+.ped-aviso.visible{opacity:1;visibility:visible;transform:none;
+  transition:opacity .2s var(--sal),transform .24s var(--sal),visibility 0s}
+.ped-con-lista .ped-aviso{bottom:calc(84px + var(--seg-b))}
+.ped-aviso.en-hoja{top:calc(max(env(safe-area-inset-top),12px) + 4px);bottom:auto;transform:translateY(-10px)}
+.ped-aviso.en-hoja.visible{transform:none}
+.ped-aviso-b{min-height:44px;padding:0 14px;border-radius:999px;font-weight:700;color:var(--sumi);
+  text-decoration:underline;text-underline-offset:3px}
+.ped-aviso-b[hidden]{display:none}
+.ped-aviso-b:focus-visible{outline:2px solid var(--sumi);outline-offset:-2px}
+
+/* --- la hoja ------------------------------------------------------------- */
+/* El <dialog> ocupa la pantalla entera y es transparente; el velo y la caja
+   van dentro, para poder animarlos. El ::backdrop del navegador no se usa. */
+/* clip y no solo hidden: con hidden el diálogo sigue siendo un contenedor de
+   scroll, y al enfocar una casilla el navegador lo desplazaba los 80 px de la
+   prolongación de abajo. La hoja subía y se perdía la cabecera. */
+.ped-hoja{position:fixed;inset:0;width:100%;height:100%;max-width:none;max-height:none;
+  margin:0;padding:0;border:0;background:transparent;color:var(--washi);overflow:hidden;overflow:clip}
+.ped-hoja[open]{display:flex;flex-direction:column;justify-content:flex-end;align-items:center}
+.ped-hoja::backdrop{background:transparent}
+.ped-hoja.arrastrando{-webkit-user-select:none;user-select:none}
+.ped-velo{position:absolute;inset:0;background:rgba(6,9,9,.62)}
+/* Tope de 600: en una tableta vertical, una hoja de lado a lado deja líneas de
+   700 px. Como en el iPad, se queda centrada. */
+.ped-caja{position:relative;width:100%;max-width:600px;display:flex;flex-direction:column;
+  max-height:calc(100% - max(env(safe-area-inset-top),16px) - 10px);
+  border-radius:calc(var(--radio) + 4px) calc(var(--radio) + 4px) 0 0;
+  box-shadow:0 -10px 40px rgba(0,0,0,.45);will-change:transform}
+/* Por debajo sigue la misma superficie: si el muelle rebota hacia arriba,
+   no aparece un hueco bajo la hoja. */
+.ped-caja::after{content:"";position:absolute;left:0;right:0;top:calc(100% - 1px);height:80px;
+  background:var(--sumi)}
+.ped-rollo{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;
+  display:flex;flex-direction:column;
+  border-radius:inherit;background:var(--sumi);border:1px solid var(--sumi-borde);border-bottom:0}
+/* Cabecera y pie son material: el contenido pasa por debajo, desenfocado. */
+.ped-cab,.ped-pie{-webkit-backdrop-filter:saturate(160%) blur(16px);backdrop-filter:saturate(160%) blur(16px)}
+.ped-cab{position:sticky;top:0;z-index:3;display:flex;justify-content:flex-end;align-items:center;
+  min-height:52px;padding:8px 8px 0;background:rgba(18,24,24,.8);touch-action:none}
+.ped-asa{position:absolute;left:50%;top:7px;width:38px;height:5px;margin-left:-19px;border-radius:3px;
+  background:rgba(229,215,202,.28)}
+.ped-cerrar{width:44px;height:44px;display:grid;place-items:center;border-radius:50%;
+  color:var(--washi-ten);background:rgba(229,215,202,.07);
+  transition:color .2s var(--sal),background-color .2s var(--sal),transform .12s var(--sal)}
+.ped-cerrar:active{transform:scale(.92)}
+@media (hover:hover) and (pointer:fine){.ped-cerrar:hover{color:var(--washi);background:rgba(229,215,202,.12)}}
+/* crece para que, en una hoja más alta que su contenido, el pie quede abajo */
+.ped-cuerpo{flex:1 0 auto;padding:0 20px 24px}
+.ped-pie{position:sticky;bottom:0;z-index:3;display:flex;align-items:center;gap:12px;
+  padding:12px 20px calc(12px + var(--seg-b));
+  background:rgba(18,24,24,.84);border-top:1px solid var(--sumi-borde)}
+.ped-pie:empty{display:none}
+.ped-hoja-lista .ped-pie,.ped-hoja-comanda .ped-pie{flex-direction:column;align-items:stretch;gap:8px}
+.ped-pie .btn{width:100%}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .ped-cab,.ped-pie{background:var(--sumi)}
+}
+/* A partir de 900 px es un diálogo centrado: sin asa y sin arrastre. */
+.ped-hoja[data-modo="centro"]{justify-content:center}
+.ped-hoja[data-modo="centro"] .ped-caja{width:min(480px,calc(100% - 48px));max-height:86%;
+  border-radius:calc(var(--radio) + 4px)}
+.ped-hoja[data-modo="centro"] .ped-rollo{border-bottom:1px solid var(--sumi-borde)}
+.ped-hoja[data-modo="centro"] .ped-caja::after,.ped-hoja[data-modo="centro"] .ped-asa{display:none}
+.ped-hoja[data-modo="centro"] .ped-pie{padding-bottom:14px}
+
+.ped-titulo{font-family:var(--serif);font-size:clamp(1.35rem,5vw,1.6rem);line-height:1.2;
+  letter-spacing:-.015em;color:var(--washi);text-wrap:balance}
+.ped-num{font-family:var(--sans);font-weight:400;font-size:.8em;color:var(--washi-ten)}
+
+/* --- el configurador ----------------------------------------------------- */
+.ped-plato{display:flex;gap:14px;align-items:flex-start}
+.ped-plato .plato-ico{flex:0 0 auto}
+.ped-plato-txt{min-width:0;padding-top:2px}
+.ped-desc{margin-top:6px;color:var(--washi-ten);font-size:.92rem;line-height:1.5}
+.ped-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.ped-campos{display:grid;gap:24px;margin-top:24px}
+.ped-campo{border:0;margin:0;padding:0;min-width:0}
+/* float para que la leyenda se porte como un bloque normal, igual que en los
+   filtros de la carta */
+.ped-leyenda{float:left;width:100%;display:flex;justify-content:space-between;align-items:baseline;gap:12px;
+  padding:0;margin-bottom:10px;font-size:.78rem;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--washi-ten)}
+.ped-leyenda + *{clear:both}
+.ped-pista{font-weight:400;letter-spacing:0;text-transform:none;font-size:.84rem;white-space:nowrap}
+.ped-campo[data-falta] .ped-pista{color:var(--bengara-txt)}
+.ped-falta{margin-top:8px;color:var(--bengara-txt);font-size:.9rem}
+.ped-falta[hidden]{display:none}
+
+/* control segmentado: el pulgar en bengala se desliza a la opción marcada */
+.ped-seg{position:relative;display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));
+  padding:3px;border-radius:13px;background:var(--sumi-hondo);border:1px solid var(--sumi-borde)}
+.ped-seg-pulgar{position:absolute;top:3px;bottom:3px;left:3px;width:calc((100% - 6px) / var(--n));
+  border-radius:10px;background:var(--bengara);opacity:0;
+  transition:transform .22s var(--sal),opacity .16s var(--sal)}
+.ped-seg[data-sel] .ped-seg-pulgar{opacity:1}
+.ped-seg-op{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:44px;padding:6px 8px;border-radius:10px;text-align:center;cursor:pointer;
+  color:var(--washi-ten);font-size:.92rem;line-height:1.25;transition:color .16s var(--sal)}
+.ped-seg-op.on{color:var(--blanco);font-weight:700}
+.ped-seg-op input,.ped-op input,.ped-extra input{position:absolute;opacity:0;width:1px;height:1px;margin:0;pointer-events:none}
+.ped-seg-op:has(:focus-visible),.ped-op:has(:focus-visible){outline:2px solid var(--bengara-txt);outline-offset:2px}
+.ped-op-p{font-size:.78rem;font-weight:400;opacity:.85;font-variant-numeric:tabular-nums;white-space:nowrap}
+.ped-op-p.consulta{font-style:italic}
+@media (hover:hover) and (pointer:fine){.ped-seg-op:not(.on):hover{color:var(--washi)}}
+
+/* más de tres opciones: pastillas que saltan de línea */
+.ped-ops{display:flex;flex-wrap:wrap;gap:8px}
+.ped-op{position:relative;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;
+  border-radius:999px;border:1px solid var(--sumi-borde);color:var(--washi-ten);font-size:.92rem;cursor:pointer;
+  transition:background-color .16s var(--sal),border-color .16s var(--sal),color .16s var(--sal),transform .12s var(--sal)}
+.ped-op:active,.ped-seg-op:active{transform:scale(.97)}
+.ped-op.on{background:var(--bengara);border-color:var(--bengara);color:var(--blanco)}
+@media (hover:hover) and (pointer:fine){.ped-op:not(.on):hover{color:var(--washi);border-color:var(--washi-ten)}}
+
+/* elección múltiple: el círculo de selección de iOS */
+.ped-extras{display:grid}
+.ped-extra{position:relative;display:grid;grid-template-columns:24px 1fr auto;align-items:center;gap:12px;
+  min-height:50px;padding:6px 0;border-top:1px solid var(--sumi-borde);cursor:pointer;font-size:.95rem;line-height:1.35}
+.ped-extra:last-child{border-bottom:1px solid var(--sumi-borde)}
+.ped-extra:has(:focus-visible){outline:2px solid var(--bengara-txt);outline-offset:2px;border-radius:6px}
+.ped-marca{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--washi-ten);
+  display:grid;place-items:center;color:var(--blanco);
+  transition:background-color .16s var(--sal),border-color .16s var(--sal),transform .12s var(--sal)}
+.ped-marca .ped-ico{width:14px;height:14px;stroke-width:2.6;opacity:0;transform:scale(.8);
+  transition:opacity .16s var(--sal),transform .16s var(--sal)}
+.ped-extra.on .ped-marca{background:var(--bengara);border-color:var(--bengara)}
+.ped-extra.on .ped-marca .ped-ico{opacity:1;transform:none}
+.ped-extra:active .ped-marca{transform:scale(.9)}
+.ped-extra-p{color:var(--bengara-txt);font-variant-numeric:tabular-nums;white-space:nowrap}
+.ped-extra-p.consulta{color:var(--washi-ten);font-style:italic}
+
+/* la nota */
+.ped-nota{margin-top:20px}
+.ped-nota-abre{display:inline-flex;align-items:center;gap:8px;min-height:44px;color:var(--washi);font-size:.95rem}
+.ped-nota-abre .ped-ico{width:16px;height:16px;color:var(--bengara-txt)}
+.ped-nota-abre[hidden],.ped-nota-caja[hidden]{display:none}
+.ped-nota-t{display:block;width:100%;min-height:76px;padding:12px 14px;font:inherit;font-size:16px;line-height:1.45;
+  color:var(--washi);background:var(--sumi-hondo);border:1px solid var(--sumi-borde);border-radius:12px;
+  resize:vertical;-webkit-appearance:none;appearance:none}
+.ped-nota-t::placeholder{color:var(--washi-ten)}
+.ped-nota-t:focus-visible{outline:2px solid var(--bengara-txt);outline-offset:2px}
+.ped-quitar{margin-top:14px}
+
+/* el selector de cantidad */
+.ped-cant{display:inline-flex;align-items:center;flex:0 0 auto;border:1px solid var(--sumi-borde);
+  border-radius:999px;background:var(--sumi-hondo)}
+.ped-cant-b{width:44px;height:44px;display:grid;place-items:center;border-radius:50%;color:var(--washi);
+  transition:transform .12s var(--sal),background-color .16s var(--sal)}
+.ped-cant-b:active{transform:scale(.9)}
+.ped-cant-b[aria-disabled="true"]{opacity:.4;cursor:default}
+.ped-cant-b[aria-disabled="true"]:active{transform:none}
+.ped-cant-n{min-width:22px;text-align:center;font-weight:700;font-variant-numeric:tabular-nums}
+@media (hover:hover) and (pointer:fine){.ped-cant-b:not([aria-disabled="true"]):hover{background:rgba(229,215,202,.08)}}
+.ped-anadir{flex:1 1 auto;min-width:0;padding-inline:16px;white-space:nowrap;font-variant-numeric:tabular-nums}
+
+/* --- la lista ------------------------------------------------------------ */
+.ped-vacia{margin-top:14px;color:var(--washi-ten)}
+.ped-vieja{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:0 12px;
+  margin-top:14px;padding:6px 6px 6px 14px;border:1px solid var(--sumi-borde);border-radius:12px;
+  background:var(--sumi-hondo);font-size:.9rem;color:var(--washi-ten)}
+.ped-sec{margin-top:22px}
+.ped-sec-h{font-family:var(--sans);font-size:.75rem;font-weight:700;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--bengara-txt);margin-bottom:2px}
+.ped-lineas{display:grid}
+.ped-linea{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px 14px;align-items:start;
+  padding:14px 0;border-top:1px solid var(--sumi-borde)}
+.ped-linea-edita{grid-column:1;grid-row:1 / span 2;display:flex;flex-direction:column;align-items:flex-start;gap:3px;
+  min-height:44px;text-align:left;border-radius:6px;transition:opacity .12s var(--sal)}
+button.ped-linea-edita:active{opacity:.6}
+.ped-linea-n{font-family:var(--serif);font-weight:700;font-size:1.02rem;line-height:1.35;color:var(--washi)}
+.ped-linea-r{font-size:.86rem;line-height:1.45;color:var(--washi-ten)}
+.ped-linea-nota{font-size:.86rem;line-height:1.45;font-style:italic;color:var(--washi)}
+.ped-linea-falta{font-size:.84rem;color:var(--bengara-txt)}
+.ped-linea-imp{grid-column:2;grid-row:1;justify-self:end;font-family:var(--serif);font-weight:700;
+  color:var(--bengara-txt);font-variant-numeric:tabular-nums;white-space:nowrap}
+.ped-linea-imp.consulta{font-family:var(--sans);font-weight:400;font-style:italic;color:var(--washi-ten);font-size:.88rem}
+.ped-linea .ped-cant{grid-column:2;grid-row:2;justify-self:end}
+.ped-cant-solo{border-color:transparent;background:transparent}
+.ped-linea-rota .ped-linea-n{text-decoration:line-through;color:var(--washi-ten)}
+@media (hover:hover) and (pointer:fine){button.ped-linea-edita:hover .ped-linea-n{text-decoration:underline;
+  text-decoration-color:var(--bengara-txt);text-underline-offset:3px}}
+.ped-vaciar{margin-top:18px}
+.ped-total{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-size:.95rem;color:var(--washi-ten)}
+.ped-total b{font-family:var(--serif);font-size:1.35rem;color:var(--washi);font-variant-numeric:tabular-nums}
+.ped-total-nota{font-size:.84rem;color:var(--washi-ten)}
+
+/* --- la pantalla del camarero: papel de comanda -------------------------- */
+/* Washi con sumi encima (12,7:1). Los grises salen medidos sobre washi:
+   #3F4947 da 6,6:1 y #505A57, 5,1:1. El bengala de texto se queda en 2,8:1
+   sobre papel, así que los títulos usan uno más hondo, #8A3534, que da 5,7:1. */
+.ped-hoja-comanda .ped-caja{height:calc(100% - max(env(safe-area-inset-top),16px) - 10px)}
+.ped-hoja-comanda .ped-rollo{background:var(--washi);color:var(--sumi);border-color:transparent}
+.ped-hoja-comanda .ped-caja::after{background:var(--washi)}
+.ped-hoja-comanda .ped-cab{background:rgba(229,215,202,.86)}
+.ped-hoja-comanda .ped-asa{background:rgba(18,24,24,.28)}
+.ped-hoja-comanda .ped-cerrar{color:var(--sumi);background:rgba(18,24,24,.08)}
+.ped-hoja-comanda .ped-pie{background:rgba(229,215,202,.9);border-top-color:rgba(18,24,24,.16)}
+.ped-hoja-comanda :focus-visible{outline-color:var(--sumi)}
+.ped-hoja-comanda .ped-num{color:#505A57}
+.ped-hoja-comanda .ped-total-nota{color:#3F4947;margin-top:6px}
+.ped-hoja[data-modo="centro"].ped-hoja-comanda .ped-caja{width:min(560px,calc(100% - 48px));height:auto}
+.ped-com-cab{text-align:center;padding-bottom:18px;border-bottom:1.5px dashed rgba(18,24,24,.32)}
+.ped-com-marca{font-family:var(--serif);font-weight:700;font-size:.92rem;letter-spacing:.04em;color:#3F4947}
+.ped-com-t{font-family:var(--serif);font-size:clamp(2rem,9vw,2.6rem);line-height:1;letter-spacing:-.02em;
+  color:var(--sumi);margin-top:6px}
+.ped-com-sub{margin-top:10px;font-size:.92rem;line-height:1.45;color:#3F4947}
+.ped-com-sec{margin-top:20px}
+.ped-com-h{font-family:var(--sans);font-size:.75rem;font-weight:700;letter-spacing:.16em;
+  text-transform:uppercase;color:#8A3534}
+.ped-com-lista li{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:2px 12px;align-items:baseline;
+  padding:12px 0;border-top:1px solid rgba(18,24,24,.12)}
+.ped-com-lista li:first-child{border-top:0}
+.ped-com-cant{font-family:var(--serif);font-weight:700;font-size:1.55rem;line-height:1.1;
+  font-variant-numeric:tabular-nums;min-width:2.2ch}
+.ped-com-n{font-family:var(--serif);font-weight:700;font-size:1.14rem;line-height:1.3;color:var(--sumi)}
+.ped-com-o{margin-top:2px;font-size:.94rem;line-height:1.45;color:#3F4947}
+.ped-com-nota{margin-top:2px;font-size:.94rem;line-height:1.45;font-style:italic;color:var(--sumi)}
+.ped-com-otro{margin-top:4px;font-size:.84rem;line-height:1.4;color:#505A57}
+.ped-com-imp{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:700}
+.ped-com-total{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-top:10px;
+  padding-top:14px;border-top:1.5px dashed rgba(18,24,24,.32);font-weight:700}
+.ped-com-total b{font-family:var(--serif);font-size:1.5rem;font-variant-numeric:tabular-nums}
+.ped-com-alergias{margin-top:16px;padding:12px 14px;border-radius:12px;background:rgba(18,24,24,.07);
+  font-size:.92rem;line-height:1.45;color:var(--sumi)}
+
+/* --- preferencias del sistema -------------------------------------------- */
+/* El movimiento reducido ya lo atiende la regla global de arriba (y el JS
+   cambia las hojas por fundidos). Aquí, la transparencia y el contraste. */
+@media (prefers-reduced-transparency:reduce){
+  .ped-cab,.ped-pie{-webkit-backdrop-filter:none;backdrop-filter:none;background:var(--sumi)}
+  .ped-hoja-comanda .ped-cab,.ped-hoja-comanda .ped-pie{background:var(--washi)}
+}
+@media (prefers-contrast:more){
+  .ped-globo-c,.ped-marca{border-width:2px}
+  .ped-rollo,.ped-seg,.ped-op,.ped-cant{border-color:var(--washi-ten)}
+}
+@media print{
+  .ped-pastilla,.ped-globo,.ped-aviso{display:none!important}
 }
