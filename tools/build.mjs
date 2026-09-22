@@ -16,6 +16,22 @@ const D = leer('content/datos.json');
 const IM = leer('content/imagenes.json');
 const R = leer('content/resenas.json');
 const C = leer('content/carta.json');
+/* El horario y el aviso de la web salen de content/sitio.json, que exporta
+   tools/sitio.mjs desde Supabase al publicar: el restaurante los cambia desde
+   el panel (Ajustes > Horario y Ajustes > Aviso en la web). Hasta el 22 de
+   septiembre de 2026 el horario vivia a mano en datos.json. */
+const S = leer('content/sitio.json');
+const HORARIO = S.horario;
+const AVISO = S.aviso || { activo: false, texto: {}, hasta: null };
+/* "24:00" es medianoche en los datos, porque asi las cuentas de main.js salen
+   solas (1440 minutos). Al leerlo una persona es "00:00", y Google pide 23:59
+   para un cierre a medianoche en el JSON-LD. */
+const horaVista = (h) => (h === '24:00' ? '00:00' : h);
+const horaLd = (h) => (h === '24:00' ? '23:59' : h);
+/* El dia de hoy en Madrid, AAAA-MM-DD, para no hornear un aviso ya caducado. */
+const HOY_MADRID = new Intl.DateTimeFormat('en-CA', {
+  timeZone: 'Europe/Madrid', year: 'numeric', month: '2-digit', day: '2-digit'
+}).format(new Date());
 /* Huella del contenido en la URL de la hoja y del script.
    Cloudflare sirve el CSS con max-age de cuatro horas y el HTML con diez
    minutos, asi que sin esto un visitante se come el HTML nuevo con el CSS
@@ -137,6 +153,28 @@ const ICO = {
 /* --------------------------------------------------------------------------- */
 /* piezas comunes                                                               */
 /* --------------------------------------------------------------------------- */
+
+/* El aviso temporal de la web («Cerramos por vacaciones del 1 al 15»). Lo
+   escribe el restaurante desde el panel y va en la primera pantalla: sobre el
+   antetitulo del hero en la portada y sobre el titulo en la carta. No va en
+   una franja pegada arriba porque la cabecera es fija y transparente sobre el
+   hero, y la taparia.
+   Sin traduccion, sale el texto en espanol marcado con lang="es". Si «hasta»
+   ya ha pasado no se hornea, y data-hasta deja que main.js lo esconda el dia
+   que caduque aunque nadie vuelva a construir. */
+/* «antes» es el salto y la sangria que lo separan de lo anterior: sin aviso no
+   queda ni una linea en blanco, y el HTML sale igual que antes byte a byte. */
+function avisoWeb(l, antes = '') {
+  if (!AVISO.activo) return '';
+  if (AVISO.hasta && AVISO.hasta < HOY_MADRID) return '';
+  const propio = AVISO.texto && String(AVISO.texto[l] || '').trim();
+  const texto = propio || String((AVISO.texto && AVISO.texto.es) || '').trim();
+  if (!texto) return '';
+  const lang = propio || l === 'es' ? '' : ' lang="es"';
+  return antes + `<p class="aviso-web"${AVISO.hasta ? ` data-hasta="${esc(AVISO.hasta)}"` : ''}>` +
+    `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.6v.2"/></svg>` +
+    `<span><span class="oculto">${esc(T[l].aviso_web.etiqueta)}: </span><span${lang}>${esc(texto)}</span></span></p>`;
+}
 const cabecera = (l, { activa = 'inicio' } = {}) => {
   const t = T[l], b = BASE[l];
   const enlaces = [
@@ -276,10 +314,10 @@ ${jsonld}
 /* --------------------------------------------------------------------------- */
 function ldRestaurante(l) {
   const horas = DIAS
-    .filter((d) => (D.horarios[d] || []).length)
-    .flatMap((d) => D.horarios[d].map((f) => ({
+    .filter((d) => (HORARIO[d] || []).length)
+    .flatMap((d) => HORARIO[d].map((f) => ({
       '@type': 'OpeningHoursSpecification',
-      dayOfWeek: DIA_ISO[d], opens: f[0], closes: f[1]
+      dayOfWeek: DIA_ISO[d], opens: f[0], closes: horaLd(f[1])
     })));
   const o = {
     '@context': 'https://schema.org',
@@ -419,8 +457,8 @@ function portada(l) {
    </div>`;
 
   const horario = DIAS.map((d) => {
-    const f = (D.horarios[d] || []);
-    const txt = f.length ? f.map((x) => `${x[0]}–${x[1]}`).join(' · ') : '—';
+    const f = (HORARIO[d] || []);
+    const txt = f.length ? f.map((x) => `${x[0]}–${horaVista(x[1])}`).join(' · ') : '—';
     return `<li data-dia="${d}"><span class="dia">${esc(t.dias[d])}</span><span class="franjas">${txt}</span></li>`;
   }).join('\n     ');
 
@@ -434,7 +472,7 @@ ${cabecera(l)}
  <section class="hero">
   <div class="hero-img">${picHero('fachada', t.alt.fachada)}</div>
   <div class="hero-vel"></div>
-  <div class="env">
+  <div class="env">${avisoWeb(l, '\n   ')}
    <span class="hero-kana" lang="ja">${t.hero.kicker}</span>
    <h1 class="display">${esc(t.hero.titulo)}</h1>
    <p class="entradilla">${esc(t.hero.entradilla)}</p>
@@ -604,7 +642,7 @@ ${cabecera(l)}
 ${pie(l)}
 ${barra(l)}
 <script>window.OKAERI=${JSON.stringify({
-    horarios: D.horarios,
+    horarios: HORARIO,
     textos: {
       abierto: t.donde.abierto, cerrado: t.donde.cerrado,
       abre: t.donde.abre, cierra: t.donde.cierra
@@ -1078,7 +1116,7 @@ function menuCarta(l) {
 ${cabecera(l)}
 <main id="principal">
 ${MARCADORES}
- <div class="env carta-cab">
+ <div class="env carta-cab">${avisoWeb(l, '\n  ')}
   <h1 class="display">${esc(t.carta.titulo)}</h1>
   <p class="carta-sub">${esc(t.carta.sub)}</p>
   <p><a class="btn btn-s" href="${b || ''}/menu/pdf/">${ICO.descarga}${esc(t.carta.pdf)}</a></p>

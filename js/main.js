@@ -206,6 +206,21 @@
   }
 
   /* ------------------------------------------------------------------ */
+  /* El aviso temporal se esconde solo el dia despues de su «hasta»      */
+  /* build.mjs ya no lo hornea si ha caducado, pero la web solo se       */
+  /* reconstruye al publicar o con el cron de resenas: esto cubre el     */
+  /* hueco. La fecha, en Madrid y no en la zona del visitante.           */
+  /* ------------------------------------------------------------------ */
+  $$('.aviso-web[data-hasta]').forEach(function (a) {
+    try {
+      var hoy = new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'Europe/Madrid', year: 'numeric', month: '2-digit', day: '2-digit'
+      }).format(new Date());
+      if (a.getAttribute('data-hasta') < hoy) a.hidden = true;
+    } catch (e) { /* sin Intl con zonas: se queda como vino */ }
+  });
+
+  /* ------------------------------------------------------------------ */
   /* Abierto o cerrado ahora mismo                                       */
   /* Siempre en hora de Madrid: un turista puede llegar con otra zona.   */
   /* ------------------------------------------------------------------ */
@@ -230,7 +245,8 @@
       return parseInt(p[0], 10) * 60 + parseInt(p[1], 10);
     };
     var aTexto = function (m) {
-      var h = Math.floor(m / 60), n = m % 60;
+      /* % 24: un cierre a medianoche se guarda como 24:00 y se lee 0:00 */
+      var h = Math.floor(m / 60) % 24, n = m % 60;
       return h + ':' + (n < 10 ? '0' : '') + n;
     };
 

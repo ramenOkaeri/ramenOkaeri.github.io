@@ -36,6 +36,11 @@
   var NOMBRE_IDIOMA = { es: 'español', en: 'inglés', gl: 'gallego' };
   var CLAVE_SESION = 'okaeri.panel.sesion';
   var CLAVE_SEGUIMIENTO = 'okaeri.panel.seguimiento';
+  /* Los días con el nombre que usan la base, content/sitio.json, build.mjs y
+     main.js. El orden es el de una semana española: empieza en lunes. */
+  var DIAS = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'];
+  var NOMBRE_DIA = { lunes: 'Lunes', martes: 'Martes', miercoles: 'Miércoles', jueves: 'Jueves',
+    viernes: 'Viernes', sabado: 'Sábado', domingo: 'Domingo' };
   var noop = function () {};
 
   var cfg = null;
@@ -156,6 +161,7 @@
     '<g id="pn-bien"><path d="M7 16.5l6 6 12-13"/></g>' +
     '<g id="pn-aviso"><path d="M16 5 3.5 27h25Z"/><path d="M16 13v6.5M16 23.2v.3"/></g>' +
     '<g id="pn-derecha"><path d="M12.5 7l9 9-9 9"/></g>' +
+    '<g id="pn-info"><circle cx="16" cy="16" r="12"/><path d="M16 14.5v8M16 9.8v.3"/></g>' +
     '</defs></svg>';
 
   function ico(id, clase) {
@@ -233,7 +239,9 @@
     sin_precio: 'Falta el precio. Pon uno o marca «Precio a consultar».',
     sin_slug: 'Falta el identificador interno. Recarga la página y vuelve a probar.',
     plato_no_existe: 'Ese plato ya no existe. Recarga la página.',
-    grupo_no_existe: 'Ese grupo ya no existe. Recarga la página.'
+    grupo_no_existe: 'Ese grupo ya no existe. Recarga la página.',
+    horario_invalido: 'El horario tiene un turno que no vale. Revisa las horas marcadas.',
+    tabla_no_valida: 'No se ha podido guardar el orden. Recarga la página y vuelve a probar.'
   };
 
   function traduceError(x) {
@@ -243,7 +251,7 @@
     if (x.propio) return m;
     if (x.hint === 'okaeri' && MENSAJES[m]) return MENSAJES[m];
     if (x.red) return 'No hay conexión. No se ha guardado nada: vuelve a intentarlo.';
-    if (x.codigo === 'PGRST202') return 'Falta aplicar la migración 0005 en Supabase. Avisa a Yixuan.';
+    if (x.codigo === 'PGRST202' || x.codigo === 'PGRST205') return 'Falta aplicar una migración en Supabase. Avisa a Yixuan.';
     if (/invalid login credentials|invalid_grant/i.test(m)) return 'El correo o la contraseña no son correctos.';
     if (/email not confirmed/i.test(m)) return 'Esa cuenta todavía no está confirmada.';
     if (x.estado === 429 || /rate limit|too many/i.test(m)) return 'Demasiados intentos seguidos. Espera un minuto y vuelve a probar.';
@@ -491,15 +499,56 @@
       lee('plato_alergenos', 'select=*'),
       lee('plato_etiquetas', 'select=*'),
       lee('plato_escalas', 'select=*'),
-      lee('plato_grupos', 'select=*&order=orden')
+      lee('plato_grupos', 'select=*&order=orden'),
+      /* El horario y el aviso llegan con la migración 0006. Si todavía no está
+         aplicada, las tablas no existen: se leen como null y sus pantallas no
+         se enseñan, en vez de tumbar el panel entero. */
+      lee('horario', 'select=dia,franjas').catch(function () { return null; }),
+      lee('aviso', 'select=activo,texto,hasta').catch(function () { return null; })
     ]).then(function (r) {
       estado = {
         categorias: r[0], platos: r[1], alergenos: r[2], etiquetas: r[3], escalas: r[4],
         grupos: r[5], opciones: r[6], precios: r[7], palergenos: r[8], petiquetas: r[9],
-        pescalas: r[10], pgrupos: r[11]
+        pescalas: r[10], pgrupos: r[11],
+        horario: r[12] ? horarioDeFilas(r[12]) : null,
+        aviso: r[13] ? (r[13][0] || { activo: false, texto: {}, hasta: null }) : null
       };
       indexa();
     });
+  }
+
+  function horarioDeFilas(filas) {
+    var h = {};
+    DIAS.forEach(function (d) { h[d] = []; });
+    filas.forEach(function (f) { if (h[f.dia]) h[f.dia] = (f.franjas || []).map(function (x) { return [x[0], x[1]]; }); });
+    return h;
+  }
+  var hayHorario = function () { return !!(estado && estado.horario && estado.aviso); };
+
+  /* --- horas ---
+     En la base, un cierre a medianoche es «24:00»: así las cuentas salen solas.
+     Una persona lo lee y lo escribe «00:00», y un <input type="time"> no admite
+     24:00, así que la traducción se hace solo al pintar y al guardar. */
+  var aMin = function (h) { return h ? Number(h.slice(0, 2)) * 60 + Number(h.slice(3, 5)) : NaN; };
+  var cierreVisto = function (h) { return h === '24:00' ? '00:00' : h; };
+  var cierreGuardado = function (h) { return h === '00:00' ? '24:00' : h; };
+  function textoFranjas(f, junta) {
+    if (!f || !f.length) return 'Cerrado';
+    return f.map(function (x) { return x[0] + '–' + cierreVisto(x[1]); }).join(junta || ' · ');
+  }
+  /* El día de hoy en Madrid, como en «Abierto ahora» de la web. */
+  function hoyEnMadrid() {
+    try {
+      var p = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Madrid', weekday: 'short',
+        year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date());
+      var v = {};
+      p.forEach(function (x) { v[x.type] = x.value; });
+      var i = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].indexOf(v.weekday);
+      return { dia: DIAS[i], fecha: v.year + '-' + v.month + '-' + v.day };
+    } catch (e) {
+      var d = new Date();
+      return { dia: DIAS[(d.getDay() + 6) % 7], fecha: d.toISOString().slice(0, 10) };
+    }
   }
 
   var porOrden = function (a, b) {
@@ -697,6 +746,49 @@
     return cambios;
   }
 
+  /* El horario y el aviso (content/sitio.json), con la misma forma que escribe
+     tools/sitio.mjs: días en orden de semana y textos recortados y sin claves
+     vacías. Así lo guardado y lo publicado se comparan como iguales cuando lo
+     son. null si no hay datos (migración 0006 sin aplicar o archivo sin
+     publicar todavía). */
+  function normalizaSitio(s) {
+    if (!s || !s.horario) return null;
+    var a = s.aviso || {};
+    var texto = {};
+    ['es', 'en', 'gl'].forEach(function (l) {
+      var v = a.texto && typeof a.texto[l] === 'string' ? a.texto[l].trim() : '';
+      if (v) texto[l] = v;
+    });
+    var h = {};
+    DIAS.forEach(function (d) { h[d] = (s.horario[d] || []).map(function (x) { return [x[0], x[1]]; }); });
+    return { horario: h, aviso: { activo: !!a.activo, texto: texto, hasta: a.hasta || null } };
+  }
+
+  function comparaSitio(publicado, guardado) {
+    var a = normalizaSitio(publicado), b = normalizaSitio(guardado);
+    var cambios = [];
+    if (!a || !b) return cambios;
+    DIAS.forEach(function (d) {
+      if (canon(a.horario[d]) !== canon(b.horario[d])) {
+        cambios.push({ grupo: 'sitio', nombre: NOMBRE_DIA[d], ruta: '/ajustes/horario',
+          que: b.horario[d].length ? 'pasa a ' + textoFranjas(b.horario[d], ' y ') : 'pasa a cerrar' });
+      }
+    });
+    if (canon(a.aviso) !== canon(b.aviso)) {
+      cambios.push({ grupo: 'sitio', nombre: 'El aviso de la web', ruta: '/ajustes/aviso',
+        que: !a.aviso.activo && b.aviso.activo ? 'se enciende'
+          : (a.aviso.activo && !b.aviso.activo ? 'se apaga' : 'cambia') });
+    }
+    return cambios;
+  }
+
+  /* Lo que se espera ver publicado al terminar. Con conSitio a false (el panel
+     no pudo leer el horario de la base) solo cuenta la carta: si no, una web
+     que sí tiene sitio.json no llegaría nunca a «igual». */
+  function objetivoDe(carta, sitio, conSitio) {
+    return canon({ carta: normalizaCarta(carta), sitio: conSitio ? normalizaSitio(sitio) : null });
+  }
+
   /* La misma comprobación que .github/workflows/carta.yml hace antes de
      publicar. Si algo de esto falla, el flujo rechaza la carta ENTERA y no se
      publica nada; mejor decirlo aquí, con el plato que hay que arreglar. */
@@ -728,12 +820,24 @@
       });
   }
 
+  /* content/sitio.json publicado. Si todavía no existe (antes del primer
+     despliegue con horario) es null y no cuenta como cambio. */
+  function leeSitioPublicado() {
+    return fetch('/content/sitio.json?t=' + Date.now(), { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .catch(function () { return null; });
+  }
+  function leeSitioGuardado() {
+    return hayHorario() ? rpc('sitio_json').catch(function () { return null; }) : Promise.resolve(null);
+  }
+
   function calculaPendientes() {
     if (pub.promesa) return pub.promesa;
-    pub.promesa = Promise.all([rpc('carta_json'), leePublicada(), miraBuzon()]).then(function (r) {
-      var cambios = comparaCartas(r[1], r[0]);
+    var cuando = Date.now();
+    pub.promesa = Promise.all([rpc('carta_json'), leePublicada(), miraBuzon(), leeSitioGuardado(), leeSitioPublicado()]).then(function (r) {
+      var cambios = comparaCartas(r[1], r[0]).concat(comparaSitio(r[4], r[3]));
       pub.datos = {
-        cambios: cambios, pdf: r[2], db: r[0],
+        cambios: cambios, pdf: r[2], db: r[0], cuando: cuando,
         total: cambios.length + (r[2] ? 1 : 0),
         problemas: problemasDe(r[0])
       };
@@ -805,15 +909,19 @@
           return f.motivo === 'antes de restaurar' && Date.parse(f.creado) > s.desde - 120000;
         });
         if (!empezada) return false;
-        return rpc('carta_json').then(function (db) {
-          s.objetivo = canon(normalizaCarta(db));
+        return Promise.all([rpc('carta_json'), leeSitioGuardado()]).then(function (db) {
+          s.conSitio = !!db[1];
+          s.objetivo = objetivoDe(db[0], db[1], s.conSitio);
           guardaSeguimiento();
           return false;
         });
       });
     } else {
-      paso = Promise.all([leePublicada(), s.pdf ? miraBuzon() : Promise.resolve(null)]).then(function (r) {
-        return canon(normalizaCarta(r[0])) === s.objetivo && !r[1];
+      paso = Promise.all([leePublicada(), leeSitioPublicado(), s.pdf ? miraBuzon() : Promise.resolve(null)]).then(function (r) {
+        /* Un seguimiento guardado por el panel de antes del horario no trae
+           conSitio: se compara como entonces, solo la carta. */
+        var visto = s.conSitio === undefined ? canon(normalizaCarta(r[0])) : objetivoDe(r[0], r[1], s.conSitio);
+        return visto === s.objetivo && !r[2];
       });
     }
 
@@ -821,6 +929,7 @@
       if (seguimiento !== s) return;
       if (llegado) {
         s.resultado = 'ok';
+        s.llegado = Date.now();
         guardaSeguimiento();
         aviso(s.tipo === 'restaurar'
           ? 'La carta ha vuelto a la del ' + s.fecha + ' y ya está en la web.'
@@ -1742,7 +1851,12 @@
         n += suyos.length;
         var idS = nuevoId('s');
         lista.appendChild(el('section', { clase: 'seccion', 'aria-labelledby': idS }, [
-          el('h2', { clase: 'seccion-tit', id: idS, texto: s.titulo + (s.cat.activa === false ? ' · apagada' : '') }),
+          el('div', { clase: 'seccion-cab' }, [
+            el('h2', { clase: 'seccion-tit', id: idS, texto: s.titulo + (s.cat.activa === false ? ' · apagada' : '') }),
+            s.platos.length > 1 ? el('button', { type: 'button', clase: 'btn-t seccion-orden',
+              onclick: function () { ordenaSeccion(s); } },
+              [ico('pn-orden', 'ico-peq'), el('span', { texto: 'Ordenar' }), el('span', { clase: 'oculto', texto: ' «' + s.titulo + '»' })]) : null
+          ]),
           el('ul', { clase: 'filas' }, suyos.map(filaPlato))
         ]));
       });
@@ -1922,15 +2036,33 @@
     return e;
   }
 
+  /* --- duplicar un plato ---
+     #/plato/copia/<slug> abre una ficha NUEVA con todo lo del original menos lo
+     que lo identifica: sin número, sin foto y con «(copia)» detrás del nombre.
+     Nace FUERA de la carta, para que no se publique a medias por descuido con
+     otro cambio, y con los alérgenos copiados pero SIN revisar: lo que lleva un
+     plato nuevo lo tiene que confirmar la cocina. */
+  var SUFIJO_COPIA = { es: ' (copia)', en: ' (copy)', gl: ' (copia)' };
+  function fichaCopia(base) {
+    var f = cargaFicha(base);
+    f.id = null; f.slug = null; f.numero = ''; f.imagen = null; f.disponible = false;
+    f.revisados = false; f.revisadosFecha = null;
+    IDIOMAS.forEach(function (l) { if (f.nombre[l]) f.nombre[l] = f.nombre[l] + SUFIJO_COPIA[l]; });
+    f.orden = siguienteOrden(f.categoria_id);
+    return f;
+  }
+
   function pintaFicha(c, slug) {
-    var nuevo = slug === 'nuevo';
+    var deCopia = slug.indexOf('copia/') === 0 ? slug.slice(6) : null;
+    var base = deCopia ? estado.platos.filter(function (x) { return x.slug === deCopia; })[0] : null;
+    var nuevo = slug === 'nuevo' || !!deCopia;
     var p = nuevo ? null : estado.platos.filter(function (x) { return x.slug === slug; })[0];
-    if (!nuevo && !p) {
+    if ((!nuevo && !p) || (deCopia && !base)) {
       aviso('Ese plato ya no existe.', { tipo: 'error' });
       reemplaza('/platos');
       return;
     }
-    var f = nuevo ? fichaNueva() : cargaFicha(p);
+    var f = base ? fichaCopia(base) : (nuevo ? fichaNueva() : cargaFicha(p));
     var inicial = huellaFicha(f);
     guardia = function () { return huellaFicha(f) !== inicial; };
     var textoGuardar = nuevo ? 'Crear el plato' : 'Guardar';
@@ -1938,8 +2070,13 @@
     c.appendChild(el('div', { clase: 'pantalla-cab' }, [
       el('a', { clase: 'volver', href: '#/platos', onclick: function (e) { e.preventDefault(); vuelve('/platos'); } },
         [ico('pn-atras', 'ico-peq'), el('span', { texto: 'Platos' })]),
-      el('h1', { texto: nuevo ? 'Plato nuevo' : (p.numero ? p.numero + '. ' : '') + t(p.nombre) })
+      el('h1', { texto: base ? 'Copia de «' + t(base.nombre) + '»'
+        : (nuevo ? 'Plato nuevo' : (p.numero ? p.numero + '. ' : '') + t(p.nombre)) })
     ]));
+    if (base) {
+      c.appendChild(el('p', { clase: 'pista ficha-copia', texto: 'Es una copia: nace fuera de la carta, sin número y sin foto. ' +
+        'Los alérgenos vienen copiados pero sin revisar. Cámbiale el nombre, enciéndela y guárdala.' }));
+    }
 
     /* --- lo básico --- */
     var nombre = campoIdiomas({ titulo: 'Nombre', obj: f.nombre, obligatorio: true });
@@ -1953,11 +2090,13 @@
       }).concat([el('option', { value: m.id, texto: t(m.nombre) + ', sin subsección' })])));
     });
     selCat.value = f.categoria_id || '';
-    var pistaOrden = el('p', { clase: 'pista' });
+    /* El orden ya no se escribe aquí: se cambia con flechas desde la lista
+       («Ordenar» en cada sección). Un plato que cambia de sección entra el
+       último de la nueva; si vuelve a la suya, recupera su sitio. */
+    var catOriginal = f.categoria_id, ordenOriginal = f.orden;
     selCat.addEventListener('change', function () {
       f.categoria_id = selCat.value;
-      if (nuevo) { f.orden = siguienteOrden(f.categoria_id); ordenIn.value = f.orden; }
-      pintaPistaOrden();
+      f.orden = f.categoria_id === catOriginal ? ordenOriginal : siguienteOrden(f.categoria_id, f.id);
     });
 
     var numero = el('input', { type: 'text', autocomplete: 'off', inputmode: 'text' });
@@ -2058,31 +2197,20 @@
       ])
     ]);
 
-    /* --- foto y orden --- */
-    var ordenIn = el('input', { type: 'text', inputmode: 'numeric', autocomplete: 'off', clase: 'corto' });
-    ordenIn.value = f.orden;
-    ordenIn.addEventListener('input', function () { f.orden = ordenIn.value; pintaPistaOrden(); });
-    function pintaPistaOrden() {
-      var cat = idx.cat[f.categoria_id];
-      var mios = estado.platos.filter(function (x) { return x.categoria_id === f.categoria_id && x.id !== f.id; });
-      var n = parseInt(f.orden, 10) || 0;
-      var pos = mios.filter(function (x) { return (x.orden || 0) <= n; }).length + 1;
-      pistaOrden.textContent = 'Número más bajo, más arriba. Con este número sale el ' + pos + '.º de ' +
-        (mios.length + 1) + ' en «' + nombreCat(cat) + '».';
-    }
-    pintaPistaOrden();
-    var cajaOrden = campo('Posición en su sección', ordenIn);
-    cajaOrden.appendChild(pistaOrden);
-    var ordenDesc = nuevoId('p');
-    pistaOrden.id = ordenDesc;
-    ordenIn.setAttribute('aria-describedby', ordenDesc);
-
-    var fotoYOrden = seccion('Foto y orden', [campoFoto(f), cajaOrden]);
+    /* --- foto --- */
+    var fotoYOrden = seccion('Foto', [campoFoto(f)]);
 
     var form = el('form', { clase: 'ficha', novalidate: true, onsubmit: function (e) { e.preventDefault(); guarda(); } },
       [basico, textos, alergenos, extras, fotoYOrden]);
 
     if (!nuevo) {
+      form.appendChild(seccion('Duplicar', [
+        el('p', { clase: 'pista', texto: 'Crea un plato nuevo con todo esto copiado: precios, alérgenos, opciones y niveles. ' +
+          'Para una variante, como otro ramen u otra bebida.' }),
+        el('div', { clase: 'fila-botones' }, [
+          el('a', { clase: 'btn btn-s', href: '#/plato/copia/' + encodeURIComponent(p.slug), texto: 'Duplicar el plato' })
+        ])
+      ]));
       form.appendChild(seccion('Borrar', [
         el('p', { clase: 'pista', texto: 'Borrar lo quita del panel y de la carta. Si solo se ha acabado, mejor apágalo arriba.' }),
         el('button', { type: 'button', clase: 'btn btn-peligro-t', texto: 'Borrar el plato', onclick: borra })
@@ -2287,7 +2415,8 @@
 
   var GRUPOS_CAMBIO = [
     ['platos', 'Platos'], ['categorias', 'Secciones'], ['grupos', 'Opciones'],
-    ['etiquetas', 'Etiquetas'], ['escalas', 'Niveles'], ['alergenos', 'Alérgenos']
+    ['etiquetas', 'Etiquetas'], ['escalas', 'Niveles'], ['alergenos', 'Alérgenos'],
+    ['sitio', 'Horario y aviso']
   ];
 
   function listaCambios(d) {
@@ -2298,8 +2427,9 @@
       caja.appendChild(el('h3', { texto: g[1] }));
       caja.appendChild(el('ul', {}, suyos.map(function (x) {
         var existe = g[0] === 'platos' && x.slug && estado.platos.some(function (p) { return p.slug === x.slug; });
+        var ruta = existe ? '/plato/' + encodeURIComponent(x.slug) : (x.ruta || null);
         return el('li', {}, [
-          existe ? el('a', { href: '#/plato/' + encodeURIComponent(x.slug), texto: x.nombre }) : el('strong', { texto: x.nombre }),
+          ruta ? el('a', { href: '#' + ruta, texto: x.nombre }) : el('strong', { texto: x.nombre }),
           ' ' + x.que + '.'
         ]);
       })));
@@ -2344,6 +2474,12 @@
       var s = seguimiento;
       var d = pub.datos;
       var nodo;
+      /* Un «Ya está en la web» de una publicación anterior no puede tapar
+         cambios nuevos: sin esto la pantalla seguía diciendo «Ya está» y sin
+         botón de publicar hasta que alguien pulsaba «Entendido». */
+      /* Solo si el recuento es de DESPUÉS de la llegada: el de antes todavía
+         cuenta los cambios que se acaban de publicar. */
+      if (s && s.resultado === 'ok' && d && d.total && d.cuando > (s.llegado || 0)) { paraSeguimiento(); s = null; }
 
       if (s && !s.resultado) {
         var min = Math.max(0, Math.floor((Date.now() - s.desde) / 60000));
@@ -2404,12 +2540,16 @@
           boton.textContent = 'Comprobando…';
           /* Se vuelve a leer la carta justo antes: es la que se va a esperar ver
              publicada, y así un cambio de hace un segundo también cuenta. */
-          Promise.all([rpc('carta_json'), miraBuzon()]).then(function (r) {
+          Promise.all([rpc('carta_json'), miraBuzon(), leeSitioGuardado()]).then(function (r) {
             var problemas = problemasDe(r[0]);
             if (problemas.length) { d.problemas = problemas; pinta(); return; }
             boton.textContent = 'Publicando…';
             return publicarEnGithub({}).then(function () {
-              empiezaSeguimiento({ tipo: 'publicar', desde: Date.now(), objetivo: canon(normalizaCarta(r[0])), pdf: !!r[1], resultado: null });
+              /* El objetivo es la carta Y el horario: si solo ha cambiado el
+                 horario, la carta publicada ya es igual a la guardada y el panel
+                 diría «Ya está en la web» al primer sondeo sin que hubiera llegado. */
+              empiezaSeguimiento({ tipo: 'publicar', desde: Date.now(), objetivo: objetivoDe(r[0], r[2], !!r[2]),
+                conSitio: !!r[2], pdf: !!r[1], resultado: null });
             });
           }).catch(function (x) {
             aviso(traduceError(x), { tipo: 'error' });
@@ -2517,6 +2657,396 @@
         navega('/publicar');
       });
     }).catch(function (x) { aviso(traduceError(x), { tipo: 'error' }); });
+  }
+
+  /* --- horario y aviso ---
+     Los dos son del local y no de la carta, pero viajan igual: se guardan en
+     Supabase y salen a la web con Publicar (tools/sitio.mjs → content/sitio.json
+     → build.mjs). No entran en las copias del Historial a propósito: volver a
+     una carta vieja no debe devolver un horario viejo. */
+  function cabAjuste(c, titulo) {
+    c.appendChild(el('div', { clase: 'pantalla-cab' }, [
+      el('a', { clase: 'volver', href: '#/ajustes', onclick: function (e) { e.preventDefault(); vuelve('/ajustes'); } },
+        [ico('pn-atras', 'ico-peq'), el('span', { texto: 'Ajustes' })]),
+      el('h1', { texto: titulo })
+    ]));
+  }
+  function sinMigracion(c) {
+    document.body.classList.remove('con-acciones');
+    c.appendChild(el('p', { clase: 'vacio', texto: 'Falta aplicar la migración 0006 en Supabase. Avisa a Yixuan.' }));
+  }
+  function accionesFijas(c, textoGuardar, guarda) {
+    var boton = el('button', { type: 'button', clase: 'btn btn-p', texto: textoGuardar, onclick: guarda });
+    c.appendChild(el('div', { clase: 'acciones-fijas' }, [
+      el('div', { clase: 'acciones-dentro' }, [
+        el('button', { type: 'button', clase: 'btn btn-s', texto: 'Cancelar', onclick: function () { vuelve('/ajustes'); } }),
+        boton
+      ])
+    ]));
+    return boton;
+  }
+  function trasGuardarLocal(mensaje) {
+    guardia = null;
+    recalculaPronto();
+    render();
+    /* Después de pintar: render() se lleva los avisos con acción, porque
+       suelen hablar de la pantalla anterior. */
+    aviso(mensaje, { accion: function () { navega('/publicar'); }, textoAccion: 'Publicar ahora' });
+  }
+
+  function resumenHoy() {
+    var hoy = hoyEnMadrid();
+    var f = estado.horario[hoy.dia] || [];
+    return 'Hoy, ' + minusc(NOMBRE_DIA[hoy.dia]) + ': ' + (f.length ? textoFranjas(f) : 'cerrado');
+  }
+  function resumenAviso() {
+    var a = estado.aviso;
+    if (!a.activo) return 'Apagado';
+    if (!a.hasta) return 'Encendido';
+    return a.hasta < hoyEnMadrid().fecha ? 'Caducó el ' + dia(a.hasta) : 'Encendido hasta el ' + dia(a.hasta);
+  }
+
+  var TOPE_TURNOS = 3;
+  var dosCifras = function (n) { return (n < 10 ? '0' : '') + n; };
+  var aHora = function (m) { m = Math.max(0, Math.min(m, 1440)) % 1440; return dosCifras(Math.floor(m / 60)) + ':' + dosCifras(m % 60); };
+
+  /* Lo mismo que comprueba guarda_horario en la base, dicho junto al turno. */
+  function erroresDia(f) {
+    var e = [];
+    f.forEach(function (x, i) {
+      if (!x[0] || !x[1]) { e.push({ i: i, texto: 'Pon la hora de abrir y la de cerrar.' }); return; }
+      if (aMin(cierreGuardado(x[1])) <= aMin(x[0])) {
+        e.push({ i: i, texto: 'Cierra antes de abrir. Si cierra a medianoche, pon 00:00.' });
+      }
+    });
+    if (e.length) return e;
+    var orden = f.map(function (x, i) { return { i: i, a: aMin(x[0]), c: aMin(cierreGuardado(x[1])) }; })
+      .sort(function (p, q) { return p.a - q.a; });
+    for (var k = 1; k < orden.length; k++) {
+      if (orden[k].a < orden[k - 1].c) {
+        e.push({ i: orden[k].i, texto: 'Se solapa con el turno de las ' + f[orden[k - 1].i][0] + '.' });
+      }
+    }
+    return e;
+  }
+
+  /* «Lunes a jueves · 13:00–16:00 · 19:30–23:30»: los días seguidos con el
+     mismo horario van juntos, como lo leería un cliente. */
+  function resumenSemana(h) {
+    var grupos = [];
+    DIAS.forEach(function (d) {
+      var k = canon(h[d]);
+      var ult = grupos[grupos.length - 1];
+      if (ult && ult.k === k) ult.dias.push(d); else grupos.push({ k: k, dias: [d], f: h[d] });
+    });
+    return grupos.map(function (g) {
+      var n = g.dias.length;
+      var primero = NOMBRE_DIA[g.dias[0]], ultimo = minusc(NOMBRE_DIA[g.dias[n - 1]]);
+      return {
+        quien: n === 1 ? primero : primero + (n === 2 ? ' y ' : ' a ') + ultimo,
+        cuando: textoFranjas(g.f)
+      };
+    });
+  }
+
+  function pintaHorario(c) {
+    cabAjuste(c, 'Horario');
+    if (!hayHorario()) { sinMigracion(c); return; }
+
+    /* Copia de trabajo, con el cierre de medianoche escrito como se lee (00:00). */
+    var h = {};
+    DIAS.forEach(function (d) {
+      h[d] = estado.horario[d].map(function (x) { return [x[0], cierreVisto(x[1])]; });
+    });
+    var inicial = canon(h);
+    guardia = function () { return canon(h) !== inicial; };
+    /* Los turnos de un día que se apaga se recuerdan: si se vuelve a encender
+       sin guardar entre medias, vuelven los mismos. */
+    var apartados = {};
+    var validadores = {};
+
+    c.appendChild(el('p', { clase: 'pista', texto: 'Es el horario de la portada de la web y el que usa «Abierto ahora». ' +
+      'Sale en la web cuando publiques.' }));
+    var resumen = el('div', { clase: 'hor-resumen' });
+    c.appendChild(resumen);
+    var dias = el('div', { clase: 'hor-dias' });
+    c.appendChild(dias);
+    c.appendChild(el('p', { clase: 'pista hor-google' }, [
+      'La web no cambia tu ficha de Google. Si cambias el horario, cámbialo también en ',
+      el('a', { href: 'https://business.google.com/', target: '_blank', rel: 'noopener' },
+        ['Google Business Profile', el('span', { clase: 'oculto', texto: ' (se abre en otra pestaña)' })]),
+      '.'
+    ]));
+
+    function pintaResumen() {
+      resumen.textContent = '';
+      var lista = el('dl', { clase: 'hor-dl' });
+      resumenSemana(h).forEach(function (g) {
+        lista.appendChild(el('div', {}, [el('dt', { texto: g.quien }), el('dd', { texto: g.cuando })]));
+      });
+      resumen.appendChild(lista);
+    }
+
+    /* Al encender un día sin nada apartado, se copia el primer día abierto: casi
+       siempre es el mismo horario. */
+    function turnosPorDefecto() {
+      for (var i = 0; i < DIAS.length; i++) {
+        if (h[DIAS[i]].length) return h[DIAS[i]].map(function (x) { return x.slice(); });
+      }
+      return [['13:00', '16:00'], ['19:30', '23:30']];
+    }
+
+    function tarjetaDia(d) {
+      var f = h[d];
+      var abierto = f.length > 0;
+      var idT = nuevoId('hd');
+      var caja = el('section', { clase: 'hor-dia' + (abierto ? '' : ' hor-cerrado'), 'aria-labelledby': idT, 'data-dia': d });
+      var sw = interruptor({ activo: abierto, etiqueta: NOMBRE_DIA[d] + ', abre', alCambiar: function (on) {
+        if (on) { h[d] = apartados[d] || turnosPorDefecto(); delete apartados[d]; }
+        else { apartados[d] = h[d]; h[d] = []; }
+        repintaDia(d, 'sw');
+      } });
+      caja.appendChild(el('div', { clase: 'hor-dia-cab' }, [
+        el('h2', { id: idT, clase: 'hor-dia-nombre', texto: NOMBRE_DIA[d] }),
+        el('span', { clase: 'hor-dia-estado', 'aria-hidden': 'true', texto: abierto ? 'Abre' : 'Cerrado' }),
+        sw
+      ]));
+      if (!abierto) { delete validadores[d]; return caja; }
+
+      var filas = [];
+      var turnos = el('div', { clase: 'hor-turnos' });
+      f.forEach(function (x, i) {
+        var n = f.length > 1 ? ', turno ' + (i + 1) : '';
+        var ab = el('input', { type: 'time', step: '900', clase: 'hor-hora' });
+        var ci = el('input', { type: 'time', step: '900', clase: 'hor-hora' });
+        ab.value = x[0]; ci.value = x[1];
+        ab.setAttribute('aria-label', NOMBRE_DIA[d] + n + ': abre a las');
+        ci.setAttribute('aria-label', NOMBRE_DIA[d] + n + ': cierra a las');
+        var alCambiar = function () { x[0] = ab.value; x[1] = ci.value; valida(); pintaResumen(); };
+        ab.addEventListener('input', alCambiar); ab.addEventListener('change', alCambiar);
+        ci.addEventListener('input', alCambiar); ci.addEventListener('change', alCambiar);
+        var quitar = el('button', { type: 'button', clase: 'btn-icono hor-quitar',
+          'aria-label': 'Quitar el turno' + (n ? ' ' + (i + 1) : '') + ' del ' + minusc(NOMBRE_DIA[d]),
+          onclick: function () {
+            h[d].splice(i, 1);
+            repintaDia(d, h[d].length ? 'anadir' : 'sw');
+          } }, [ico('pn-cerrar')]);
+        var err = el('div', { clase: 'hor-turno-err' });
+        turnos.appendChild(el('div', { clase: 'hor-turno' }, [
+          el('div', { clase: 'hor-campo' }, [el('span', { clase: 'hor-et', 'aria-hidden': 'true', texto: 'Abre' }), ab]),
+          el('span', { clase: 'hor-guion', 'aria-hidden': 'true', texto: '–' }),
+          el('div', { clase: 'hor-campo' }, [el('span', { clase: 'hor-et', 'aria-hidden': 'true', texto: 'Cierra' }), ci]),
+          quitar,
+          err
+        ]));
+        filas.push({ ab: ab, ci: ci, err: err });
+      });
+      caja.appendChild(turnos);
+
+      function valida() {
+        limpiaErroresEn(caja);
+        erroresDia(h[d]).forEach(function (e) {
+          var fl = filas[e.i];
+          marcaError(fl.ab, e.texto, fl.err);
+          fl.ci.setAttribute('aria-invalid', 'true');
+          fl.ci.setAttribute('data-err', fl.ab.getAttribute('data-err'));
+        });
+      }
+      validadores[d] = valida;
+      valida();
+
+      var pie = el('div', { clase: 'hor-dia-pie' });
+      if (f.length < TOPE_TURNOS) {
+        pie.appendChild(el('button', { type: 'button', clase: 'btn-t btn-anadir hor-anadir', onclick: function () {
+          var ult = h[d][h[d].length - 1];
+          var desde = Math.min((aMin(cierreGuardado(ult[1])) || 0) + 60, 23 * 60);
+          h[d].push([aHora(desde), aHora(Math.min(desde + 180, 1440))]);
+          repintaDia(d, 'nuevo');
+        } }, [ico('pn-mas', 'ico-peq'), el('span', { texto: 'Añadir turno' })]));
+      }
+      pie.appendChild(el('button', { type: 'button', clase: 'btn-t hor-copiar', texto: 'Copiar a otros días',
+        onclick: function () { abreCopia(d); } }));
+      caja.appendChild(pie);
+      return caja;
+    }
+
+    function repintaDia(d, foco) {
+      var vieja = dias.querySelector('[data-dia="' + d + '"]');
+      var nueva = tarjetaDia(d);
+      vieja.replaceWith(nueva);
+      pintaResumen();
+      var destino = null;
+      if (foco === 'sw') destino = nueva.querySelector('.interruptor');
+      else if (foco === 'nuevo') { var hs = nueva.querySelectorAll('.hor-hora'); destino = hs[hs.length - 2]; }
+      else if (foco === 'anadir') destino = nueva.querySelector('.hor-anadir') || nueva.querySelector('.hor-copiar');
+      else if (foco === 'copiar') destino = nueva.querySelector('.hor-copiar');
+      if (destino) destino.focus();
+    }
+
+    function abreCopia(d) {
+      var marcados = {};
+      var casillas = {};
+      var cuerpoH = el('div', { clase: 'form-hoja' });
+      cuerpoH.appendChild(el('p', { clase: 'hor-copia-que' }, [
+        el('strong', { texto: NOMBRE_DIA[d] + ': ' }), textoFranjas(h[d], ' y ')
+      ]));
+      var lista = el('fieldset', { clase: 'campo' }, [el('legend', { texto: '¿A qué días lo copias?' })]);
+      DIAS.forEach(function (x) {
+        if (x === d) return;
+        var cb = casilla(NOMBRE_DIA[x], false, function (on) { marcados[x] = on; });
+        casillas[x] = cb.querySelector('input');
+        lista.appendChild(cb);
+      });
+      function marca(cuales) {
+        DIAS.forEach(function (x) {
+          if (x === d) return;
+          var on = cuales.indexOf(x) !== -1;
+          casillas[x].checked = on;
+          marcados[x] = on;
+        });
+      }
+      cuerpoH.appendChild(lista);
+      cuerpoH.appendChild(el('div', { clase: 'fila-botones' }, [
+        el('button', { type: 'button', clase: 'btn btn-s btn-peq', texto: 'De lunes a viernes',
+          onclick: function () { marca(DIAS.slice(0, 5)); } }),
+        el('button', { type: 'button', clase: 'btn btn-s btn-peq', texto: 'Todos', onclick: function () { marca(DIAS); } }),
+        el('button', { type: 'button', clase: 'btn-t', texto: 'Ninguno', onclick: function () { marca([]); } })
+      ]));
+
+      var botonC = el('button', { type: 'button', clase: 'btn btn-p', texto: 'Copiar', onclick: function () {
+        limpiaErroresEn(cuerpoH);
+        var destino = DIAS.filter(function (x) { return marcados[x]; });
+        if (!destino.length) {
+          marcaError(null, 'Marca al menos un día.', lista);
+          return;
+        }
+        destino.forEach(function (x) {
+          h[x] = h[d].map(function (t) { return t.slice(); });
+          delete apartados[x];
+        });
+        hoja.cierra();
+        destino.forEach(function (x) { repintaDia(x); });
+        repintaDia(d, 'copiar');
+        aviso('Copiado a ' + plural(destino.length, 'día', 'días') + '. Falta guardar.');
+      } });
+      var hoja = abreHoja({
+        titulo: 'Copiar el horario del ' + minusc(NOMBRE_DIA[d]), cuerpo: cuerpoH,
+        pie: [el('span', { clase: 'hoja-hueco' }),
+          el('button', { type: 'button', clase: 'btn btn-s', texto: 'Cancelar', onclick: function () { hoja.cierra(); } }),
+          botonC],
+        sucio: function () { return false; }
+      });
+    }
+
+    DIAS.forEach(function (d) { dias.appendChild(tarjetaDia(d)); });
+    pintaResumen();
+
+    var botonGuardar = accionesFijas(c, 'Guardar', guarda);
+
+    function guarda() {
+      var malo = null;
+      DIAS.forEach(function (d) {
+        if (validadores[d]) validadores[d]();
+        if (!malo && erroresDia(h[d]).length) malo = d;
+      });
+      if (malo) {
+        var primero = dias.querySelector('[data-dia="' + malo + '"] [aria-invalid=true]');
+        if (primero) { primero.focus(); primero.scrollIntoView({ block: 'center' }); }
+        return;
+      }
+      var carga = {};
+      DIAS.forEach(function (d) {
+        carga[d] = h[d].map(function (x) { return [x[0], cierreGuardado(x[1])]; })
+          .sort(function (p, q) { return aMin(p[0]) - aMin(q[0]); });
+      });
+      botonGuardar.disabled = true;
+      botonGuardar.textContent = 'Guardando…';
+      rpc('guarda_horario', { h: carga }).then(function (r) {
+        estado.horario = horarioDeFilas(DIAS.map(function (d) { return { dia: d, franjas: (r && r[d]) || carga[d] }; }));
+        trasGuardarLocal('Horario guardado. Sale en la web cuando publiques.');
+      }).catch(function (x) {
+        aviso(traduceError(x), { tipo: 'error' });
+        botonGuardar.disabled = false;
+        botonGuardar.textContent = 'Guardar';
+      });
+    }
+  }
+
+  var TOPE_AVISO = 140;
+
+  function pintaAviso(c) {
+    cabAjuste(c, 'Aviso en la web');
+    if (!hayHorario()) { sinMigracion(c); return; }
+    var a = estado.aviso;
+    var d = { activo: !!a.activo, texto: copia(a.texto), hasta: a.hasta || '' };
+    var inicial = canon(d);
+    guardia = function () { return canon(d) !== inicial; };
+    var hoy = hoyEnMadrid().fecha;
+
+    c.appendChild(el('p', { clase: 'pista', texto: 'Una frase corta que sale en la portada, encima del título, y arriba de ' +
+      'la carta. Para unas vacaciones, un día que cerráis o un plato de temporada.' }));
+
+    var previa = el('div', { clase: 'aviso-prev-caja' });
+    function pintaPrevia() {
+      previa.textContent = '';
+      var txt = (d.texto.es || '').trim();
+      if (!d.activo) { previa.appendChild(el('p', { clase: 'pista', texto: 'Apagado: no sale en la web. El texto se queda guardado.' })); return; }
+      if (!txt) { previa.appendChild(el('p', { clase: 'pista', texto: 'Escribe el texto para verlo aquí.' })); return; }
+      previa.appendChild(el('p', { clase: 'aviso-prev' }, [ico('pn-info', 'ico-peq'), el('span', { texto: txt })]));
+      previa.appendChild(el('p', { clase: 'pista', texto: d.hasta
+        ? 'Sale hasta el ' + dia(d.hasta) + ' incluido, y después se quita solo.'
+        : 'Sale hasta que lo apagues.' }));
+    }
+
+    var sw = filaInterruptor({ etiqueta: 'Enseñar el aviso', activo: d.activo,
+      pista: 'Apagado no sale en ningún sitio.',
+      alCambiar: function (on) { d.activo = on; pintaPrevia(); } });
+
+    var texto = campoIdiomas({ titulo: 'Texto', obj: d.texto, obligatorio: true,
+      pista: 'Hasta ' + TOPE_AVISO + ' caracteres. Si falta el inglés o el gallego, en esas webs sale en español.',
+      alCambiar: function () { limpiaErroresEn(form); pintaPrevia(); } });
+    IDIOMAS.forEach(function (l) { texto.entradas[l].setAttribute('maxlength', String(TOPE_AVISO)); });
+
+    var fecha = el('input', { type: 'date', clase: 'fecha-in', min: hoy });
+    fecha.value = d.hasta;
+    var quitarFecha = el('button', { type: 'button', clase: 'btn-t', texto: 'Sin fecha', hidden: !d.hasta,
+      onclick: function () { d.hasta = ''; fecha.value = ''; quitarFecha.hidden = true; pintaPrevia(); fecha.focus(); } });
+    var alFecha = function () { d.hasta = fecha.value; quitarFecha.hidden = !d.hasta; limpiaErroresEn(form); pintaPrevia(); };
+    fecha.addEventListener('input', alFecha);
+    fecha.addEventListener('change', alFecha);
+    var cajaFecha = campo('Hasta el día', fecha, 'Después de ese día se quita solo. Sin fecha, se queda hasta que lo apagues.');
+    cajaFecha.appendChild(el('div', { clase: 'fila-botones' }, [quitarFecha]));
+
+    var form = el('div', { clase: 'ficha' }, [
+      seccion('El aviso', [sw, texto.nodo, cajaFecha]),
+      seccion('Así se verá', [previa])
+    ]);
+    c.appendChild(form);
+    pintaPrevia();
+
+    var botonGuardar = accionesFijas(c, 'Guardar', guarda);
+
+    function guarda() {
+      limpiaErroresEn(form);
+      if (d.activo && !(d.texto.es || '').trim()) { errorNombre(texto, 'Escribe el aviso en español.'); return; }
+      if (d.hasta && d.hasta < hoy) {
+        marcaError(fecha, 'Esa fecha ya ha pasado. Pon otra o quítala.', cajaFecha);
+        fecha.focus();
+        return;
+      }
+      var limpio = {};
+      IDIOMAS.forEach(function (l) { var v = (d.texto[l] || '').trim(); if (v) limpio[l] = v; });
+      botonGuardar.disabled = true;
+      botonGuardar.textContent = 'Guardando…';
+      parchea('aviso', 'id=eq.true', { activo: d.activo, texto: limpio, hasta: d.hasta || null }).then(function (filas) {
+        estado.aviso = (filas && filas[0]) || { activo: d.activo, texto: limpio, hasta: d.hasta || null };
+        trasGuardarLocal((d.activo ? 'Aviso guardado.' : 'Aviso apagado.') + ' Sale en la web cuando publiques.');
+      }).catch(function (x) {
+        aviso(traduceError(x), { tipo: 'error' });
+        botonGuardar.disabled = false;
+        botonGuardar.textContent = 'Guardar';
+      });
+    }
   }
 
   /* --- ajustes --- */
@@ -2633,20 +3163,19 @@
     var descripcion = campoPestanas({ titulo: 'Descripción', obj: d.descripcion, multilinea: true,
       pista: 'Sale debajo del título de la sección en la carta.' });
     cuerpoH.appendChild(descripcion);
-    var orden = campoCorto('Orden', d.orden, 'Número más bajo, más arriba.', function (v) { d.orden = v; });
+    /* El orden se cambia con «Ordenar», en la lista. Una categoría nueva, o
+       una que cambia de sitio, entra la última entre sus hermanas. */
+    var padreOriginal = d.padre_id, ordenOriginal = d.orden;
     padre.addEventListener('change', function () {
       d.padre_id = padre.value;
       descripcion.hidden = !!d.padre_id;
-      if (nueva) {
-        d.orden = String(siguienteOrdenDe(d.padre_id ? (idx.hijas[d.padre_id] || []) : idx.madres));
-        orden.input.value = d.orden;
-      }
+      d.orden = !nueva && d.padre_id === padreOriginal ? ordenOriginal
+        : String(siguienteOrdenDe(d.padre_id ? (idx.hijas[d.padre_id] || []) : idx.madres));
     });
     descripcion.hidden = !!d.padre_id;
     cuerpoH.appendChild(selectorIconos('Marcador de sus platos sin foto',
       ICONOS_CAT.map(function (x) { return { valor: x[0], texto: x[1], icono: 'pl-' + x[0] }; }),
       d.icono, function (v) { d.icono = v; }));
-    cuerpoH.appendChild(orden.nodo);
 
     function guarda() {
       limpiaErroresEn(cuerpoH);
@@ -2714,12 +3243,10 @@
     var cuerpoH = el('div', { clase: 'form-hoja' });
     var nombre = campoIdiomas({ titulo: 'Nombre', obj: d.nombre, obligatorio: true });
     var maximo = campoCorto('Máximo', d.maximo, 'Hasta cuántos puntos llega. El picante llega a 3.', function (v) { d.maximo = v; });
-    var orden = campoCorto('Orden', d.orden, 'Número más bajo, más arriba.', function (v) { d.orden = v; });
     cuerpoH.appendChild(nombre.nodo);
     cuerpoH.appendChild(maximo.nodo);
     cuerpoH.appendChild(selectorIconos('Icono', ICONOS_ESC.map(function (x) { return { valor: x[0], texto: x[1], icono: x[2] }; }),
       d.icono, function (v) { d.icono = v; }));
-    cuerpoH.appendChild(orden.nodo);
 
     function guarda() {
       limpiaErroresEn(cuerpoH);
@@ -2773,7 +3300,7 @@
       el('button', { type: 'button', clase: 'fila-abre', onclick: function () { editorGrupo(g, repinta); } }, [
         el('span', { clase: 'fila-nombre', texto: t(g.nombre) }),
         el('span', { clase: 'fila-meta', texto: plural(ops, 'opción', 'opciones') + ' · ' + plural(usos, 'plato', 'platos') +
-          ' · ' + (g.tipo === 'multiple' ? 'se eligen varias' : 'se elige una') })
+          ' · ' + (g.tipo === 'multiple' ? 'se eligen varias' : 'se elige una') + (g.obligatorio ? ' · obligatorio' : '') })
       ])
     ]);
   }
@@ -2781,7 +3308,7 @@
   function editorGrupo(g, repinta) {
     var nuevo = !g;
     var d = {
-      nombre: copia(g && g.nombre), tipo: (g && g.tipo) || 'unica',
+      nombre: copia(g && g.nombre), tipo: (g && g.tipo) || 'unica', obligatorio: !!(g && g.obligatorio),
       orden: String(g ? g.orden || 0 : siguienteOrdenDe(estado.grupos)),
       opciones: g ? estado.opciones.filter(function (o) { return o.grupo_id === g.id; }).sort(porOrden).map(function (o) {
         return { slug: o.slug, nombre: copia(o.nombre), texto: o.incremento == null ? '' : escribePrecio(o.incremento) };
@@ -2795,6 +3322,13 @@
       leyenda: 'Cómo se elige', leyendaVisible: true, valor: d.tipo, clase: 'seg-ancho',
       opciones: [{ valor: 'unica', texto: 'Una sola' }, { valor: 'multiple', texto: 'Varias' }],
       alCambiar: function (v) { d.tipo = v; }
+    }));
+    /* Hasta la migración 0006 el panel no podía tocarlo. El asistente de pedido
+       de la carta ya bloquea «Añadir» cuando falta elegir en un grupo así. */
+    cuerpoH.appendChild(filaInterruptor({
+      etiqueta: 'Hay que elegir', activo: d.obligatorio,
+      pista: 'Si no se elige nada, el asistente de pedido de la carta no deja añadir el plato. Para sabores y licores.',
+      alCambiar: function (on) { d.obligatorio = on; }
     }));
 
     var zona = el('div', { clase: 'opciones' });
@@ -2842,8 +3376,6 @@
       zona.appendChild(anadir);
     }
     pintaOps();
-    var orden = campoCorto('Orden', d.orden, 'Número más bajo, más arriba.', function (v) { d.orden = v; });
-    cuerpoH.appendChild(orden.nodo);
 
     function guarda() {
       limpiaErroresEn(cuerpoH);
@@ -2862,7 +3394,7 @@
       var payload = {
         id: g ? g.id : null,
         slug: g ? g.slug : slugUnico(slugifica(d.nombre.es), estado.grupos.map(function (x) { return x.slug; })),
-        nombre: limpiaTexto(d.nombre), tipo: d.tipo, orden: parseInt(d.orden, 10) || 0,
+        nombre: limpiaTexto(d.nombre), tipo: d.tipo, obligatorio: d.obligatorio, orden: parseInt(d.orden, 10) || 0,
         opciones: d.opciones.map(function (o) {
           var slug = o.slug;
           if (!slug) { slug = slugUnico(slugifica(o.nombre.es), usados); usados.push(slug); }
@@ -2911,9 +3443,7 @@
     var inicial = canon(d);
     var cuerpoH = el('div', { clase: 'form-hoja' });
     var nombre = campoIdiomas({ titulo: 'Nombre', obj: d.nombre, obligatorio: true });
-    var orden = campoCorto('Orden', d.orden, 'Número más bajo, más arriba.', function (v) { d.orden = v; });
     cuerpoH.appendChild(nombre.nodo);
-    cuerpoH.appendChild(orden.nodo);
 
     function guarda() {
       limpiaErroresEn(cuerpoH);
@@ -2957,44 +3487,162 @@
         idx.madres.forEach(function (m) { r.push(m); (idx.hijas[m.id] || []).forEach(function (h) { r.push(h); }); });
         return r;
       },
-      fila: filaCategoria, editor: editorCategoria
+      fila: filaCategoria, editor: editorCategoria,
+      /* Dos niveles, así que se ordenan entre hermanas: las secciones
+         principales por un lado y las subsecciones dentro de cada una. */
+      tabla: 'categorias',
+      listasOrden: function () {
+        return [{ titulo: 'Secciones principales', items: idx.madres.map(itemOrden) }].concat(
+          idx.madres.filter(function (m) { return (idx.hijas[m.id] || []).length > 1; }).map(function (m) {
+            return { titulo: 'Dentro de «' + t(m.nombre) + '»', items: idx.hijas[m.id].map(itemOrden) };
+          }));
+      }
     },
     niveles: {
       titulo: 'Niveles', nuevo: 'Nivel nuevo',
       pista: 'Escalas como el picante, que salen con puntos en la ficha del plato. Se crean aquí y se marcan desde cada plato.',
       resumen: function () { return estado.escalas.slice().sort(porOrden).map(function (e) { return t(e.nombre); }).join(', ') || 'Ninguno'; },
       filas: function () { return estado.escalas.slice().sort(porOrden); },
-      fila: filaNivel, editor: editorNivel
+      fila: filaNivel, editor: editorNivel,
+      tabla: 'escalas',
+      listasOrden: function () { return [{ titulo: '', items: estado.escalas.slice().sort(porOrden).map(itemOrden) }]; }
     },
     opciones: {
       titulo: 'Opciones', nuevo: 'Grupo nuevo',
       pista: 'Extras, sabores, intensidad del caldo… Un grupo se engancha a muchos platos y se cambia una sola vez.',
       resumen: function () { return plural(estado.grupos.length, 'grupo', 'grupos') + ' con ' + plural(estado.opciones.length, 'opción', 'opciones'); },
       filas: function () { return estado.grupos.slice().sort(porOrden); },
-      fila: filaGrupo, editor: editorGrupo
+      fila: filaGrupo, editor: editorGrupo,
+      tabla: 'grupos_opcion',
+      listasOrden: function () { return [{ titulo: '', items: estado.grupos.slice().sort(porOrden).map(itemOrden) }]; }
     },
     etiquetas: {
       titulo: 'Etiquetas', nuevo: 'Etiqueta nueva',
       pista: 'Vegano, vegetariano… Es con lo que la gente filtra la carta.',
       resumen: function () { return estado.etiquetas.slice().sort(porOrden).map(function (e) { return t(e.nombre); }).join(', ') || 'Ninguna'; },
       filas: function () { return estado.etiquetas.slice().sort(porOrden); },
-      fila: filaEtiqueta, editor: editorEtiqueta
+      fila: filaEtiqueta, editor: editorEtiqueta,
+      tabla: 'etiquetas',
+      listasOrden: function () { return [{ titulo: '', items: estado.etiquetas.slice().sort(porOrden).map(itemOrden) }]; }
     }
   };
 
+  function itemOrden(x) { return { id: x.id, nombre: (x.numero ? x.numero + '. ' : '') + t(x.nombre), conNumero: !!x.numero }; }
+
+  /* Los platos de una sección de la lista, en su orden de ahora. */
+  function ordenaSeccion(s) {
+    abreOrden({
+      titulo: 'Ordenar «' + s.titulo + '»', tabla: 'platos',
+      listas: [{ titulo: '', items: s.platos.map(itemOrden) }],
+      repinta: function () { estadoLista.scroll = window.scrollY; render(); }
+    });
+  }
+
+  /* --- ordenar con flechas ---
+     ANTES el orden era un número que había que escribir a mano («Posición en
+     su sección: 7»), sin ver a los demás, y el mismo número en dos platos los
+     dejaba empatados. AHORA se ve la lista entera y se sube y se baja con
+     flechas; al guardar, ordena() en la base numera la lista de una vez.
+     El foco se queda en la flecha que se acaba de pulsar, en su sitio nuevo,
+     igual que en las opciones de un grupo. */
+  function abreOrden(o) {
+    var listas = o.listas.map(function (l) {
+      return { titulo: l.titulo, items: l.items.slice(), inicial: l.items.map(function (x) { return x.id; }).join('|') };
+    });
+    var clave = function (l) { return l.items.map(function (x) { return x.id; }).join('|'); };
+    var cuerpoH = el('div', { clase: 'form-hoja' });
+    cuerpoH.appendChild(el('p', { clase: 'pista', texto: 'Sube y baja con las flechas. En este orden salen en la carta.' }));
+    var zonas = [];
+
+    function pinta(li, foco) {
+      var l = listas[li], zona = zonas[li];
+      /* Con número de carta delante («2. Gyukotsu»), la posición al lado
+         («1 2. Gyukotsu») confunde más que ayuda: se quita. */
+      var conPosicion = !l.items.some(function (x) { return x.conNumero; });
+      zona.textContent = '';
+      l.items.forEach(function (it, i) {
+        var mueve = function (delta) {
+          var j = i + delta;
+          var tmp = l.items[i]; l.items[i] = l.items[j]; l.items[j] = tmp;
+          pinta(li, { j: j, delta: delta });
+          anuncia('«' + it.nombre + '», ' + (j + 1) + '.º de ' + l.items.length + '.');
+        };
+        zona.appendChild(el('li', { clase: 'orden-fila' + (conPosicion ? '' : ' orden-sin-pos') }, [
+          conPosicion ? el('span', { clase: 'orden-num', 'aria-hidden': 'true', texto: String(i + 1) }) : null,
+          el('span', { clase: 'orden-nombre', texto: it.nombre }),
+          el('button', { type: 'button', clase: 'btn-icono sube', 'aria-label': 'Subir «' + it.nombre + '»',
+            disabled: i === 0 ? true : null, onclick: function () { mueve(-1); } }, [ico('pn-arriba')]),
+          el('button', { type: 'button', clase: 'btn-icono baja', 'aria-label': 'Bajar «' + it.nombre + '»',
+            disabled: i === l.items.length - 1 ? true : null, onclick: function () { mueve(1); } }, [ico('pn-abajo')])
+        ]));
+      });
+      if (foco) {
+        var fila = zona.children[foco.j];
+        var b = fila.querySelector(foco.delta < 0 ? '.sube' : '.baja');
+        (b && !b.disabled ? b : fila.querySelector(foco.delta < 0 ? '.baja' : '.sube')).focus();
+      }
+    }
+
+    listas.forEach(function (l, li) {
+      if (l.items.length < 2) { zonas.push(null); return; }
+      var idT = nuevoId('ot');
+      if (l.titulo) cuerpoH.appendChild(el('h3', { id: idT, clase: 'orden-tit', texto: l.titulo }));
+      var zona = el('ol', { clase: 'orden-lista', 'aria-labelledby': l.titulo ? idT : null,
+        'aria-label': l.titulo ? null : o.titulo });
+      cuerpoH.appendChild(zona);
+      zonas.push(zona);
+      pinta(li);
+    });
+
+    var botonG = el('button', { type: 'button', clase: 'btn btn-p', texto: 'Guardar el orden', onclick: guarda });
+    function guarda() {
+      var cambiadas = listas.filter(function (l) { return clave(l) !== l.inicial; });
+      if (!cambiadas.length) { hoja.cierra(); return; }
+      botonG.disabled = true;
+      botonG.textContent = 'Guardando…';
+      /* Una llamada por lista y en fila: cada una es atómica en la base, y en
+         categorías las madres y las hijas son listas distintas. */
+      cambiadas.reduce(function (p, l) {
+        return p.then(function () { return rpc('ordena', { p_tabla: o.tabla, p_ids: l.items.map(function (x) { return x.id; }) }); });
+      }, Promise.resolve()).then(function () {
+        return trasGuardar(hoja, o.repinta, 'Orden guardado. Sale en la web cuando publiques.');
+      }).catch(function (x) {
+        botonG.disabled = false;
+        botonG.textContent = 'Guardar el orden';
+        aviso(traduceError(x), { tipo: 'error' });
+      });
+    }
+    var hoja = abreHoja({
+      titulo: o.titulo, cuerpo: cuerpoH,
+      pie: [el('span', { clase: 'hoja-hueco' }),
+        el('button', { type: 'button', clase: 'btn btn-s', texto: 'Cancelar', onclick: function () { hoja.intentaCerrar(); } }),
+        botonG],
+      sucio: function () { return listas.some(function (l) { return clave(l) !== l.inicial; }); }
+    });
+  }
+
   function pintaAjustes(c, sub) {
     if (!sub) {
-      c.appendChild(el('h1', { clase: 'pantalla-tit', texto: 'Ajustes de la carta' }));
+      c.appendChild(el('h1', { clase: 'pantalla-tit', texto: 'Ajustes' }));
       c.appendChild(el('p', { clase: 'pista', texto: 'Lo que se toca poco. Los platos se cambian desde Platos.' }));
-      c.appendChild(el('ul', { clase: 'hub' }, Object.keys(AJUSTES).map(function (k) {
-        var a = AJUSTES[k];
-        return el('li', {}, [el('a', { clase: 'hub-i', href: '#/ajustes/' + k }, [
-          el('span', { clase: 'hub-txt' }, [el('strong', { texto: a.titulo }), el('span', { texto: a.resumen() })]),
+      /* El horario y el aviso van primero: son del local, no de la carta, y son
+         lo que más se va a tocar de todo esto. */
+      var entradas = (hayHorario() ? [
+        { ruta: 'horario', titulo: 'Horario', resumen: resumenHoy() },
+        { ruta: 'aviso', titulo: 'Aviso en la web', resumen: resumenAviso() }
+      ] : []).concat(Object.keys(AJUSTES).map(function (k) {
+        return { ruta: k, titulo: AJUSTES[k].titulo, resumen: AJUSTES[k].resumen() };
+      }));
+      c.appendChild(el('ul', { clase: 'hub' }, entradas.map(function (a) {
+        return el('li', {}, [el('a', { clase: 'hub-i', href: '#/ajustes/' + a.ruta }, [
+          el('span', { clase: 'hub-txt' }, [el('strong', { texto: a.titulo }), el('span', { texto: a.resumen })]),
           ico('pn-derecha', 'ico-peq')
         ])]);
       })));
       return;
     }
+    if (sub === 'horario') { pintaHorario(c); return; }
+    if (sub === 'aviso') { pintaAviso(c); return; }
     var def = AJUSTES[sub];
     if (!def) { reemplaza('/ajustes'); return; }
     c.appendChild(el('div', { clase: 'pantalla-cab' }, [
@@ -3008,10 +3656,16 @@
       lista.textContent = '';
       def.filas().forEach(function (x) { lista.appendChild(def.fila(x, repinta)); });
       if (!lista.children.length) lista.appendChild(el('li', { clase: 'vacio', texto: 'Todavía no hay ninguno.' }));
+      /* «Ordenar» solo si hay algo que ordenar: alguna lista con dos o más. */
+      botonOrden.hidden = !def.listasOrden().some(function (l) { return l.items.length > 1; });
     }
+    var botonOrden = el('button', { type: 'button', clase: 'btn btn-s', onclick: function () {
+      abreOrden({ titulo: 'Ordenar ' + minusc(def.titulo), tabla: def.tabla, listas: def.listasOrden(), repinta: repinta });
+    } }, [ico('pn-orden', 'ico-peq'), el('span', { texto: 'Ordenar' })]);
     c.appendChild(el('div', { clase: 'fila-botones' }, [
       el('button', { type: 'button', clase: 'btn btn-p', onclick: function () { def.editor(null, repinta); } },
-        [ico('pn-mas', 'ico-peq'), el('span', { texto: def.nuevo })])
+        [ico('pn-mas', 'ico-peq'), el('span', { texto: def.nuevo })]),
+      botonOrden
     ]));
     c.appendChild(lista);
     repinta();
@@ -3035,7 +3689,8 @@
     var partes = ruta.split('/').filter(Boolean);
     var pantalla = partes[0] || 'platos';
     var arg = partes.slice(1).join('/');
-    var conAcciones = pantalla === 'plato' || pantalla === 'alergenos';
+    var conAcciones = pantalla === 'plato' || pantalla === 'alergenos' ||
+      (pantalla === 'ajustes' && (arg === 'horario' || arg === 'aviso'));
     var c = pintaArmazon(pantalla, conAcciones);
     if (pantalla !== 'platos') window.scrollTo(0, 0);
 

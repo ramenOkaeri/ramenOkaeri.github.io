@@ -63,7 +63,7 @@ main:focus{outline:none}
 
 /* --- formularios ---------------------------------------------------------- */
 input,select,textarea,button{font:inherit;color:inherit}
-input[type=text],input[type=email],input[type=password],input[type=search],select,textarea{
+input[type=text],input[type=email],input[type=password],input[type=search],input[type=time],input[type=date],select,textarea{
   width:100%;min-height:48px;padding:10px 14px;color:var(--washi);
   background:var(--sumi-sup);border:1px solid var(--sumi-borde);border-radius:10px;
   font-size:16px;-webkit-appearance:none;appearance:none}
@@ -219,6 +219,11 @@ fieldset{border:0;margin:0;padding:0;min-width:0}
 .recuento{color:var(--washi-ten);font-size:.9rem;margin:6px 0 0}
 
 .seccion{margin-top:12px}
+/* El titulo de seccion lleva al lado «Ordenar». El boton mide 44 de alto y el
+   borde de abajo pasa a la caja, para que no quede cortado a media altura. */
+.seccion-cab{display:flex;align-items:center;justify-content:space-between;gap:8px;border-bottom:1px solid var(--sumi-borde)}
+.seccion-cab .seccion-tit{border-bottom:0;padding:0}
+.seccion-orden{font-size:.85rem;text-decoration:none;color:var(--washi-ten);margin-right:-8px}
 .seccion-tit{font-family:var(--sans);font-size:.8rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
   color:var(--washi-ten);padding:0 0 6px;border-bottom:1px solid var(--sumi-borde)}
 .filas{list-style:none;margin:0;padding:0}
@@ -396,6 +401,63 @@ fieldset{border:0;margin:0;padding:0;min-width:0}
 .icono-cara .ico-marcador{width:28px;height:28px;color:inherit}
 .seg-radio:checked + .icono-cara{border-color:var(--bengara);color:var(--washi);background:rgba(163,69,68,.16)}
 .seg-radio:focus-visible + .icono-cara{outline:2px solid var(--bengara-txt);outline-offset:2px}
+
+/* --- horario ----------------------------------------------------------------
+   Una tarjeta por dia. Las horas usan el selector del sistema (la rueda en
+   iPhone y Android): nada que escribir a mano y nada que validar de formato.
+   Un dia cerrado se queda en una sola linea, apagado. */
+.hor-resumen{margin:14px 0 12px;padding:12px 14px;border:1px solid var(--sumi-borde);border-radius:12px;background:var(--sumi-hondo)}
+.hor-dl{margin:0;display:grid;gap:4px}
+.hor-dl > div{display:flex;flex-wrap:wrap;gap:0 10px}
+.hor-dl dt{min-width:9.5em;color:var(--washi-ten)}
+.hor-dl dd{margin:0;font-variant-numeric:tabular-nums}
+.hor-dias{display:grid;gap:10px}
+.hor-dia{display:grid;gap:10px;padding:10px 12px 8px 14px;border:1px solid var(--sumi-borde);border-radius:var(--radio);background:var(--sumi-sup)}
+.hor-dia.hor-cerrado{background:transparent;padding-bottom:10px}
+.hor-dia-cab{display:flex;align-items:center;gap:10px}
+.hor-dia-nombre{font-size:1.1rem;flex:1 1 auto}
+.hor-dia-estado{color:var(--washi-ten);font-size:.9rem}
+.hor-cerrado .hor-dia-nombre{color:var(--washi-ten)}
+.hor-turnos{display:grid;gap:10px}
+.hor-turno{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) 44px;align-items:end;gap:6px}
+.hor-campo{display:grid;gap:4px;min-width:0}
+.hor-et{font-size:.8rem;color:var(--washi-ten)}
+.hor-guion{padding-bottom:13px;color:var(--washi-ten)}
+.hor-hora{background:var(--sumi)!important;font-variant-numeric:tabular-nums;min-width:0}
+.hor-quitar{align-self:end;margin-bottom:2px}
+.hor-turno-err{grid-column:1 / -1}
+.hor-turno-err:empty{display:none}
+.hor-dia-pie{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:4px}
+.hor-anadir{padding-left:0}
+.hor-copiar{text-decoration:none;color:var(--washi-ten);margin-right:-8px}
+.hor-google{margin-top:18px}
+/* Enlace dentro del texto: 44 px de alto al dedo sin mover los renglones. */
+.hor-google a{display:inline-block;padding:12px 0;margin:-12px 0}
+.hor-copia-que{font-size:1rem}
+@media (hover:hover){ .hor-copiar:hover,.seccion-orden:hover{color:var(--washi)} }
+
+/* --- aviso en la web ------------------------------------------------------- */
+.fecha-in{max-width:220px}
+.bloque .fecha-in{background:var(--sumi)}
+/* Sin esto, el icono del calendario y del reloj que pinta el navegador sale
+   negro sobre el fondo oscuro y no se ve. */
+input[type=time],input[type=date]{color-scheme:dark}
+.aviso-prev-caja{display:grid;gap:8px}
+/* La misma pieza que pinta la web (.aviso-web de style.css), para juzgar lo
+   que se va a ver. */
+.aviso-prev{display:flex;align-items:flex-start;gap:10px;padding:11px 15px;border:1px solid var(--sumi-borde);
+  border-radius:var(--radio);background:var(--sumi);color:var(--washi);font-size:.95rem;line-height:1.45}
+.aviso-prev .ico{color:var(--bengara-txt);margin-top:2px}
+.ficha-copia{margin:-6px 0 14px;padding:10px 12px;border-radius:10px;background:var(--ambar-fondo);border:1px solid #6B5630;color:var(--washi)}
+
+/* --- ordenar con flechas --------------------------------------------------- */
+.orden-tit{font-family:var(--sans);font-size:.8rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--washi-ten);margin-top:6px}
+.orden-lista{list-style:none;margin:0;padding:0;border-top:1px solid var(--sumi-borde)}
+.orden-fila{display:grid;grid-template-columns:28px minmax(0,1fr) 44px 44px;align-items:center;gap:4px;
+  min-height:52px;border-bottom:1px solid var(--sumi-borde)}
+.orden-fila.orden-sin-pos{grid-template-columns:minmax(0,1fr) 44px 44px}
+.orden-num{color:var(--washi-ten);font-size:.85rem;font-variant-numeric:tabular-nums;text-align:right;padding-right:6px}
+.orden-nombre{min-width:0;line-height:1.35}
 
 /* --- dialogos y hojas ------------------------------------------------------ */
 dialog{color:var(--washi);padding:0}

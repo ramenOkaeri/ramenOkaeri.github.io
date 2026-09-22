@@ -1,0 +1,80 @@
+{
+  "_nota": "GENERADO por tools/sitio.mjs desde Supabase. No se edita a mano: se cambia desde el panel (Ajustes > Horario y Ajustes > Aviso en la web) y se publica.",
+  "horario": {
+    "lunes": [
+      [
+        "13:00",
+        "16:00"
+      ],
+      [
+        "19:30",
+        "23:30"
+      ]
+    ],
+    "martes": [
+      [
+        "13:00",
+        "16:00"
+      ],
+      [
+        "19:30",
+        "23:30"
+      ]
+    ],
+    "miercoles": [
+      [
+        "13:00",
+        "16:00"
+      ],
+      [
+        "19:30",
+        "23:30"
+      ]
+    ],
+    "jueves": [
+      [
+        "13:00",
+        "16:00"
+      ],
+      [
+        "19:30",
+        "23:30"
+      ]
+    ],
+    "viernes": [
+      [
+        "13:00",
+        "16:30"
+      ],
+      [
+        "19:30",
+        "23:30"
+      ]
+    ],
+    "sabado": [
+      [
+        "13:00",
+        "16:30"
+      ],
+      [
+        "19:30",
+        "23:30"
+      ]
+    ],
+    "domingo": [
+      [
+        "13:00",
+        "16:30"
+      ],
+      [
+        "19:30",
+        "23:30"
+      ]
+    ]
+  },
+  "aviso": {
+    "activo": false,
+    "texto": {},
+    "hasta": null
+  }
+}

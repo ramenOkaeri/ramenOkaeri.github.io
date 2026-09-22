@@ -19,16 +19,7 @@
   "telefono": "+34981684680",
   "telefono_visible": "981 684 680",
 
-  "horarios": {
-    "_POR_CONFIRMAR": "Las fuentes publicas se contradicen entre si. Estos son los de Paxinas Galegas.",
-    "lunes":     [["13:00","16:00"],["19:30","23:30"]],
-    "martes":    [["13:00","16:00"],["19:30","23:30"]],
-    "miercoles": [["13:00","16:00"],["19:30","23:30"]],
-    "jueves":    [["13:00","16:00"],["19:30","23:30"]],
-    "viernes":   [["13:00","16:30"],["19:30","23:30"]],
-    "sabado":    [["13:00","16:30"],["19:30","23:30"]],
-    "domingo":   [["13:00","16:30"],["19:30","23:30"]]
-  },
+  "_horarios": "Desde el 22 de septiembre de 2026 el horario NO se escribe aqui: vive en Supabase, se cambia desde el panel (Ajustes > Horario) y tools/sitio.mjs lo exporta a content/sitio.json al publicar. Sigue POR CONFIRMAR con el restaurante: el de partida es el de Paxinas Galegas.",
 
   "resenas": { "nota": 4.8, "total": 1063,
     "_fuente": "RESPALDO. Los valores que usa la web salen de content/resenas.json, que refresca tools/resenas.py contra la API de Places de Google. Estos solo se usan si aquel archivo no trajera nada." },

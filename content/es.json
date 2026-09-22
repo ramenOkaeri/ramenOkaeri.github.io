@@ -263,5 +263,6 @@
     "sala-noche": "Mesa preparada con cucharas de madera y, al fondo, clientes cenando",
     "neon-flechas": "Flechas de neón azul delante del rótulo OKAERI y los caracteres de Tokio en rojo",
     "sala": "Rincón del comedor con farolillos, carteles luminosos y paredes de piedra"
-  }
+  },
+  "aviso_web": { "etiqueta": "Aviso" }
 }

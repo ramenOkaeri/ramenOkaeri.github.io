@@ -86,6 +86,20 @@ jobs:
           fi
           node tools/carta.mjs
 
+      # El horario y el aviso de la web (panel > Ajustes). Van aparte de la
+      # carta porque carta.mjs sale en cuanto la carta no ha cambiado, y un
+      # cambio que solo tocara el horario no llegaria a exportarse. sitio.mjs
+      # hace sus propias comprobaciones: siete dias, horas HH:MM, turnos que no
+      # se solapan y aviso encendido con texto. Si algo falla no escribe nada y
+      # tumba la pasada, igual que una carta rota.
+      # En una vuelta atras tambien corre, a proposito: el Historial guarda la
+      # carta, no el horario, asi que el horario que sale es el de hoy.
+      - name: Traer el horario y el aviso
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: node tools/sitio.mjs
+
       - name: Comprobar que la carta tiene sentido
         # Una respuesta rara dejaría la web con la carta vacía, que es peor que
         # dejarla como estaba. Antes de publicar nada se exige un mínimo.

@@ -69,6 +69,11 @@ function tablas(C) {
 const CARTA_CAMBIADA = JSON.parse(JSON.stringify(CARTA));
 CARTA_CAMBIADA.platos.find((p) => p.slug === 'tonkotsu-ramen').precios[0].precio = 13.5;
 
+/* El horario y el aviso publicados (content/sitio.json). La base simulada
+   arranca igual y guarda_horario / el PATCH de aviso la van cambiando. */
+const SITIO_PUB = JSON.parse(readFileSync(new URL('content/sitio.json', RAIZ), 'utf8'));
+const copiaSitio = (s) => ({ horario: JSON.parse(JSON.stringify(s.horario)), aviso: JSON.parse(JSON.stringify(s.aviso)) });
+
 async function monta(page, esc) {
   await page.route('**/*', async (route) => {
     const req = route.request();
@@ -82,7 +87,7 @@ async function monta(page, esc) {
       if (m === 'OPTIONS') return route.fulfill({ status: 204, headers: cors });
       const cuerpo = req.postData() || '';
       const p = u.pathname;
-      if (m !== 'GET' && !/rpc\/carta_json|object\/list/.test(p)) esc.escrituras.push(m + ' ' + p);
+      if (m !== 'GET' && !/rpc\/carta_json|rpc\/sitio_json|object\/list/.test(p)) esc.escrituras.push(m + ' ' + p);
       if (p === '/auth/v1/token') {
         if (esc.loginFalla && u.searchParams.get('grant_type') === 'password') {
           esc.loginFalla = false;
@@ -108,6 +113,27 @@ async function monta(page, esc) {
         return json(200, { id: d.p_plato, alergenos_revisados: ahora });
       }
       if (p === '/rest/v1/rpc/guarda_grupo') { esc.grupos.push(JSON.parse(cuerpo).g); return json(200, { id: 'g', slug: 's' }); }
+      /* --- migracion 0006 --- */
+      if (p === '/rest/v1/rpc/sitio_json') return json(200, esc.sitioDb);
+      if (p === '/rest/v1/rpc/guarda_horario') {
+        const h = JSON.parse(cuerpo).h;
+        esc.horarios.push(h);
+        esc.sitioDb.horario = JSON.parse(JSON.stringify(h));
+        return json(200, h);
+      }
+      if (p === '/rest/v1/rpc/ordena') { esc.ordenes.push(JSON.parse(cuerpo)); return json(200, JSON.parse(cuerpo).p_ids.length); }
+      if (p === '/rest/v1/horario' && m === 'GET') {
+        return json(200, Object.entries(esc.sitioDb.horario).map(([dia, franjas]) => ({ dia, franjas })));
+      }
+      if (p === '/rest/v1/aviso') {
+        if (m === 'GET') return json(200, [esc.sitioDb.aviso]);
+        if (m === 'PATCH') {
+          const d = JSON.parse(cuerpo);
+          esc.avisos.push(d);
+          esc.sitioDb.aviso = { activo: d.activo, texto: d.texto, hasta: d.hasta };
+          return json(200, [{ id: true, ...esc.sitioDb.aviso }]);
+        }
+      }
       if (p.startsWith('/rest/v1/')) {
         const tabla = p.slice(9);
         if (m === 'GET') return json(200, esc.T[tabla] || []);
@@ -125,6 +151,9 @@ async function monta(page, esc) {
     if (u.host === SITIO && m === 'GET') {
       if (u.pathname === '/content/carta.json' && esc.publicada) {
         return route.fulfill({ status: 200, headers: { 'content-type': 'application/json' }, body: JSON.stringify(esc.publicada) });
+      }
+      if (u.pathname === '/content/sitio.json') {
+        return route.fulfill({ status: 200, headers: { 'content-type': 'application/json' }, body: JSON.stringify(esc.sitioPub) });
       }
       return route.continue();
     }
@@ -165,7 +194,8 @@ export default async (page0) => {
   const browser = page0.context().browser();
   const R = { base: BASE };
   const esc = { T: tablas(CARTA), escrituras: [], guardados: [], revisiones: [], grupos: [], publicaciones: 0, bloqueadas: [],
-    loginFalla: true, pendiente: false, publicada: null, falloPatch: false };
+    loginFalla: true, pendiente: false, publicada: null, falloPatch: false,
+    sitioDb: copiaSitio(SITIO_PUB), sitioPub: copiaSitio(SITIO_PUB), horarios: [], ordenes: [], avisos: [] };
   /* PANEL_ESCRITORIO=1 lo pasa en un ordenador de 1280×800 en vez de en un móvil de 390×844. */
   const escritorio = process.env.PANEL_ESCRITORIO === '1';
   R.pantalla = escritorio ? 'escritorio 1280x800' : 'movil 390x844';
@@ -434,6 +464,177 @@ export default async (page0) => {
     R.historial.publicacionesLanzadas = esc.publicaciones;
   });
 
+  /* ===================== migracion 0006: horario, aviso, orden ===================== */
+
+  await paso('ajustesHub', async () => {
+    await page.goto(BASE + '/admin/#/ajustes', { waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('.hub-i', { timeout: 15000 });
+    R.ajustesHub = await page.evaluate(() => [...document.querySelectorAll('.hub-i')].map((a) => a.textContent.replace(/\s+/g, ' ').trim()));
+  });
+
+  await paso('horario', async () => {
+    await page.goto(BASE + '/admin/#/ajustes/horario', { waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('.hor-dia', { timeout: 15000 });
+    await captura('08-horario');
+    const dia = (d) => page.locator(`.hor-dia[data-dia="${d}"]`);
+    const resumen = () => page.evaluate(() => [...document.querySelectorAll('.hor-dl > div')].map((x) => x.textContent));
+    R.horario = {
+      tarjetas: await page.locator('.hor-dia').count(),
+      resumenInicial: await resumen(),
+      barraDestinosVisible: await page.evaluate(() => getComputedStyle(document.querySelector('.nav')).display !== 'none'),
+      sinNombreAccesible: await page.evaluate(SIN_NOMBRE),
+      pequenas: await page.evaluate(PEQUENAS),
+      desbordeLateral: await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)
+    };
+
+    /* caso fabricado: el primer turno del lunes cierra a las 15:00 y el segundo abre a las 14:30 */
+    await dia('lunes').locator('.hor-hora').nth(1).fill('15:00');
+    await dia('lunes').locator('.hor-hora').nth(2).fill('14:30');
+    R.horario.errorSolape = await dia('lunes').locator('.error-campo').allTextContents();
+    const antes = esc.horarios.length;
+    await page.locator('.acciones-fijas .btn-p').click();
+    await page.waitForTimeout(300);
+    R.horario.guardaConSolape = esc.horarios.length > antes;
+    R.horario.focoTrasGuardarMal = await page.evaluate(() => document.activeElement.getAttribute('aria-label'));
+    await dia('lunes').locator('.hor-hora').nth(2).fill('19:30');
+    R.horario.erroresTrasArreglar = await dia('lunes').locator('.error-campo').count();
+
+    /* copiar el lunes de lunes a viernes */
+    await dia('lunes').locator('.hor-copiar').click();
+    await page.waitForSelector('dialog.hoja[open]');
+    await captura('09-horario-copiar');
+    await page.getByRole('button', { name: 'De lunes a viernes' }).click();
+    await page.locator('dialog.hoja[open] .hoja-pie .btn-p').click();
+    await page.waitForTimeout(300);
+    R.horario.trasCopiar = { resumen: await resumen(), aviso: await avisoTexto(),
+      foco: await page.evaluate(() => document.activeElement.textContent) };
+
+    /* cerrar el domingo, y el sabado a medianoche (00:00) */
+    await dia('domingo').locator('.interruptor').click();
+    R.horario.domingoCerrado = await dia('domingo').locator('.hor-hora').count();
+    await dia('sabado').locator('.hor-hora').nth(3).fill('00:00');
+    R.horario.resumenFinal = await resumen();
+
+    /* anadir un tercer turno al martes y comprobar el tope */
+    await dia('martes').locator('.hor-anadir').click();
+    R.horario.martesConTres = { turnos: await dia('martes').locator('.hor-turno').count(), botonAnadir: await dia('martes').locator('.hor-anadir').count(),
+      nuevo: [await dia('martes').locator('.hor-hora').nth(4).inputValue(), await dia('martes').locator('.hor-hora').nth(5).inputValue()],
+      foco: await page.evaluate(() => document.activeElement.getAttribute('aria-label')) };
+    await dia('martes').locator('.hor-quitar').nth(2).click();
+
+    esc.escrituras.length = 0;
+    await page.locator('.acciones-fijas .btn-p').click();
+    await page.waitForFunction(() => /Horario guardado/.test((document.querySelector('#avisos .aviso-txt') || {}).textContent || ''), null, { timeout: 8000 });
+    R.horario.enviado = esc.horarios[esc.horarios.length - 1];
+    R.horario.escrituras = esc.escrituras.slice();
+    R.horario.avisoConPublicar = await page.evaluate(() => (document.querySelector('#avisos .aviso-accion') || {}).textContent || null);
+    R.horario.guardiaTrasGuardar = await page.evaluate(() => location.hash);
+  });
+
+  await paso('pendientesHorario', async () => {
+    /* Solo ha cambiado el horario: la carta publicada es igual a la guardada.
+       El seguimiento NO puede dar «Ya está» hasta que llegue el sitio.json nuevo. */
+    await page.goto(BASE + '/admin/#/publicar', { waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('.tarjeta-pendiente', { timeout: 15000 });
+    R.pendientesHorario = { cambios: await page.evaluate(() => [...document.querySelectorAll('.pub-cambios li')].map((l) => l.textContent)),
+      enlaces: await page.evaluate(() => [...document.querySelectorAll('.pub-cambios a')].map((a) => a.getAttribute('href'))) };
+    await captura('10-publicar-horario');
+    await page.getByRole('button', { name: 'Publicar ahora' }).click();
+    await page.waitForSelector('.tarjeta-curso', { timeout: 10000 });
+    await page.waitForTimeout(17000);
+    R.pendientesHorario.trasUnSondeoSinLlegar = await page.evaluate(() => document.querySelector('.tarjeta-tit').textContent);
+    esc.sitioPub = copiaSitio(esc.sitioDb);
+    await page.waitForSelector('.tarjeta-bien', { timeout: 40000 });
+    R.pendientesHorario.alLlegar = await page.evaluate(() => document.querySelector('.tarjeta-tit').textContent);
+    /* Sin pulsar «Entendido» a proposito: el paso del aviso comprueba que ese
+       «Ya está» viejo no tapa el cambio nuevo. */
+  });
+
+  await paso('aviso', async () => {
+    await page.goto(BASE + '/admin/#/ajustes/aviso', { waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('.aviso-prev-caja', { timeout: 15000 });
+    await page.locator('.fila-inter .interruptor').click();
+    await page.locator('.acciones-fijas .btn-p').click();
+    await page.waitForTimeout(300);
+    R.aviso = { errorSinTexto: await page.evaluate(() => [...document.querySelectorAll('.error-campo')].map((e) => e.textContent)),
+      guardoSinTexto: esc.avisos.length };
+    await page.locator('.campo-idiomas input[lang=es]').fill('Cerramos por vacaciones del 1 al 15 de octubre.');
+    await page.locator('input.fecha-in').fill('2030-01-31');
+    R.aviso.previa = await page.evaluate(() => document.querySelector('.aviso-prev-caja').textContent);
+    R.aviso.maxlength = await page.locator('.campo-idiomas input[lang=en]').getAttribute('maxlength');
+    await captura('11-aviso');
+    await page.locator('.acciones-fijas .btn-p').click();
+    await page.waitForFunction(() => /Aviso guardado/.test((document.querySelector('#avisos .aviso-txt') || {}).textContent || ''), null, { timeout: 8000 });
+    R.aviso.enviado = esc.avisos[esc.avisos.length - 1];
+    R.aviso.sinNombreAccesible = await page.evaluate(SIN_NOMBRE);
+    R.aviso.pequenas = await page.evaluate(PEQUENAS);
+    await page.goto(BASE + '/admin/#/ajustes', { waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('.hub-i');
+    R.aviso.enElHub = await page.evaluate(() => [...document.querySelectorAll('.hub-i')][1].textContent.replace(/\s+/g, ' ').trim());
+    await page.goto(BASE + '/admin/#/publicar', { waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('.tarjeta-pendiente', { timeout: 15000 });
+    R.aviso.publicarTrasUnYaEsta = await page.evaluate(() => ({ titulo: document.querySelector('.tarjeta-tit').textContent,
+      cambios: [...document.querySelectorAll('.pub-cambios li')].map((l) => l.textContent),
+      boton: !!document.querySelector('.tarjeta-pendiente .btn-p') }));
+  });
+
+  await paso('obligatorio', async () => {
+    await page.goto(BASE + '/admin/#/ajustes/opciones', { waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('.fila .fila-abre', { timeout: 15000 });
+    await page.locator('.fila .fila-abre').first().click();
+    await page.waitForSelector('dialog.hoja[open] .opcion-fila');
+    const sw = page.locator('dialog.hoja[open] .fila-inter .interruptor');
+    R.obligatorio = { etiqueta: await page.locator('dialog.hoja[open] .fila-inter-et').textContent(), antes: await sw.getAttribute('aria-checked') };
+    await sw.click();
+    await page.locator('dialog.hoja[open] .hoja-pie .btn-p').click();
+    await page.waitForFunction(() => !document.querySelector('dialog.hoja[open]'), null, { timeout: 8000 });
+    R.obligatorio.enviado = esc.grupos[esc.grupos.length - 1].obligatorio;
+    R.obligatorio.hojaSinCampoOrden = await page.evaluate(() => !/Orden/.test(document.body.textContent.replace(/Ordenar/g, '')));
+  });
+
+  await paso('ordenar', async () => {
+    await page.goto(BASE + '/admin/#/platos', { waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('.seccion-orden', { timeout: 15000 });
+    const antes = await page.evaluate(() => [...document.querySelector('.seccion').querySelectorAll('.fila')].map((f) => f.dataset.slug));
+    await page.locator('.seccion-orden').first().click();
+    await page.waitForSelector('dialog.hoja[open] .orden-fila');
+    await captura('12-ordenar');
+    await page.locator('dialog.hoja[open] .orden-fila').first().locator('.baja').click();
+    R.ordenar = { focoTrasBajar: await page.evaluate(() => document.activeElement.getAttribute('aria-label')),
+      pequenas: await page.evaluate(PEQUENAS) };
+    await page.locator('dialog.hoja[open] .hoja-pie .btn-p').click();
+    await page.waitForFunction(() => /Orden guardado/.test((document.querySelector('#avisos .aviso-txt') || {}).textContent || ''), null, { timeout: 8000 });
+    const o = esc.ordenes[esc.ordenes.length - 1];
+    R.ordenar.enviado = { tabla: o.p_tabla, primeros: o.p_ids.slice(0, 3) };
+    R.ordenar.esperado = [antes[1], antes[0], antes[2]].map((s) => 'p-' + s);
+    await page.goto(BASE + '/admin/#/ajustes/categorias', { waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('.fila .fila-abre', { timeout: 15000 });
+    await page.getByRole('button', { name: 'Ordenar' }).click();
+    await page.waitForSelector('dialog.hoja[open] .orden-lista');
+    R.ordenar.categorias = await page.evaluate(() => [...document.querySelectorAll('dialog.hoja[open] .orden-tit')].map((h) => h.textContent));
+    await page.locator('dialog.hoja[open] .hoja-pie .btn-s').click();
+  });
+
+  await paso('duplicar', async () => {
+    await page.goto(BASE + '/admin/#/plato/tonkotsu-ramen', { waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('form.ficha', { timeout: 15000 });
+    R.duplicar = { camposNumericosEnLaFicha: await page.locator('form.ficha input.corto').count(),
+      seccionPosicion: await page.evaluate(() => /Posición en su sección/.test(document.body.textContent)) };
+    await page.getByRole('link', { name: 'Duplicar el plato' }).click();
+    await page.waitForFunction(() => /Copia de/.test((document.querySelector('.pantalla-cab h1') || {}).textContent || ''), null, { timeout: 8000 });
+    R.duplicar.titulo = await page.evaluate(() => document.querySelector('.pantalla-cab h1').textContent);
+    R.duplicar.nombres = await page.evaluate(() => [...document.querySelectorAll('.campo-idiomas')][0].querySelectorAll('input').length &&
+      [...[...document.querySelectorAll('.campo-idiomas')][0].querySelectorAll('input')].map((i) => i.value));
+    R.duplicar.enLaCarta = await page.locator('.fila-inter .interruptor').first().getAttribute('aria-checked');
+    await page.locator('.acciones-fijas .btn-p').click();
+    await page.waitForFunction(() => /Plato creado/.test((document.querySelector('#avisos .aviso-txt') || {}).textContent || ''), null, { timeout: 8000 });
+    const d = esc.guardados[esc.guardados.length - 1];
+    const o = CARTA.platos.find((p) => p.slug === 'tonkotsu-ramen');
+    R.duplicar.enviado = { id: d.id, slug: d.slug, numero: d.numero, imagen: d.imagen, disponible: d.disponible,
+      alergenos_revisados: d.alergenos_revisados, precios: d.precios, preciosDelOriginal: o.precios,
+      alergenos: d.alergenos.length, alergenosDelOriginal: o.alergenos.length, grupos: d.grupos.length, gruposDelOriginal: o.grupos.length };
+  });
+
   await paso('estrecho', async () => {
     await page.setViewportSize({ width: 360, height: 780 });
     await page.goto(BASE + '/admin/#/platos', { waitUntil: 'domcontentloaded' });
@@ -442,6 +643,13 @@ export default async (page0) => {
       destinos: [...document.querySelectorAll('.nav-i')].map((a) => { const r = a.getBoundingClientRect(); return a.textContent.trim() + (r.right <= innerWidth && r.bottom <= innerHeight ? '' : ' FUERA'); }),
       desbordeLateral: document.documentElement.scrollWidth > innerWidth
     }));
+    for (const ruta of ['/ajustes/horario', '/ajustes/aviso']) {
+      await page.goto(BASE + '/admin/#' + ruta, { waitUntil: 'domcontentloaded' });
+      await page.waitForSelector('.acciones-fijas', { timeout: 15000 });
+      await page.waitForTimeout(300);
+      R.estrecho360[ruta] = await page.evaluate((src) => ({ desbordeLateral: document.documentElement.scrollWidth > innerWidth,
+        pequenas: (0, eval)('(' + src + ')')() }), PEQUENAS.toString());
+    }
   });
 
   R.erroresConsola = [...new Set(errores)];

@@ -785,6 +785,29 @@ img.plato-ico{object-fit:cover;padding:0}
 }
 
 /* ===========================================================================
+   EL AVISO TEMPORAL  ·  portada y carta
+   Lo escribe el restaurante desde el panel. Va dentro de la primera pantalla
+   y no pegado arriba, porque la cabecera es fija y transparente sobre el hero.
+   Superficie elevada con texto washi y el icono en bengala: el neon se queda
+   en las fotos. Sobre la foto del hero lleva velo y desenfoque para leerse.
+   =========================================================================== */
+.aviso-web{display:flex;align-items:flex-start;gap:10px;max-width:38rem;margin:0 0 20px;
+  padding:11px 15px;border:1px solid var(--sumi-borde);border-radius:var(--radio);
+  background:rgba(26,33,33,.9);color:var(--washi);font-size:.95rem;line-height:1.45;text-align:left;
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+/* display:flex le gana a [hidden] con la misma especificidad: main.js lo
+   esconde el dia que caduca y sin esto seguiria viendose. */
+.aviso-web[hidden]{display:none}
+.aviso-web svg{flex:0 0 auto;margin-top:1px;color:var(--bengara-txt)}
+.carta-cab .aviso-web{margin:0 auto 22px}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .aviso-web{background:var(--sumi-sup)}
+}
+@media (prefers-reduced-transparency:reduce){
+  .aviso-web{background:var(--sumi-sup);-webkit-backdrop-filter:none;backdrop-filter:none}
+}
+
+/* ===========================================================================
    EL ASISTENTE DE PEDIDO  ·  /menu/
    Todo esto lo pinta js/pedido.js, que solo se carga en la carta: sin
    JavaScript no existe. Clases propias ped-*, sin reutilizar .chip-btn,
