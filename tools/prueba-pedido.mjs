@@ -17,7 +17,8 @@
      pasar contra produccion sin riesgo.
 
    QUE MIDE
-     Privacidad antes de usarlo, geometria de los globos, añadir, configurar,
+     Privacidad antes de usarlo, la linea de ayuda de la cabecera, geometria
+     de los globos y de su cara, añadir, configurar,
      fusion de lineas, obligatorios, precios a consultar, lineas caducadas,
      persistencia, vaciar y deshacer, dialogos y foco, arrastre, la pantalla del
      camarero, maqueta en cinco anchos, sin JavaScript y consola. Cada
@@ -100,6 +101,13 @@ export default async function run(page) {
       sesion: await page.evaluate(() => sessionStorage.length),
       cookies: (await page.context().cookies()).length,
       globos: await page.locator('.ped-globo').count(),
+      ayuda: await page.evaluate(() => {
+        const p = document.querySelector('.carta-cab .ped-ayuda');
+        if (!p) return null;
+        const b = p.getBoundingClientRect();
+        return { texto: p.textContent, globos: p.querySelectorAll('.ped-ayuda-c svg').length,
+          dentro: b.left >= 0 && b.right <= innerWidth, lineas: Math.round(b.height / parseFloat(getComputedStyle(p).lineHeight)) };
+      }),
       filas: await page.locator('.cplato').count()
     };
   }
@@ -114,6 +122,7 @@ export default async function run(page) {
   R.sinJs = {
     filas: (crudo.match(/<li class="cplato"/g) || []).length,
     globosEnHtml: (crudo.match(/ped-globo/g) || []).length,
+    ayudaEnHtml: (crudo.match(/ped-ayuda/g) || []).length,
     isla: /<script type="application\/json" id="pedido-datos">/.test(crudo)
   };
 
@@ -123,7 +132,7 @@ export default async function run(page) {
     await ir('/menu/', ancho, 900);
     await page.waitForSelector('.ped-globo');
     R.globos[ancho] = await page.evaluate(async () => {
-      const fuera = { total: 0, menos44: 0, roba: 0, noSuyo: 0, desvio: 0 };
+      const fuera = { total: 0, menos44: 0, roba: 0, noSuyo: 0, desvio: 0, caraMin: Infinity, holguraMin: Infinity };
       const lis = Array.from(document.querySelectorAll('.cplato'));
       for (const li of lis) {
         const b = li.querySelector('.ped-globo');
@@ -146,6 +155,11 @@ export default async function run(page) {
         const dx = Math.abs(rb.left + rb.width / 2 - (ri.right - 6));
         const dy = Math.abs(rb.top + rb.height / 2 - (ri.bottom - 6));
         fuera.desvio = Math.max(fuera.desvio, Math.round(Math.max(dx, dy) * 10) / 10);
+        /* la cara, y lo que queda entre ella (con su aro de 3) y el texto */
+        const rc = li.querySelector('.ped-globo-c').getBoundingClientRect();
+        fuera.caraMin = Math.min(fuera.caraMin, rc.width, rc.height);
+        const texto = Array.from(li.querySelectorAll('.plato-n, .plato-desc, .plato-chips')).map((n) => n.getBoundingClientRect().left);
+        fuera.holguraMin = Math.min(fuera.holguraMin, Math.round((Math.min(...texto) - (rc.right + 3)) * 10) / 10);
       }
       return fuera;
     });

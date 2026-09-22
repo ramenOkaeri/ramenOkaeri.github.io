@@ -758,6 +758,23 @@
   }
 
   /* ------------------------------------------------------------------ */
+  /* La línea de ayuda de la cabecera                                    */
+  /* ------------------------------------------------------------------ */
+  /* Sin ella nada decía que el «+» existe ni para qué sirve, y hay quien
+     entiende que pide por internet. Lleva dentro el mismo globo que los
+     platos, donde el texto pone {mas}. La pinta este script y no el HTML
+     porque sin JavaScript no hay globos que explicar. */
+  var cabSub = $('.carta-cab .carta-sub');
+  if (cabSub && T.ayuda) {
+    var ayuda = [];
+    String(T.ayuda).split('{mas}').forEach(function (trozo, n) {
+      if (n) ayuda.push(el('span', { class: 'ped-ayuda-c' }, [ico('mas'), el('span', { class: 'oculto', texto: '+' })]));
+      ayuda.push(trozo);
+    });
+    cabSub.parentNode.insertBefore(el('p', { class: 'ped-ayuda' }, ayuda), cabSub.nextSibling);
+  }
+
+  /* ------------------------------------------------------------------ */
   /* Los globos de la carta                                              */
   /* ------------------------------------------------------------------ */
   /* Van como hermanos del <details> y no dentro del <summary>, porque un

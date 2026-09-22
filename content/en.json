@@ -177,6 +177,7 @@
   },
   "pedido": {
     "pastilla": "Your order",
+    "ayuda": "Jot down what you fancy with the {mas} and show it to your waiter when they come over.",
     "ver_pedido": "View your order: {platos}, {total}",
     "platos_uno": "1 dish",
     "platos": "{n} dishes",

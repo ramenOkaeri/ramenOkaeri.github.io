@@ -807,14 +807,20 @@ img.plato-ico{object-fit:cover;padding:0}
 .ped-globo{position:absolute;z-index:2;left:28px;top:46px;width:44px;height:44px;
   display:grid;place-items:center;border-radius:50%}
 @media (min-width:600px){.ped-globo{left:36px;top:56px}}
-/* el aro del color del fondo lo separa del icono, como un globo de iOS */
-.ped-globo-c{min-width:26px;height:26px;padding:0 5px;border-radius:999px;
+/* Relleno de washi con la cruz en sumi: es lo más claro de la fila sin ser
+   rojo, que aquí ya es el precio y «está en tu pedido». Hasta el 22 de
+   septiembre de 2026 era un aro gris de 1 px sobre el mismo gris del icono,
+   y al lado de la flecha de abrir y de las pastillas no se leía como acción.
+   La cara crece de 26 a 32 y el botón se queda en 44, así que el centro no
+   se mueve. El aro del color del fondo lo separa del icono, como un globo
+   de iOS. */
+.ped-globo-c{min-width:32px;height:32px;padding:0 7px;border-radius:999px;
   display:inline-flex;align-items:center;justify-content:center;
-  background:var(--sumi-sup);border:1px solid var(--washi-ten);color:var(--washi);
-  box-shadow:0 0 0 3px var(--sumi);
-  font-size:.78rem;font-weight:700;line-height:1;font-variant-numeric:tabular-nums;
+  background:var(--washi);border:1px solid var(--washi);color:var(--sumi);
+  box-shadow:0 0 0 3px var(--sumi),0 4px 10px rgba(0,0,0,.35);
+  font-size:.9rem;font-weight:700;line-height:1;font-variant-numeric:tabular-nums;
   transition:background-color .2s var(--sal),border-color .2s var(--sal),color .2s var(--sal),transform .14s var(--sal)}
-.ped-globo .ped-ico{width:14px;height:14px;stroke-width:2.4}
+.ped-globo .ped-ico{width:16px;height:16px;stroke-width:2.6}
 .ped-globo-n{display:none}
 .ped-globo.lleno .ped-globo-n{display:inline}
 .ped-globo.lleno .ped-ico{display:none}
@@ -823,9 +829,21 @@ img.plato-ico{object-fit:cover;padding:0}
 .ped-globo:focus-visible{outline:none}
 .ped-globo:focus-visible .ped-globo-c{outline:2px solid var(--bengara-txt);outline-offset:3px}
 @media (hover:hover) and (pointer:fine){
-  .ped-globo:hover .ped-globo-c{border-color:var(--washi)}
+  .ped-globo:hover .ped-globo-c{background:var(--blanco);border-color:var(--blanco)}
   .ped-globo.lleno:hover .ped-globo-c{background:var(--bengara-viva);border-color:var(--bengara-viva)}
 }
+
+/* --- la línea de ayuda de la cabecera ------------------------------------ */
+/* ped-ayuda y no ped-pista: esa es la pista de «Obligatorio» del
+   configurador, con su nowrap, y una clase compartida hereda el bloque
+   entero. Medido en la maqueta: la línea se salía de la pantalla. El margen
+   negativo del globo es para que no ensanche su renglón: sin él, dos
+   renglones medían 52 px en vez de 49. */
+.ped-ayuda{margin:-8px auto 22px;max-width:40ch;color:var(--washi-ten);font-size:.95rem;
+  line-height:1.6;text-wrap:balance}
+.ped-ayuda-c{display:inline-grid;place-items:center;width:24px;height:24px;margin:-4px 2px;
+  vertical-align:middle;border-radius:50%;background:var(--washi);color:var(--sumi)}
+.ped-ayuda-c .ped-ico{width:14px;height:14px;stroke-width:2.6}
 
 /* --- la pastilla del pedido ---------------------------------------------- */
 /* Es un botón, así que va en bengala con texto blanco. Entra subiendo con la
@@ -1098,5 +1116,5 @@ button.ped-linea-edita:active{opacity:.6}
   .ped-rollo,.ped-seg,.ped-op,.ped-cant{border-color:var(--washi-ten)}
 }
 @media print{
-  .ped-pastilla,.ped-globo,.ped-aviso{display:none!important}
+  .ped-pastilla,.ped-globo,.ped-aviso,.ped-ayuda{display:none!important}
 }

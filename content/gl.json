@@ -178,6 +178,7 @@
   },
   "pedido": {
     "pastilla": "O teu pedido",
+    "ayuda": "Vai apuntando o que che apeteza co {mas} e, cando veña o camareiro, ensínasllo.",
     "ver_pedido": "Ver o teu pedido: {platos}, {total}",
     "platos_uno": "1 prato",
     "platos": "{n} pratos",
