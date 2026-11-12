@@ -5,7 +5,7 @@
   "enlace": "https://maps.google.com/?cid=18320615065955389420",
   "nota": 4.8,
   "total": 1096,
-  "actualizado": "2026-11-10",
+  "actualizado": "2026-11-12",
   "idiomas": {
     "es": [
       {
@@ -56,15 +56,6 @@
         "avatar": "jenny-il-6f4a2c"
       },
       {
-        "autor": "Kim Villeneuve",
-        "estrellas": 5,
-        "fecha": "October 2026",
-        "texto": "Best ramen soup I've ever had! Too hungry to take pictures of my meal, but had the miso one with fried tofu, we shared steamed chicken gyozas and fried langostino ones. Funky place, excellent service and A1 food!!",
-        "lang": "en",
-        "publicada": "2026-10-11",
-        "avatar": "kim-villeneuve-84c88a"
-      },
-      {
         "autor": "Maximo C. S.",
         "estrellas": 5,
         "fecha": "September 2026",
@@ -81,6 +72,15 @@
         "lang": "en",
         "publicada": "2026-08-02",
         "avatar": "arsa-longa-c467d1"
+      },
+      {
+        "autor": "Kim Villeneuve",
+        "estrellas": 5,
+        "fecha": "October 2026",
+        "texto": "Best ramen soup I've ever had! Too hungry to take pictures of my meal, but had the miso one with fried tofu, we shared steamed chicken gyozas and fried langostino ones. Funky place, excellent service and A1 food!!",
+        "lang": "en",
+        "publicada": "2026-10-11",
+        "avatar": "kim-villeneuve-84c88a"
       },
       {
         "autor": "Michal Bar",
