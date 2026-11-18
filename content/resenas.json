@@ -4,8 +4,8 @@
   "fuente": "Google",
   "enlace": "https://maps.google.com/?cid=18320615065955389420",
   "nota": 4.8,
-  "total": 1098,
-  "actualizado": "2026-11-16",
+  "total": 1099,
+  "actualizado": "2026-11-18",
   "idiomas": {
     "es": [
       {
@@ -74,6 +74,15 @@
         "avatar": "arsa-longa-c467d1"
       },
       {
+        "autor": "Jacqueline murphy",
+        "estrellas": 5,
+        "fecha": "October 2026",
+        "texto": "Gooo!! So good!  Service is great. Killer lunch special and many options for vegan and gluten free. If you are looking for something comforting and different...GO!! Made the difference in my trip. Thank you!",
+        "lang": "en",
+        "publicada": "2026-10-15",
+        "avatar": "jacqueline-murphy-575a37"
+      },
+      {
         "autor": "Kim Villeneuve",
         "estrellas": 5,
         "fecha": "October 2026",
@@ -81,15 +90,6 @@
         "lang": "en",
         "publicada": "2026-10-11",
         "avatar": "kim-villeneuve-84c88a"
-      },
-      {
-        "autor": "Michal Bar",
-        "estrellas": 5,
-        "fecha": "August 2026",
-        "texto": "Ok listen up. We went to quite a few restaurants in Spain and this one has TOPPED OUR LIST. Do yourselves a favor and eat here. The vibes are immaculate (anime playing silently in the background, figurines, great lighting and atmosphere). The food is out of this world amazing I thought I was in heaven please take me seriously it was just that good. I ordered the vegan ramen and I can’t describe to you how good it was. The cocktails were great, the vegetarian gyoza was 10/10 we ended up ordering it twice. The service made us feel at home. And at the end they even passed out little stickers for us to choose from to remember the restaurant. No branding, no logo, nada. Just cute stickers. I’m not too sappy of a person but honestly this made my day. Little acts of kindness and care that we don’t see too much of in our day to day lives in today’s world.\nI’m at the point where I want to come here again before we leave Santiago just for breakfast. Ramen. For breakfast. That’s the emotional state that I’m in right now because of this food.\nDon’t leave Santiago without trying this place. And preferably on the first day so that you can come again later.\nI swear to god - just come here.",
-        "lang": "en",
-        "publicada": "2026-08-07",
-        "avatar": "michal-bar-f502fa"
       }
     ],
     "gl": [
@@ -112,15 +112,6 @@
         "avatar": "clara-veiga-6ccbf8"
       },
       {
-        "autor": "Uxía TS",
-        "estrellas": 5,
-        "fecha": "maio de 2025",
-        "texto": "Teñen unha carta moi ampla. As gyozas sérvenas con tres salsas diferentes, todas moi ricas. O ramen dache anos de vida. Fomos 7 persoas e fartamos a comer e pagamos arredor de 28 euros cada unha. O servizo o mellor, sendo unha mesa grande algo indecisa tiveron paciencia e incluso nos convidaron a un chupito da casa ao rematar.\nMis dieces!\nPd: non dubidedes en pedir o mochis con nata e sirope, evitade influenciarvos da xente fit que teñades convosco)",
-        "lang": "gl",
-        "publicada": "2025-05-09",
-        "avatar": "uxia-ts-88c3e6"
-      },
-      {
         "autor": "Pedro Varela",
         "estrellas": 5,
         "fecha": "agosto de 2026",
@@ -128,6 +119,15 @@
         "lang": "gl",
         "publicada": "2026-08-29",
         "avatar": "pedro-varela-af6f32"
+      },
+      {
+        "autor": "Bolichi",
+        "estrellas": 5,
+        "fecha": "xaneiro de 2026",
+        "texto": "Bo sitio para tomar ramén. Moi atentos e rápidos no servizo, e con detalles cos clientes: ofrecen unha tarxeta de selos e stickers de anime.",
+        "lang": "gl",
+        "publicada": "2026-01-21",
+        "avatar": "bolichi-545cfe"
       }
     ]
   }
